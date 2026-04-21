@@ -1,0 +1,262 @@
+{
+    "Ace of Clubs": {
+        "Value": "Ace",
+        "Suit": "Clubs",
+        "Color": "Black"
+    },
+    "2 of Clubs": {
+        "Value": "2",
+        "Suit": "Clubs",
+        "Color": "Black"
+    },
+    "3 of Clubs": {
+        "Value": "3",
+        "Suit": "Clubs",
+        "Color": "Black"
+    },
+    "4 of Clubs": {
+        "Value": "4",
+        "Suit": "Clubs",
+        "Color": "Black"
+    },
+    "5 of Clubs": {
+        "Value": "5",
+        "Suit": "Clubs",
+        "Color": "Black"
+    },
+    "6 of Clubs": {
+        "Value": "6",
+        "Suit": "Clubs",
+        "Color": "Black"
+    },
+    "7 of Clubs": {
+        "Value": "7",
+        "Suit": "Clubs",
+        "Color": "Black"
+    },
+    "8 of Clubs": {
+        "Value": "8",
+        "Suit": "Clubs",
+        "Color": "Black"
+    },
+    "9 of Clubs": {
+        "Value": "9",
+        "Suit": "Clubs",
+        "Color": "Black"
+    },
+    "10 of Clubs": {
+        "Value": "10",
+        "Suit": "Clubs",
+        "Color": "Black"
+    },
+    "Jack of Clubs": {
+        "Value": "Jack",
+        "Suit": "Clubs",
+        "Color": "Black"
+    },
+    "Queen of Clubs": {
+        "Value": "Queen",
+        "Suit": "Clubs",
+        "Color": "Black"
+    },
+    "King of Clubs": {
+        "Value": "King",
+        "Suit": "Clubs",
+        "Color": "Black"
+    },
+    "Ace of Spades": {
+        "Value": "Ace",
+        "Suit": "Spades",
+        "Color": "Black"
+    },
+    "2 of Spades": {
+        "Value": "2",
+        "Suit": "Spades",
+        "Color": "Black"
+    },
+    "3 of Spades": {
+        "Value": "3",
+        "Suit": "Spades",
+        "Color": "Black"
+    },
+    "4 of Spades": {
+        "Value": "4",
+        "Suit": "Spades",
+        "Color": "Black"
+    },
+    "5 of Spades": {
+        "Value": "5",
+        "Suit": "Spades",
+        "Color": "Black"
+    },
+    "6 of Spades": {
+        "Value": "6",
+        "Suit": "Spades",
+        "Color": "Black"
+    },
+    "7 of Spades": {
+        "Value": "7",
+        "Suit": "Spades",
+        "Color": "Black"
+    },
+    "8 of Spades": {
+        "Value": "8",
+        "Suit": "Spades",
+        "Color": "Black"
+    },
+    "9 of Spades": {
+        "Value": "9",
+        "Suit": "Spades",
+        "Color": "Black"
+    },
+    "10 of Spades": {
+        "Value": "10",
+        "Suit": "Spades",
+        "Color": "Black"
+    },
+    "Jack of Spades": {
+        "Value": "Jack",
+        "Suit": "Spades",
+        "Color": "Black"
+    },
+    "Queen of Spades": {
+        "Value": "Queen",
+        "Suit": "Spades",
+        "Color": "Black"
+    },
+    "King of Spades": {
+        "Value": "King",
+        "Suit": "Spades",
+        "Color": "Black"
+    },
+    "Ace of Diamonds": {
+        "Value": "Ace",
+        "Suit": "Diamonds",
+        "Color": "Red"
+    },
+    "2 of Diamonds": {
+        "Value": "2",
+        "Suit": "Diamonds",
+        "Color": "Red"
+    },
+    "3 of Diamonds": {
+        "Value": "3",
+        "Suit": "Diamonds",
+        "Color": "Red"
+    },
+    "4 of Diamonds": {
+        "Value": "4",
+        "Suit": "Diamonds",
+        "Color": "Red"
+    },
+    "5 of Diamonds": {
+        "Value": "5",
+        "Suit": "Diamonds",
+        "Color": "Red"
+    },
+    "6 of Diamonds": {
+        "Value": "6",
+        "Suit": "Diamonds",
+        "Color": "Red"
+    },
+    "7 of Diamonds": {
+        "Value": "7",
+        "Suit": "Diamonds",
+        "Color": "Red"
+    },
+    "8 of Diamonds": {
+        "Value": "8",
+        "Suit": "Diamonds",
+        "Color": "Red"
+    },
+    "9 of Diamonds": {
+        "Value": "9",
+        "Suit": "Diamonds",
+        "Color": "Red"
+    },
+    "10 of Diamonds": {
+        "Value": "10",
+        "Suit": "Diamonds",
+        "Color": "Red"
+    },
+    "Jack of Diamonds": {
+        "Value": "Jack",
+        "Suit": "Diamonds",
+        "Color": "Red"
+    },
+    "Queen of Diamonds": {
+        "Value": "Queen",
+        "Suit": "Diamonds",
+        "Color": "Red"
+    },
+    "King of Diamonds": {
+        "Value": "King",
+        "Suit": "Diamonds",
+        "Color": "Red"
+    },
+    "Ace of Hearts": {
+        "Value": "Ace",
+        "Suit": "Hearts",
+        "Color": "Red"
+    },
+    "2 of Hearts": {
+        "Value": "2",
+        "Suit": "Hearts",
+        "Color": "Red"
+    },
+    "3 of Hearts": {
+        "Value": "3",
+        "Suit": "Hearts",
+        "Color": "Red"
+    },
+    "4 of Hearts": {
+        "Value": "4",
+        "Suit": "Hearts",
+        "Color": "Red"
+    },
+    "5 of Hearts": {
+        "Value": "5",
+        "Suit": "Hearts",
+        "Color": "Red"
+    },
+    "6 of Hearts": {
+        "Value": "6",
+        "Suit": "Hearts",
+        "Color": "Red"
+    },
+    "7 of Hearts": {
+        "Value": "7",
+        "Suit": "Hearts",
+        "Color": "Red"
+    },
+    "8 of Hearts": {
+        "Value": "8",
+        "Suit": "Hearts",
+        "Color": "Red"
+    },
+    "9 of Hearts": {
+        "Value": "9",
+        "Suit": "Hearts",
+        "Color": "Red"
+    },
+    "10 of Hearts": {
+        "Value": "10",
+        "Suit": "Hearts",
+        "Color": "Red"
+    },
+    "Jack of Hearts": {
+        "Value": "Jack",
+        "Suit": "Hearts",
+        "Color": "Red"
+    },
+    "Queen of Hearts": {
+        "Value": "Queen",
+        "Suit": "Hearts",
+        "Color": "Red"
+    },
+    "King of Hearts": {
+        "Value": "King",
+        "Suit": "Hearts",
+        "Color": "Red"
+    }
+}
