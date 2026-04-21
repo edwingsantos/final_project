@@ -8,10 +8,11 @@ def replace_deck_of_cards():
     #create all the cards
     deck = {}
     #for each suit
+    id = 0
     for x in suits:
         #create a card for each value
         for y in values:
-            
+            id+=1
             name = f"{y} of {x}"
 
             #determines if the card is red or black
@@ -24,7 +25,9 @@ def replace_deck_of_cards():
             deck[name] = {
                 "Value":y,
                 "Suit":x,
-                "Color":color}
+                "Color":color,
+                "Id":id
+                }
 
     with open("files/cards.json","w") as file:
         file.truncate(0)
