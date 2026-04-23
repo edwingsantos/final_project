@@ -1,314 +1,418 @@
 {
     "Ace of Clubs": {
-        "Value": "Ace",
+        "Value": 1,
         "Suit": "Clubs",
         "Color": "Black",
-        "Id": 1
+        "Id": 1,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "2 of Clubs": {
-        "Value": "2",
+        "Value": 2,
         "Suit": "Clubs",
         "Color": "Black",
-        "Id": 2
+        "Id": 2,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "3 of Clubs": {
-        "Value": "3",
+        "Value": 3,
         "Suit": "Clubs",
         "Color": "Black",
-        "Id": 3
+        "Id": 3,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "4 of Clubs": {
-        "Value": "4",
+        "Value": 4,
         "Suit": "Clubs",
         "Color": "Black",
-        "Id": 4
+        "Id": 4,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "5 of Clubs": {
-        "Value": "5",
+        "Value": 5,
         "Suit": "Clubs",
         "Color": "Black",
-        "Id": 5
+        "Id": 5,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "6 of Clubs": {
-        "Value": "6",
+        "Value": 6,
         "Suit": "Clubs",
         "Color": "Black",
-        "Id": 6
+        "Id": 6,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "7 of Clubs": {
-        "Value": "7",
+        "Value": 7,
         "Suit": "Clubs",
         "Color": "Black",
-        "Id": 7
+        "Id": 7,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "8 of Clubs": {
-        "Value": "8",
+        "Value": 8,
         "Suit": "Clubs",
         "Color": "Black",
-        "Id": 8
+        "Id": 8,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "9 of Clubs": {
-        "Value": "9",
+        "Value": 9,
         "Suit": "Clubs",
         "Color": "Black",
-        "Id": 9
+        "Id": 9,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "10 of Clubs": {
-        "Value": "10",
+        "Value": 10,
         "Suit": "Clubs",
         "Color": "Black",
-        "Id": 10
+        "Id": 10,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "Jack of Clubs": {
-        "Value": "Jack",
+        "Value": 11,
         "Suit": "Clubs",
         "Color": "Black",
-        "Id": 11
+        "Id": 11,
+        "IsRoyal": true,
+        "RoyalType": "Jack"
     },
     "Queen of Clubs": {
-        "Value": "Queen",
+        "Value": 12,
         "Suit": "Clubs",
         "Color": "Black",
-        "Id": 12
+        "Id": 12,
+        "IsRoyal": true,
+        "RoyalType": "Queen"
     },
     "King of Clubs": {
-        "Value": "King",
+        "Value": 13,
         "Suit": "Clubs",
         "Color": "Black",
-        "Id": 13
+        "Id": 13,
+        "IsRoyal": true,
+        "RoyalType": "King"
     },
     "Ace of Spades": {
-        "Value": "Ace",
+        "Value": 1,
         "Suit": "Spades",
         "Color": "Black",
-        "Id": 14
+        "Id": 14,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "2 of Spades": {
-        "Value": "2",
+        "Value": 2,
         "Suit": "Spades",
         "Color": "Black",
-        "Id": 15
+        "Id": 15,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "3 of Spades": {
-        "Value": "3",
+        "Value": 3,
         "Suit": "Spades",
         "Color": "Black",
-        "Id": 16
+        "Id": 16,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "4 of Spades": {
-        "Value": "4",
+        "Value": 4,
         "Suit": "Spades",
         "Color": "Black",
-        "Id": 17
+        "Id": 17,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "5 of Spades": {
-        "Value": "5",
+        "Value": 5,
         "Suit": "Spades",
         "Color": "Black",
-        "Id": 18
+        "Id": 18,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "6 of Spades": {
-        "Value": "6",
+        "Value": 6,
         "Suit": "Spades",
         "Color": "Black",
-        "Id": 19
+        "Id": 19,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "7 of Spades": {
-        "Value": "7",
+        "Value": 7,
         "Suit": "Spades",
         "Color": "Black",
-        "Id": 20
+        "Id": 20,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "8 of Spades": {
-        "Value": "8",
+        "Value": 8,
         "Suit": "Spades",
         "Color": "Black",
-        "Id": 21
+        "Id": 21,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "9 of Spades": {
-        "Value": "9",
+        "Value": 9,
         "Suit": "Spades",
         "Color": "Black",
-        "Id": 22
+        "Id": 22,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "10 of Spades": {
-        "Value": "10",
+        "Value": 10,
         "Suit": "Spades",
         "Color": "Black",
-        "Id": 23
+        "Id": 23,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "Jack of Spades": {
-        "Value": "Jack",
+        "Value": 11,
         "Suit": "Spades",
         "Color": "Black",
-        "Id": 24
+        "Id": 24,
+        "IsRoyal": true,
+        "RoyalType": "Jack"
     },
     "Queen of Spades": {
-        "Value": "Queen",
+        "Value": 12,
         "Suit": "Spades",
         "Color": "Black",
-        "Id": 25
+        "Id": 25,
+        "IsRoyal": true,
+        "RoyalType": "Queen"
     },
     "King of Spades": {
-        "Value": "King",
+        "Value": 13,
         "Suit": "Spades",
         "Color": "Black",
-        "Id": 26
+        "Id": 26,
+        "IsRoyal": true,
+        "RoyalType": "King"
     },
     "Ace of Diamonds": {
-        "Value": "Ace",
+        "Value": 1,
         "Suit": "Diamonds",
         "Color": "Red",
-        "Id": 27
+        "Id": 27,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "2 of Diamonds": {
-        "Value": "2",
+        "Value": 2,
         "Suit": "Diamonds",
         "Color": "Red",
-        "Id": 28
+        "Id": 28,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "3 of Diamonds": {
-        "Value": "3",
+        "Value": 3,
         "Suit": "Diamonds",
         "Color": "Red",
-        "Id": 29
+        "Id": 29,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "4 of Diamonds": {
-        "Value": "4",
+        "Value": 4,
         "Suit": "Diamonds",
         "Color": "Red",
-        "Id": 30
+        "Id": 30,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "5 of Diamonds": {
-        "Value": "5",
+        "Value": 5,
         "Suit": "Diamonds",
         "Color": "Red",
-        "Id": 31
+        "Id": 31,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "6 of Diamonds": {
-        "Value": "6",
+        "Value": 6,
         "Suit": "Diamonds",
         "Color": "Red",
-        "Id": 32
+        "Id": 32,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "7 of Diamonds": {
-        "Value": "7",
+        "Value": 7,
         "Suit": "Diamonds",
         "Color": "Red",
-        "Id": 33
+        "Id": 33,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "8 of Diamonds": {
-        "Value": "8",
+        "Value": 8,
         "Suit": "Diamonds",
         "Color": "Red",
-        "Id": 34
+        "Id": 34,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "9 of Diamonds": {
-        "Value": "9",
+        "Value": 9,
         "Suit": "Diamonds",
         "Color": "Red",
-        "Id": 35
+        "Id": 35,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "10 of Diamonds": {
-        "Value": "10",
+        "Value": 10,
         "Suit": "Diamonds",
         "Color": "Red",
-        "Id": 36
+        "Id": 36,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "Jack of Diamonds": {
-        "Value": "Jack",
+        "Value": 11,
         "Suit": "Diamonds",
         "Color": "Red",
-        "Id": 37
+        "Id": 37,
+        "IsRoyal": true,
+        "RoyalType": "Jack"
     },
     "Queen of Diamonds": {
-        "Value": "Queen",
+        "Value": 12,
         "Suit": "Diamonds",
         "Color": "Red",
-        "Id": 38
+        "Id": 38,
+        "IsRoyal": true,
+        "RoyalType": "Queen"
     },
     "King of Diamonds": {
-        "Value": "King",
+        "Value": 13,
         "Suit": "Diamonds",
         "Color": "Red",
-        "Id": 39
+        "Id": 39,
+        "IsRoyal": true,
+        "RoyalType": "King"
     },
     "Ace of Hearts": {
-        "Value": "Ace",
+        "Value": 1,
         "Suit": "Hearts",
         "Color": "Red",
-        "Id": 40
+        "Id": 40,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "2 of Hearts": {
-        "Value": "2",
+        "Value": 2,
         "Suit": "Hearts",
         "Color": "Red",
-        "Id": 41
+        "Id": 41,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "3 of Hearts": {
-        "Value": "3",
+        "Value": 3,
         "Suit": "Hearts",
         "Color": "Red",
-        "Id": 42
+        "Id": 42,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "4 of Hearts": {
-        "Value": "4",
+        "Value": 4,
         "Suit": "Hearts",
         "Color": "Red",
-        "Id": 43
+        "Id": 43,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "5 of Hearts": {
-        "Value": "5",
+        "Value": 5,
         "Suit": "Hearts",
         "Color": "Red",
-        "Id": 44
+        "Id": 44,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "6 of Hearts": {
-        "Value": "6",
+        "Value": 6,
         "Suit": "Hearts",
         "Color": "Red",
-        "Id": 45
+        "Id": 45,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "7 of Hearts": {
-        "Value": "7",
+        "Value": 7,
         "Suit": "Hearts",
         "Color": "Red",
-        "Id": 46
+        "Id": 46,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "8 of Hearts": {
-        "Value": "8",
+        "Value": 8,
         "Suit": "Hearts",
         "Color": "Red",
-        "Id": 47
+        "Id": 47,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "9 of Hearts": {
-        "Value": "9",
+        "Value": 9,
         "Suit": "Hearts",
         "Color": "Red",
-        "Id": 48
+        "Id": 48,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "10 of Hearts": {
-        "Value": "10",
+        "Value": 10,
         "Suit": "Hearts",
         "Color": "Red",
-        "Id": 49
+        "Id": 49,
+        "IsRoyal": false,
+        "RoyalType": "Normal"
     },
     "Jack of Hearts": {
-        "Value": "Jack",
+        "Value": 11,
         "Suit": "Hearts",
         "Color": "Red",
-        "Id": 50
+        "Id": 50,
+        "IsRoyal": true,
+        "RoyalType": "Jack"
     },
     "Queen of Hearts": {
-        "Value": "Queen",
+        "Value": 12,
         "Suit": "Hearts",
         "Color": "Red",
-        "Id": 51
+        "Id": 51,
+        "IsRoyal": true,
+        "RoyalType": "Queen"
     },
     "King of Hearts": {
-        "Value": "King",
+        "Value": 13,
         "Suit": "Hearts",
         "Color": "Red",
-        "Id": 52
+        "Id": 52,
+        "IsRoyal": true,
+        "RoyalType": "King"
     }
 }
