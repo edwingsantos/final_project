@@ -1,34 +1,93 @@
-# LV 1st Freecell
+# LV 1st Freecell 
+
 # import random
 # import csv
-# llamar al file de las cartas para poder hacer que funcione Shuffle
+# import tkinter (or customtkinter for GUI) - or find another way to do it
+# from Lizzie's code import saving to CSV function and move function
 
-# Shuffle Function
-# List of cards 1- 52 then randomize
-# Vamos a explicar mas a detalle una vez que entienda como funciona
-# El goal es que las cartas de 1-52 sean dadas al hazar 
-# Tal vez  haga una lista con las cartas y una vez dadas les damos valor 
-
-# Show game board- derepente es la parte de Parker no necesariamente
-# Once the cards are shuffled the player will be able to see the board and how the cards are being aranged
-
-# Set up game board
-# 7 filas 
-
-# Moving Function
-# Make it so the player according to the board can choose to move one card 
-# get Lizzie's function - makes sure if card is less than the card in the pile and opposite color
-# if valid just let them do the move
-# else
-# invalid move just print Error,can't move that card
+# MENU - Call in Main
+# Create window
+# Add button "Play Solitaire"
+#      when clicked, start solitaire game
+# Add button "Instructions"
+#      show how to play
+# Add button "Exit"
+#      close program
+# Display window
 
 
-# Update game stats
-# La verdad es que no tengo ni la menor idea de lo que tiene que hacer pero esta aqui
-# cuando vulva voy a empezar a hacer la documentacion para esta parte para que tenga sentido con el codigo
 
-# Win Function
-# Asegurarnos que todas las 52 cartas sean usadas y volteadas y que las A todas esten como escalerita
-# Y que todas lleguen a King como escalerita
-# Si tiene todos esos requerimientos entonces gana
-# no importa si gana o no gana tiene que ser guardado en el CSV y poner lo mas alto primero
+# CREATE DECK -  call the JSON with the cards
+# Make empty list called deck
+# For each suit (hearts, diamonds, clubs, spades):
+#     For each value (A, 2–10, J, Q, K):
+#         Add card to deck
+# Return deck
+
+# SHUFFLE DECK
+# Randomize order of deck
+# Return shuffled deck
+# Returns a list from numbers 1-52
+
+# SETUP BOARD (7 COLUMNS)
+# Create 7 empty columns
+# First column gets 1 card
+# Second column gets 2 cards
+# Continue until seventh column gets 7 cards
+# Remove cards from deck as placing them
+# Return board and remaining deck
+
+# SHOW BOARD
+# Display all columns
+# Show top card clearly
+# (Maybe: hide cards underneath)
+
+# PLAYER INPUT
+# Ask player for:
+#     source column
+#     destination column
+# Return move choice
+
+# VALID MOVE CHECK -Lizzie
+# If moving card:
+#     Check colors are opposite (red vs black)
+#     Check value is one less than destination card
+# If both true:
+#     Move is valid
+# Else:
+#     Move is invalid
+
+# MOVE FUNCTION
+# Take top card from selected column
+# Check if move is valid
+# If valid:
+#     Place card in new column or foundation
+# If not valid:
+#     Print "Error, can't move that card"
+
+# FOUNDATION RULES
+# Cards must be same suit
+# Must go in order: A to  K
+# Only Ace can start foundation
+
+# WIN CONDITION
+
+# Check all 4 foundation piles
+# If each pile has 13 cards in correct order:
+#     Player wins
+
+# SAVE GAME STATS - Lizzie
+# Open CSV file
+# Write win or loss
+# Save and close file
+
+# GAME LOOP - Only for testing
+# While game is not over:
+#     Show board
+#     Get player move
+#     Try to move card
+#     If win condition met:
+#         Print "You win"
+#         Save result
+#         End game
+
