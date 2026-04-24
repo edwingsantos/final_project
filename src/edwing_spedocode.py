@@ -1,22 +1,32 @@
 #ES starting spedocode
 
-
-# import pygame, random, json, sys 
-
-
-#check if the 3rd line of the csv is empty
-
-# if the 3rd line is empty give the user 100$
-
-#pull the value 
-
-# make variables of how big you want to screen
-
-# set up the screen and name it the game you need 
+# import pygame, json, sys 
 
 
-# make the main loop of the game
-    # let the window close when clicking the exit botton 
+#call the shufle funtion from lucy and append it to the points dictionary 
+# do the same thing but just append it to the dealers hand 
+
+
+#use dictionary called point to safe the cards choosen 
+#make a dictionary for the dealers hand 
+#use an other dictionary for the amount of games played 
+#use another dictianry for win games
+#user another library for money 
+#check if the 3rd line of the csv is 0
+# if the 3rd line is empty give the user 100$ and append it to the money dictionary 
+
+
+#SET up screen 
+#set up the board with two cards you can see, these cards have to match with the ones in the points dicitonary 
+#Have two card for the dealer and make one card show, remember one of those have to match in the dictionary
+
+
+#call the beggingin of the betting funtion 
+#safe those amounts into the ductionaries 
+
+#show users their cards and let them see the dealers cards
+#if the user has an instant 21
+    
 
 
 
