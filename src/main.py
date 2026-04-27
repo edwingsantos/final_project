@@ -8,40 +8,49 @@
 # import sys
 
 
-# CHOICES FOR GAMES
-# def choices(root):
-# Repeat until user chooses to Exit
-#   def exit_program()
-# INTRO
-#       instructions = tk.Label(root,text ="Instructions")
-# BUTTONS
-#   Solitaire
-#       solitaire = tk.Button(root,text"Solitaire",command = function)
-#   Black Jack
-#       black_jack = tk.Button(root,text"Black Jack",command = function)
-#   Pyramid Solitaire
-#       pyramid_solitaire = tk.Button(root,text"Pyramid Solitaire",command = function)
-#   Freecell
-#       freecell = tk.Button(root,text"Freecell",command = function)
-#   Poker
-#       poker = tk.Button(root,text"Poker",command = function)
-# QUIT
-#   quit_main  = tk.Button(root, text = "Quit", command = exit_program)
-#   quit Solitaire, Freecell, Black Jack, Pyramid Solitaire
-#   quit_main.pack()
+# def show_choices(root):
+#     Display a label that says "Choose a game"
+#     
+#     Create button for Solitaire
+#         When clicked - call Solitaire game function
+#
+#     Create button for Black Jack
+#         When clicked - call Black Jack game function
+#
+#     Create button for Pyramid Solitaire
+#         When clicked - call Pyramid Solitaire function
+#
+#     Create button for Freecell
+#         When clicked - call Freecell function
+#
+#     Create button for Poker
+#         When clicked - call Poker function
+#
+#     Create Quit button
+#         When clicked - exit program completely
+
+
+# FUNCTION Exit
+# def exit_program():
+#     Use system command to close program -sys.exit
 
 
 # MAIN FUNCTION
 # def main():
-#   root = tk.Tk()
-#   root.title("personal Finance Main")
-#   root.minsize(300, 200)
-#   def remove_welcome():
-#        welcome.pack_forget()
-#        confirm_btn.pack_forget()
-#        optionchoices(root)
-# print WELCOME INSTRUCTIONS
-#   EXIT LOOP
-#   root.mainloop()
 
-# main()
+#     Create main window using tkinter
+#     Set window title (example: "Personal Finance Main")
+#     Set minimum window size (300 x 200)
+
+#     Display welcome message
+#         Example: "Welcome! Click continue to start"
+
+#     Create "Continue" button
+#         When clicked:
+#             Remove welcome message from screen
+#             Remove continue button
+#             Call function to show game choices
+
+#     Start the program loop (root.mainloop)
+#         This keeps the window open and running
+#main()
