@@ -20,4 +20,3 @@
 
 
 #make a FUNTIOM if its a tie then just return the amount of the money back to their accound and call the lizze funtio to money is up to date
-
