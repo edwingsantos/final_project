@@ -1,3 +1,4 @@
+# LV 1st Main
 # Run this file for full program
 # import games - Solitaire, Freecell, Black Jack, Pyramid Solitaire
 # from Lizzie's code import ..
@@ -6,7 +7,8 @@
 # from Lucci's code import ..
 # import tkinter
 # import sys
-
+import tkinter as tk
+import sys
 
 # def show_choices(root):
 #     Display a label that says "Choose a game"
@@ -29,11 +31,18 @@
 #     Create Quit button
 #         When clicked - exit program completely
 
-
 # FUNCTION Exit
 # def exit_program():
 #     Use system command to close program -sys.exit
 
+def show_choices(root):
+    def exit_program(sys):
+        instruction = tk.Label(root, text = "Choose a Game")
+        solitaire = tk.Button(root, text = "Solitaire", command = "menu") #Will change once we have the function for each game
+        black_jack = tk.Button(root, text = "Black Jack", command = "menu")
+        pyramid = tk.Button(root, text = "Pyramid Solitaire", command = "menu")
+        freecell = tk.Button(root, text = "Freecell", command = "menu")
+        poker = tk.Button(root, text = "Poker", command = "menu")
 
 # MAIN FUNCTION
 # def main():

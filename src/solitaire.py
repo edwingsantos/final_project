@@ -1,9 +1,12 @@
-# LV 1st Freecell 
+# LV 1st Solitaire
 
 # import random
 # import csv
 # import tkinter (or customtkinter for GUI) - or find another way to do it
 # from Lizzie's code import saving to CSV function and move function
+# Asegurarme que en verdad funcione para Solitaire y no para Freecell 
+# Que la logica funcione bien y sea entendible para que funcione de la manera que queremos
+
 
 # MENU - Call in Main
 # Create window
