@@ -12,8 +12,10 @@
     #Loop for every row (7 times)
         #put one card in row one and then 2 cards and row to and so on
 
+    #put the rest of the cards in the draw pile list
+
     #DISPLAY TABLEU - have each row slightly offsetted
-    #output tableu, discard pile (empty), draw pile
+    #output tableu, discard pile (empty), draw pile, shown draw pile
 
 #Accessible cards function (tableu list)
     
@@ -36,13 +38,81 @@
 
 #Options funcs
 
+#draw card function (draw pile, shown draw pile)
+    #check if draw pile has cards in it
+    # if yes
+        #remove card from draw pile and add it shown draw pile and display that card face up
+    #if no
+        #make draw pile equal to shown and then clear shown
+        #reverse order of draw pile to represent flipping of pile over
 
-#Gameloop (actual game)
+        #remove card from draw pile and add it shown draw pile and display that card face up
+
+#Discard King function (tableu, discard pile, shown draw pile)
+    #call accessibility function for accessible cards
+    #allow user to select a card that is accessible
+    
+    #check if the card is a king
+    
+    #if yes
+        # if card is in tableu
+            #remove from tableu
+        #else
+            #remove from draw
+        #add to discard pile
+    #if no
+        #display error message stating that the card selected was not a king
+
+
+#matching check (card1, card2)
+    #use JSON reading to get values of card1 and card2
+    #if card1[value] + card2[value] is = 13
+        #output True
+    #else
+        #output false
+
+#Matching inside tableu (tableu, discard pile, shown draw pile)
+    #call acessiblility function
+    # allow user to select any valid card from tableu
+    # allow user to select another card
+    # call matching check (card1, card2)
+    #if matching check is True
+        #remove cards from tableu
+        #add cards to discard pile
+    #else
+        #display invalid match (values)
+
+#matching from draw pile and tableu (tableu, discard pile, shown draw pile)
+    #call accessibility function
+    # allow user to select a card from tableu   
+    # use card from the top of shown draw pile
+    # call matching check (tableu card, draw pile card)
+    #if matching cards check is True
+        #Remove card from tableu
+        #remove card from draw pile
+        #add both to discard pile
+    #else 
+        #display invalid match (values)
+
+
+#Gameloop (setup variables)
     #call setup and save returned values
     #call accessibility function and save the dict
     
     #actual gameloop
+
         #allow user to click button to choose type of move to do
+        #onclick of draw card button
+            #call draw cards function
+        #onclick of discard king button
+            #call draw cards function
+        #onclick of matching inside tableu button
+            #call corresponding function
+        #onclick of matching from draw and tableu
+            #call corresponding function
+        
+        #update display
+
         #check if tableu is gone
         #if yes
             #leave gameloop
