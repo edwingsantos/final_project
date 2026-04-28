@@ -36,13 +36,58 @@ import sys
 #     Use system command to close program -sys.exit
 
 def show_choices(root):
-    def exit_program(sys):
-        instruction = tk.Label(root, text = "Choose a Game")
-        solitaire = tk.Button(root, text = "Solitaire", command = "menu") #Will change once we have the function for each game
-        black_jack = tk.Button(root, text = "Black Jack", command = "menu")
-        pyramid = tk.Button(root, text = "Pyramid Solitaire", command = "menu")
-        freecell = tk.Button(root, text = "Freecell", command = "menu")
-        poker = tk.Button(root, text = "Poker", command = "menu")
+
+    # Title label
+    instruction = tk.Label(root, text="Choose a Game")
+    instruction.pack()
+
+    # Solitaire button
+    solitaire = tk.Button(
+        root,
+        text="Solitaire",
+        command=lambda: print("Launch Solitaire")  # replace later
+    )
+    solitaire.pack()
+
+    # Black Jack button
+    black_jack = tk.Button(
+        root,
+        text="Black Jack",
+        command=lambda: print("Launch Black Jack")
+    )
+    black_jack.pack()
+
+    # Pyramid Solitaire button
+    pyramid = tk.Button(
+        root,
+        text="Pyramid Solitaire",
+        command=lambda: print("Launch Pyramid Solitaire")
+    )
+    pyramid.pack()
+
+    # Freecell button
+    freecell = tk.Button(
+        root,
+        text="Freecell",
+        command=lambda: print("Launch Freecell")
+    )
+    freecell.pack()
+
+    # Poker button
+    poker = tk.Button(
+        root,
+        text="Poker",
+        command=lambda: print("Launch Poker")
+    )
+    poker.pack()
+
+    # Quit button
+    quit_button = tk.Button(
+        root,
+        text="Quit",
+        command=root.quit
+    )
+    quit_button.pack()
 
 # MAIN FUNCTION
 # def main():
@@ -63,3 +108,22 @@ def show_choices(root):
 #     Start the program loop (root.mainloop)
 #         This keeps the window open and running
 #main()
+def main():
+
+    root = tk.Tk()
+    root.title("Game Hub")
+    root.geometry("300x300")
+
+    welcome = tk.Label(root, text="Welcome! Click continue to start")
+    welcome.pack()
+
+    def start_menu():
+        welcome.destroy()
+        continue_btn.destroy()
+        show_choices(root)
+
+    continue_btn = tk.Button(root, text="Continue", command=start_menu)
+    continue_btn.pack()
+
+    root.mainloop()
+main()
