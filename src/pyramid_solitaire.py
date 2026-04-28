@@ -116,5 +116,10 @@
         #check if tableu is gone
         #if yes
             #leave gameloop
+            #save game number and win
         #else
             #continue
+
+        #If user clicks the quit button
+            #leave gameloop
+            #save game number and lose

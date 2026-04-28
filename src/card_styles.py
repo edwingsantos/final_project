@@ -1,8 +1,5 @@
 #Contains classes for displaying each card
 
-#Class for putting royal stuff together
-    #initialize letters royal type
-
 #class for all clubs:
     #initialize card size - Name, Card Value, suit is clubs, color is black, if it is a royal use royal class
 
