@@ -1,9 +1,12 @@
-# LV 1st Freecell 
+# LV 1st Solitaire
 
 # import random
 # import csv
 # import tkinter (or customtkinter for GUI) - or find another way to do it
 # from Lizzie's code import saving to CSV function and move function
+# Asegurarme que en verdad funcione para Solitaire y no para Freecell 
+# Que la logica funcione bien y sea entendible para que funcione de la manera que queremos
+
 
 # MENU - Call in Main
 # Create window
@@ -40,12 +43,19 @@
 
 
 # SETUP BOARD (7 COLUMNS)
-# Create 7 empty columns
-# First column gets 1 card
-# Second column gets 2 cards
-# Continue until seventh column gets 7 cards
-# Remove cards from deck as placing them
-# Return board and remaining deck
+#Create 7 empty columns (tableau)
+#FOR column = 1 TO 7:
+#    FOR i = 1 TO column:
+#        Remove top card from deck
+#        Add card to tableau[column]
+#        IF i == column:
+#            Set card.face_up = True
+#        ELSE:
+#            Set card.face_up = False
+#Set remaining cards as STOCK (face-down)
+#Create empty WASTE pile
+#Create 4 empty FOUNDATION piles
+#Return tableau, stock, waste, foundations
 
 # SHOW BOARD
 # Display all columns
@@ -53,10 +63,13 @@
 # (Maybe: hide cards underneath)
 
 # PLAYER INPUT
-# Ask player for:
-#     source column
-#     destination column
-# Return move choice
+# Ask player for move type:
+#    1. Move card
+#    2. Draw from stock
+#IF move:
+#    Ask for source (column or waste)
+#    Ask for destination (column or foundation)
+#Return move choice
 
 # VALID MOVE CHECK -Lizzie
 # If moving card:
@@ -68,12 +81,14 @@
 #     Move is invalid
 
 # MOVE FUNCTION
-# Take top card from selected column
-# Check if move is valid
-# If valid:
-#     Place card in new column or foundation
-# If not valid:
-#     Print "Error, can't move that card"
+# Take card (or stack) from source
+#Check if move is valid
+#IF valid:
+#    Move card(s) to destination
+#    IF source column now has a face-down card on top:
+#        Flip it face-up
+#ELSE:
+#    Print "Error, can't move that card"
 
 # FOUNDATION RULES
 # Cards must be same suit
