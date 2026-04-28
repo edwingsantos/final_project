@@ -6,7 +6,11 @@
 # from Lizzie's code import saving to CSV function and move function
 # Asegurarme que en verdad funcione para Solitaire y no para Freecell 
 # Que la logica funcione bien y sea entendible para que funcione de la manera que queremos
+# Creo que ya lo solucione
 
+import random
+import csv
+import tkinter   
 
 # MENU - Call in Main
 # Create window
@@ -30,16 +34,19 @@
 # SHUFFLE DECK
 #def shuffle_deck(deck):
     # Create an empty list to store shuffled cards
-
     # While there are still cards left in the original deck
-        
-        # Generate a random index between 0 and the last position in the deck
-       
+    # Generate a random index between 0 and the last position in the deck       
         # Remove the card at that random index from the original deck
-        
         # Add that card to the shuffled deck
-
     # Once all cards have been moved, return the shuffled deck
+
+def shuffle_deck(deck):   
+    shuffled_deck = []
+    while len(deck) > 0:       
+        random_index = random.randint(0, len(deck) - 1)
+        selected_card = deck.pop(random_index)
+        shuffled_deck.append(selected_card)
+    return shuffled_deck
 
 
 # SETUP BOARD (7 COLUMNS)
@@ -96,7 +103,6 @@
 # Only Ace can start foundation
 
 # WIN CONDITION
-
 # Check all 4 foundation piles
 # If each pile has 13 cards in correct order:
 #     Player wins
@@ -115,4 +121,3 @@
 #         Print "You win"
 #         Save result
 #         End game
-
