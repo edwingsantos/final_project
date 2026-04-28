@@ -1,17 +1,114 @@
 #Es betting fuction 
+import pygame
+
+pygame.init()
+
+
+#set up screen, clock and font
+screen = pygame.display.set_mode((800, 600))
+clock = pygame.time.Clock()
+font = pygame.font.SysFont(None, 40)
 
 #make a money saved dictionary to put how much they have won 
 user_money = {}
 #make a dictionary called money to safe how much they want to bet 
 betting_money = {}
 
-#make a funtion for the beggining bets 
 
-    #ask user what their starting amount for betting is 
+player = "Player1"
 
-    #ask to make sure if that is the amount they want
-    #if yes then safe that amount of money in the dictionary called money 
-    #elif no then just send them back to the beggining of the funtion using return 
+
+#had to add the cursor beucase it was confusing without it 
+cursor_visible = True
+cursor_timer = 0
+
+# make a function for the beginning bets
+def starting_bet(player):
+#BTW this is not in my spedocode so I know what is what, and a lot i used videos so im not 100% what does what, but have a very good imaje of the structure
+    typed_text = ""
+    state = "typing"
+    running = True
+
+    global cursor_visible, cursor_timer
+    #main loop 
+    while running:
+        clock.tick(60)
+        screen.fill((255, 255, 255))
+    
+        #cursor blink
+        cursor_timer += 1
+        # blink speed
+        if cursor_timer % 30 == 0: 
+            cursor_visible = not cursor_visible
+        #checks whats going on on the screen 
+        for event in pygame.event.get():
+
+            #teh X at the screen cornert 
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                return
+
+            if event.type == pygame.KEYDOWN:
+
+                #typing numbers
+                if state == "typing":
+                    #checking if its digit
+                    if event.unicode.isdigit():
+                        typed_text += event.unicode
+
+                    elif event.key == pygame.K_BACKSPACE:
+                        typed_text = typed_text[:-1]
+
+                    elif event.key == pygame.K_RETURN:
+
+                        #max of 100 doolars betting 
+                        if typed_text != "" and int(typed_text) <= 100:
+                            state = "confirm"
+
+        #ask user what their starting amount for betting is 
+        if state == "typing":
+
+            text1 = font.render("Enter bet (max $100):", True, (0, 0, 0))
+
+            # cursor effect
+            display_text = typed_text
+            if cursor_visible:
+                display_text += "|"
+
+            #typing font and making sure its tru 
+            text2 = font.render(display_text, True, (0, 0, 0))
+            screen.blit(text1, (200, 200))
+            screen.blit(text2, (200, 300))
+
+
+        #ask to make sure if that is the amount they want
+        elif state == "confirm":
+            text1 = font.render(f"Confirm bet: ${typed_text}", True, (0, 0, 0))
+            text2 = font.render("Press Y = Yes / N = No", True, (0, 0, 0))
+            #the text font for that one 
+            screen.blit(text1, (200, 200))
+            screen.blit(text2, (200, 300))
+        #keep updating the display 
+        pygame.display.update()
+
+        #confirm input
+        #also ngl i still need to make sure how this works
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN and state == "confirm":
+                #if yes then safe that amount of money in the dictionary called money 
+                if event.key == pygame.K_y:
+                    betting_money[player] = int(typed_text)
+                    running = False
+                #elif no then just send them back to the beggining of the funtion using return 
+                elif event.key == pygame.K_n:
+                    return starting_bet(player)
+
+
+#running the thing 
+starting_bet(player)
+#quiting the game 
+pygame.quit()
+
 
 
 
@@ -24,55 +121,3 @@ betting_money = {}
 
 
 #make a FUNTIOM if its a tie then just return the amount of the money back to their accound and call the lizze funtio to money is up to date
-
-
-# import pygame
-import pygame
-from pygame_textinput import *
-pygame.init()
-
-# initializing pygame
-pygame.font.init()
-
-# check whether font is initialized
-# or not
-pygame.font.get_init()
-
-info = pygame.display.Info()
-screen_width, screen_height = info.current_w, info.current_h
-
-# create the display surface
-screen = pygame.display.set_mode((screen_width, screen_height), vsync=1)
-
-# change the window screen title
-pygame.display.set_caption('Our Text')
-
-textinput = TextInputVisualizer()
-clock = pygame.time.Clock()
-
-# But more customization possible: Pass your own font object
-font = pygame.font.SysFont("Consolas", 55)
-# Create own manager with custom input validator
-manager = TextInputManager(validator = lambda input: len(input) <= 50)
-
-running = True
-while running:
-    screen.fill((255, 255, 255))
-
-    events = pygame.event.get()
-
-    textinput.update(events)
-
-    screen.blit(textinput.surface, (10, 10))
-    
-    textinput.update(pygame.event.get())
-    screen.blit(textinput.surface, (10, 10))
-    
-    for event in pygame.event.get():
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_q:
-            running = False
-        if event.type == pygame.QUIT:
-            running = False
-
-    pygame.display.update()
-    clock.tick(30)
