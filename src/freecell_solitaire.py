@@ -9,3 +9,7 @@
 # user only can move a card that is the LAST indext in the lists
 
 # when selecting a card to move, IF the id == 1, 14, 27 or 40, it is an Ace and can be moved to the ace spot.
+
+# allow user to move cards. Call LD's valid move function every time a card is moved.
+
+# BUILD ENDING CONDITIONS
