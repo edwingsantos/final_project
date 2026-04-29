@@ -115,9 +115,9 @@ def starting_bet(player):
 
     
 #running the thing 
-starting_bet(player)
+"""starting_bet(player)"""
 #quiting the game 
-pygame.quit()
+#pygame.quit()
 
 
 
@@ -126,6 +126,7 @@ pygame.quit()
 def loosing(betting_money):
     print("loosing funtion")
     #safe the money amount in the "money saved" dictionary and call the lizzie funtion 
+
 
 
 
