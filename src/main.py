@@ -36,7 +36,7 @@ import sys
 #     Use system command to close program -sys.exit
 
 def show_choices(root):
-
+# Still have to add when to call the funcitons for each game !!!!!
     # Title label
     instruction = tk.Label(root, text="Choose a Game")
     instruction.pack()
