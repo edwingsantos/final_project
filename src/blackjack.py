@@ -24,7 +24,7 @@ from betting_func import *
 #Have two card for the dealer and make one card show, remember one of those have to match in the dictionary
 
 #make a funtion for blackjack 
-def blackjack():
+def blackjack_game():
     print("blackjack")
     #call the beggingin of the betting funtion 
     starting_bet()

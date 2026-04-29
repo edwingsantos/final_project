@@ -123,7 +123,7 @@ pygame.quit()
 
 
 #make a FUNCTION for loose, take the amount of money safed in the dictionary and take it
-def loosing():
+def loosing(betting_money):
     print("loosing funtion")
     #safe the money amount in the "money saved" dictionary and call the lizzie funtion 
 
