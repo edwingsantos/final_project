@@ -7,7 +7,7 @@
 # Asegurarme que en verdad funcione para Solitaire y no para Freecell 
 # Que la logica funcione bien y sea entendible para que funcione de la manera que queremos
 # Creo que ya lo solucione
-
+import pygame
 import random
 import csv
 import tkinter   
