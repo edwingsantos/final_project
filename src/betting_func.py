@@ -1,5 +1,6 @@
 #Es betting fuction 
 import pygame
+import csv 
 
 pygame.init()
 
@@ -10,8 +11,13 @@ screen = pygame.display.set_mode(pygame.display.get_desktop_sizes()[0]) #sets sc
 clock = pygame.time.Clock()
 font = pygame.font.SysFont(None, 40)
 
+
+#dictionary for wining amount
+winning_rounds = []
+#dictionary for lossing amount
+loosing_rounds = []
 #make a money saved dictionary to put how much they have won 
-user_money = {}
+user_money = []
 #make a dictionary called money to safe how much they want to bet 
 betting_money = {}
 
@@ -41,14 +47,14 @@ def starting_bet(player):
         # blink speed
         if cursor_timer % 30 == 0: 
             cursor_visible = not cursor_visible
+
         #checks whats going on on the screen 
         for event in pygame.event.get():
 
-            #teh X at the screen cornert 
+            #the X at the screen cornert 
             if event.type == pygame.QUIT:
                 pygame.quit()
                 return
-
             if event.type == pygame.KEYDOWN:
 
                 #typing numbers
@@ -59,7 +65,6 @@ def starting_bet(player):
 
                     elif event.key == pygame.K_BACKSPACE:
                         typed_text = typed_text[:-1]
-
                     elif event.key == pygame.K_RETURN:
 
                         #max of 100 doolars betting 
@@ -108,33 +113,28 @@ def starting_bet(player):
         #keep updating the display 
         pygame.display.update()
 
-        #confirm input
-        #also ngl i still need to make sure how this works
-        #for event in pygame.event.get():
-        #    if event.type == pygame.KEYDOWN and state == "confirm":
-        #        #if yes then safe that amount of money in the dictionary called money 
-        #        if event.key == pygame.K_y:
-        #            betting_money[player] = int(typed_text)
-        #            running = False
-        #        #elif no then just send them back to the beggining of the funtion using return 
-        #        elif event.key == pygame.K_n:
-        #            return starting_bet(player)
-
-
+    
 #running the thing 
 starting_bet(player)
 #quiting the game 
 pygame.quit()
 
 
-print(betting_money)
+
 
 #make a FUNCTION for loose, take the amount of money safed in the dictionary and take it
+def loosing():
+    print("loosing funtion")
     #safe the money amount in the "money saved" dictionary and call the lizzie funtion 
+
+
 
 
 #make a FUNTION for win,take the amount of money in the "money" dictionary and double it 
     #safe the money amount in the "money saved" dictionary and call the lizzie funtion 
+
+
+
 
 
 #make a FUNTIOM if its a tie then just return the amount of the money back to their accound and call the lizze funtio to money is up to date
