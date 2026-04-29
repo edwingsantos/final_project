@@ -52,13 +52,14 @@ def replace_deck_of_cards():
 
             
             #adds card to deck
-            deck[name] = {
+            deck[id] = {
                 "Value":y,
                 "Suit":x,
                 "Color":color,
                 "Id":id,
                 "IsRoyal":is_royal,
-                "RoyalType":royal_type
+                "RoyalType":royal_type,
+                "Name":name
                 }
 
     with open("files/cards.json","w") as file:
