@@ -3,6 +3,14 @@ import pygame
 import csv 
 
 pygame.init()
+file = "files/blackjack.csv"
+
+# starting data
+user_data = {
+    "money": 1000,
+    "game_number": 1
+}
+
 
 
 #set up screen, clock and font
@@ -120,22 +128,40 @@ def starting_bet(player):
 #pygame.quit()
 
 
+#make a funtion for saving things to the csv file 
+def save(game_number, result, money):
+    with open(file, "a", newline="") as file:
+        writer = csv.writer(file)
+        # if it's the first game, write header
+        if game_number == 1:
+            writer.writerow(["Game Number", "Win Game", "Money"])
+        writer.writerow([game_number, result, money])
 
 
 #make a FUNCTION for loose, take the amount of money safed in the dictionary and take it
-def loosing(betting_money):
-    print("loosing funtion")
-    #safe the money amount in the "money saved" dictionary and call the lizzie funtion 
+def losing(user_data, betting_money):
+    #safe the money amount in the "money saved" dictionary and save it to the csv file
+    user_data["money"] -= betting_money
 
+    save(user_data["game_number"], "Loss", user_data["money"])
 
-
+    user_data["game_number"] += 1
 
 
 #make a FUNTION for win,take the amount of money in the "money" dictionary and double it 
-    #safe the money amount in the "money saved" dictionary and call the lizzie funtion 
+def winning(user_data, betting_money):
+    winnings = betting_money * 2
+    user_data["money"] += winnings
+    #safe the money amount in the "money saved" dictionary and save it to the csv file
+    save(user_data["game_number"], "Win", user_data["money"])
+
+    user_data["game_number"] += 1
 
 
 
 
 
-#make a FUNTIOM if its a tie then just return the amount of the money back to their accound and call the lizze funtio to money is up to date
+#make a FUNTIOM if its a tie then just return the amount of the money back to their accound and save it to the csv file
+def tie(user_data, betting_money):
+    save(user_data["game_number"], "Tie", user_data["money"])
+    user_data["game_number"] += 1
