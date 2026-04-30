@@ -7,8 +7,12 @@
 # from Lucci's code import ..
 # import tkinter
 # import sys
+import pygame
 import tkinter as tk
 import sys
+#from blackjack import blackjack_game
+from freecell_solitaire import *
+from solitaire import *
 
 # def show_choices(root):
 #     Display a label that says "Choose a game"
@@ -36,7 +40,7 @@ import sys
 #     Use system command to close program -sys.exit
 
 def show_choices(root):
-
+# Still have to add when to call the funcitons for each game !!!!!
     # Title label
     instruction = tk.Label(root, text="Choose a Game")
     instruction.pack()
@@ -111,7 +115,7 @@ def show_choices(root):
 def main():
 
     root = tk.Tk()
-    root.title("Game Hub")
+    root.title("Cardds Game")
     root.geometry("300x300")
 
     welcome = tk.Label(root, text="Welcome! Click continue to start")

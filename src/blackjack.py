@@ -1,9 +1,12 @@
 #ES starting spedocode
 
 # import pygame, json, sys 
+import pygame
+import json
+import sys
+#from betting_func import *
 
-
-#call the shufle funtion from lucy and append it to the points dictionary 
+#call the shufle funtion from lucci and append it to the points dictionary 
 # do the same thing but just append it to the dealers hand 
 
 
@@ -21,7 +24,11 @@
 #Have two card for the dealer and make one card show, remember one of those have to match in the dictionary
 
 #make a funtion for blackjack 
+def blackjack_game():
+    print("blackjack")
     #call the beggingin of the betting funtion 
+
+
     #safe those amounts into the ductionaries 
 
     #show users their cards and let them see the dealers cards
@@ -46,4 +53,4 @@
     #if choice is yes then call the blackjack funtion
     #if choice is no the go to the main menu
 
-#call the blackjack funtino 
+blackjack_game()
