@@ -26,6 +26,8 @@ while running:
 
     if player_pos.y <= 0:
         player_pos.y += 500 * dt
+    if player_pos.y >= 1100:
+        player_pos.y -= 500 * dt
     player_pos.x -= 500 * dt
 
     if player_pos.y >= 1100:
