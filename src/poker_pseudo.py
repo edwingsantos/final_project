@@ -1,6 +1,7 @@
 # Pseudocode for Poker (LD)
 import treys
 from treys import Evaluator, Card
+from solitaire import shuffle_deck
 
 # Open the poker csv. Use LD helper function to check if there are any saved games
 # if that call = True, 
@@ -8,6 +9,7 @@ from treys import Evaluator, Card
 # else: user_mon = 100
 
 #csv_path = path to poker csv
+csv_path = "files/poker.csv"
 
 # GAMEPLAY ASSISTANT FUNTIONS
     # CHECK HANDS (parameters = card_ID_1, card_ID_2, card_ID_3, card_ID_4, card_ID_5, card_ID_6, card_ID_7)
