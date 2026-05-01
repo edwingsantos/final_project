@@ -4,7 +4,7 @@
 import pygame
 import json
 import sys
-from betting_func import *
+from betting_func import betting_money
 
 #call the shufle funtion from lucci and append it to the points dictionary 
 # do the same thing but just append it to the dealers hand 
@@ -24,10 +24,9 @@ from betting_func import *
 #Have two card for the dealer and make one card show, remember one of those have to match in the dictionary
 
 #make a funtion for blackjack 
-def blackjack_game():
-    print("blackjack")
+
     #call the beggingin of the betting funtion 
-    starting_bet()
+
     #safe those amounts into the ductionaries 
 
     #show users their cards and let them see the dealers cards
@@ -51,84 +50,162 @@ def blackjack_game():
 #ask the user if they want to play blackjack again
     #if choice is yes then call the blackjack funtion
     #if choice is no the go to the main menu
+import pygame
+import json
+import random
+from betting_func import starting_bet, winning, losing, tie, betting_money
+
+pygame.init()
+
+screen = pygame.display.set_mode((900, 600))
+font = pygame.font.SysFont(None, 40)
+
+player = "Player1"
+user_data = {"money": 1000, "game_number": 1}
 
 
+# LOAD DECK FROM JSON
+def load_deck():
+    with open("files/cards.json", "r") as f:
+        data = json.load(f)
+    return list(data.values())
 
 
+# YOUR SHUFFLE FUNCTION
+def shuffle_deck(deck):   
+    shuffled_deck = []
+    while len(deck) > 0:       
+        random_index = random.randint(0, len(deck) - 1)
+        selected_card = deck.pop(random_index)
+        shuffled_deck.append(selected_card)
+    return shuffled_deck
 
-import tkinter as tk
 
-def show_choices(root):
-# Still have to add when to call the funcitons for each game !!!!!
-    # Title label
-    instruction = tk.Label(root, text="Choose a Game")
-    instruction.pack()
+# CARD VALUE
+def card_value(card):
+    value = card["Value"]
+    if value > 10:
+        return 10
+    if value == 1:
+        return 11
+    return value
 
-    # Solitaire button
-    solitaire = tk.Button(
-        root,
-        text="Solitaire",
-        command=lambda: print("Launch Solitaire")  # replace later
-    )
-    solitaire.pack()
 
-    # Black Jack button
-    black_jack = tk.Button(
-        root,
-        text="Black Jack",
-        command=lambda: blackjack_game()
-    )
-    black_jack.pack()
+# TOTAL HAND VALUE
+def hand_total(hand):
+    total = sum(card_value(c) for c in hand)
+    aces = sum(1 for c in hand if c["Value"] == 1)
 
-    # Pyramid Solitaire button
-    pyramid = tk.Button(
-        root,
-        text="Pyramid Solitaire",
-        command=lambda: print("Launch Pyramid Solitaire")
-    )
-    pyramid.pack()
+    while total > 21 and aces:
+        total -= 10
+        aces -= 1
+    return total
 
-    # Freecell button
-    freecell = tk.Button(
-        root,
-        text="Freecell",
-        command=lambda: print("Launch Freecell")
-    )
-    freecell.pack()
 
-    # Poker button
-    poker = tk.Button(
-        root,
-        text="Poker",
-        command=lambda: print("Launch Poker")
-    )
-    poker.pack()
+# DISPLAY HAND
+def hand_names(hand):
+    return [card["Name"] for card in hand]
 
-    # Quit button
-    quit_button = tk.Button(
-        root,
-        text="Quit",
-        command=root.quit
-    )
-    quit_button.pack()
 
-def main():
+def draw_text(text, x, y):
+    img = font.render(text, True, (0,0,0))
+    screen.blit(img, (x, y))
 
-    root = tk.Tk()
-    root.title("Cardds Game")
-    root.geometry("300x300")
 
-    welcome = tk.Label(root, text="Welcome! Click continue to start")
-    welcome.pack()
+# MAIN BLACKJACK FUNCTION
+def blackjack_game():
 
-    def start_menu():
-        welcome.destroy()
-        continue_btn.destroy()
-        show_choices(root)
+    # call betting
+    starting_bet(player)
+    bet = betting_money[player]
 
-    continue_btn = tk.Button(root, text="Continue", command=start_menu)
-    continue_btn.pack()
+    # setup deck
+    deck = shuffle_deck(load_deck())
 
-    root.mainloop()
-    
-main()
+    # dictionaries (your pseudocode idea)
+    player_hand = []
+    dealer_hand = []
+
+    # deal starting cards
+    player_hand.append(deck.pop())
+    player_hand.append(deck.pop())
+
+    dealer_hand.append(deck.pop())
+    dealer_hand.append(deck.pop())
+
+    state = "player"
+    running = True
+
+    # check instant 21
+    if hand_total(player_hand) == 21:
+        winning(user_data, bet)
+        return
+
+    while running:
+        screen.fill((255,255,255))
+
+        # show cards
+        draw_text(f"Your hand: {hand_names(player_hand)} ({hand_total(player_hand)})", 50, 300)
+
+        if state == "player":
+            draw_text(f"Dealer: [{dealer_hand[0]['Name']}, ?]", 50, 100)
+        else:
+            draw_text(f"Dealer: {hand_names(dealer_hand)} ({hand_total(dealer_hand)})", 50, 100)
+
+        draw_text("H = Draw | S = Stand", 50, 500)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                return
+
+            if event.type == pygame.KEYDOWN:
+
+                # DRAW FUNCTION
+                if state == "player":
+                    if event.key == pygame.K_h:
+                        player_hand.append(deck.pop())
+
+                        if hand_total(player_hand) > 21:
+                            losing(user_data, bet)
+                            state = "end"
+
+                    # STOP DRAWING
+                    elif event.key == pygame.K_s:
+                        state = "dealer"
+
+                # DEALER LOGIC
+                elif state == "dealer":
+
+                    # dealer draws until 16+
+                    while hand_total(dealer_hand) < 16:
+                        dealer_hand.append(deck.pop())
+
+                    player_total = hand_total(player_hand)
+                    dealer_total = hand_total(dealer_hand)
+
+                    if dealer_total > 21:
+                        winning(user_data, bet)
+                    elif dealer_total > player_total:
+                        losing(user_data, bet)
+                    elif dealer_total < player_total:
+                        winning(user_data, bet)
+                    else:
+                        tie(user_data, bet)
+
+                    state = "end"
+
+                # PLAY AGAIN
+                elif state == "end":
+                    if event.key == pygame.K_y:
+                        return blackjack_game()
+                    elif event.key == pygame.K_n:
+                        return
+
+        if state == "end":
+            draw_text("Play again? Y / N", 50, 550)
+
+        pygame.display.update()
+
+
+blackjack_game()
