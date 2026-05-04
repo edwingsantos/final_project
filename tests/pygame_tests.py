@@ -47,7 +47,7 @@ while running:
         player_pos.x += velocity_x * dt
         player_pos.y += velocity_y * dt
 
-    
+
 
     # flip() the display to put your work on screen
     pygame.display.flip()

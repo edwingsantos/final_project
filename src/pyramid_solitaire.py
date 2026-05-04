@@ -1,32 +1,65 @@
 #PS 1st CP2 Final - Pyramid Soliaire source code
 
 #import shuffle function
+from solitaire import shuffle_deck
 #import csv management functions
-#import JSON reader func
+import json
 
 #setup function
+def setup():
+    with open("files/cards.json","r") as cards:
+        deck = json.load(cards)
+    ordered_deck = deck.keys()
     #call shuffle function to return a randomized list
+    shuffled_deck = shuffle_deck(ordered_deck)
     #create 7 lists for each row of the pyramid and put those inside another creating a matrix
-    
+    tableu = [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+        ]
     #count each iteration of the loop to determine number of cards in each row
+    count = 0
     #Loop for every row (7 times)
+    for x in range(7):
         #put one card in row one and then 2 cards and row to and so on
+        for y in x:
+            tableu[x].append(shuffled_deck[0])
+            shuffled_deck.pop(0)
 
     #put the rest of the cards in the draw pile list
 
     #DISPLAY TABLEU - have each row slightly offsetted
     #output tableu, discard pile (empty), draw pile, shown draw pile
+    
+    discard_pile = []
+    shown_draw = []
+    
+    return tableu, discard_pile ,shuffled_deck, shown_draw
 
 #Accessible cards function (tableu list)
-    
+def Accessible(tab):
     #for each row
+    blocked = {}
+    for x in tab:
         #check if there is a row above it
-        
+        above = tab.index(x)-1
         #if there is
+        if above >= 0:
             #for each card in current row,
+            for y in x:
                 #save each of the indexes in a dict that is formatted like this: dictname:{top_row_allowable:{card1:[0,1]},second:{card2:[0,1],card3:[1,2]} etc. etc. (see activity diagram for what indexes mean)
+                index_y = x.index(y)
+                above_row = [index_y,index_y+1]
+                card_allowable = {y:above_row}
+                
     
     #output the dictionary
+    return blocked
 
 #valid Combo Function (card1_id,card2_id,list_of_cards)
     #get both of the dictionaries for the cards in the JSON
