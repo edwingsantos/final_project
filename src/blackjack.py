@@ -5,9 +5,27 @@ import pygame
 import json
 import sys
 from betting_func import betting_money
+from solitaire import *
+
+
+shuffled_deck = []
+dealer_shuffled_deck = []
 
 #call the shufle funtion from lucci and append it to the points dictionary 
-# do the same thing but just append it to the dealers hand 
+def shuffle_deck(deck):   
+    while len(deck) > 0:       
+        random_index = random.randint(0, len(deck) - 1)
+        selected_card = deck.pop(random_index)
+        shuffled_deck.append(selected_card)
+    return shuffled_deck
+#do the same thing but just append it to the dealers hand 
+def dealer_shuffle_deck(deck):   
+    while len(deck) > 0:       
+        random_index = random.randint(0, len(deck) - 1)
+        selected_card = deck.pop(random_index)
+        dealer_shuffled_deck.append(selected_card)
+    return dealer_shuffled_deck
+
 
 
 #use dictionary called point to safe the cards choosen 
@@ -50,3 +68,53 @@ from betting_func import betting_money
 #ask the user if they want to play blackjack again
     #if choice is yes then call the blackjack funtion
     #if choice is no the go to the main menu
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#Contains classes for displaying each card
+
+#class for all clubs:
+class Clubs:
+    #initialize card size - Name, Card Value, suit is clubs, color is black, if it is a royal use royal class
+    def __init__(self, name  value, color =  "black"):
+        
+    #Show Card method (coordinates):
+
+        #design a card with pygame and then this sprite will be created and displayed at coordinates (center)
+
+#class for all spades:
+    #initialize card size - Name, Card Value, suit is spades, color is black, if it is a royal use royal class
+
+    #Show Card method (coordinates):
+        #design a card with pygame and then this sprite will be created and displayed at coordinates (center)
+
+#class for all diamonds:
+    #initialize card size - Name, Card Value, suit is diamonds, color is red, if it is a royal use royal class
+
+    #Show Card method (coordinates):
+        #design a card with pygame and then this sprite will be created and displayed at coordinates (center)
+
+#class for all hearts:
+    #initialize card size - Name, Card Value, suit is hearts, color is red, if it is a royal use royal class
+
+    #Show Card method (coordinates):
+        #design a card with pygame and then this sprite will be created and displayed at coordinates (center)
