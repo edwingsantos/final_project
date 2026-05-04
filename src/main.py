@@ -115,9 +115,8 @@ def show_choices(root):
 def main():
 
     root = tk.Tk()
-    root.title("Cardds Game")
-    root.geometry("300x300")
-
+    root.title("Cards Game")
+    root.attributes('-fullscreen', True) # Fullscreen!!!!
     welcome = tk.Label(root, text="Welcome! Click continue to start")
     welcome.pack()
 

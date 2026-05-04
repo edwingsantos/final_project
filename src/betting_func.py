@@ -129,14 +129,7 @@ def starting_bet(player):
 #pygame.quit()
 
 
-#make a funtion for saving things to the csv file 
-def save(game_number, result, money):
-    with open(file, "a", newline="") as file:
-        writer = csv.writer(file)
-        # if it's the first game, write header
-        if game_number == 1:
-            writer.writerow(["Game Number", "Win Game", "Money"])
-        writer.writerow([game_number, result, money])
+#REMEMBER TO CALL LIZIES FUNTION 
 
 
 #make a FUNCTION for loose, take the amount of money safed in the dictionary and take it

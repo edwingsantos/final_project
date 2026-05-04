@@ -1,6 +1,6 @@
 # Psuedocode for LD parts of the program. 
 # This is tempory and the code will later be moved into proper files.
-# import csv
+import csv
 
 # Is a card being moved for the solitaires a VALID move (opposite color (red on black and vise versa), and number of moved cards is ONE LESS than the card being moved onto (10 onto a jack, 3 onto a 4, etc.))
 
@@ -18,6 +18,28 @@
     # retunr true
 # else: (red == red), invalid move
     # return false
+def opp_color(card_id1, card_id2):
+    def get_color(id):
+        with open("P:/DeLong, Lizzie/final_project/files/cards.json", 'r') as json:
+            for item in json:
+                if str(id) == item:
+                    color = item["Color"]
+                    break
+                else:
+                    continue
+        return color
+    
+    # main part of this function
+    card_color1 = get_color(card_id1)
+    card_color2 = get_color(card_id2)
+
+    if card_color1 == card_color2:
+        # The colors match and they cannot be on top of each other
+        return False
+    else:
+        # card colors should be opposite and therefore can be on each other
+        return True
+                
 
 # CHECK NUMBER (own func)
     # HELPER FUNCTION FOR THIS PART
@@ -33,6 +55,26 @@
     # return true
 # else: (3 == 2 (i moved a 2(card) onto a 2(card))), invalid move
     # return false
+def card_num_check(card_id1, card_id2):
+    def get_number(id):
+        with open("P:/DeLong, Lizzie/final_project/files/cards.json", 'r') as json:
+            for item in json:
+                if str(id) == item:
+                    number = item["Value"]
+                    break
+                else:
+                    continue
+        return number
+    
+    # main code of this function
+    card_num1 = get_number(card_id1)
+    card_num2 = get_number(card_id2)
+
+    if card_num1 + 1 == card_num2:
+        # the first card can be moved onto the second card. Valid
+        return True
+    else:
+        return False
 
 
 # CHECK IF VALID MOVE FUNC (called by outside code)
@@ -41,7 +83,14 @@
 # call Check Number function. Pass in MOVED IF and MOVED_ONTO ID. This call = valid_num
 # if valid_color = True AND valid_num = True: return True (valid move)
 # else: return False (invalid move)
+def valid_move(moved_card_id, moved_onto_id):
+    valid_color = opp_color(moved_card_id, moved_onto_id)
+    valid_num = card_num_check(moved_card_id,moved_onto_id)
 
+    if valid_color == True and valid_num == True:
+        return True
+    else:
+        return False
 
 # At the end of the game, write the final game retults to the CSV for that game
 # for the soliaires, this will include game number and if they won
@@ -55,6 +104,18 @@
     # return True. There is stuff to try and figure out the game number/money
 # EXCEPT
     # return False. No games saved yet
+def stuff_in_CSV(path):
+    try:
+        with open(path, "r") as file:
+            reader = csv.reader(file)
+            headers = next(reader)
+            try:
+                anything = next(reader)
+                return True
+            except:
+                return False
+    except Exception as e:
+        print(f"Could not open the file given.\nPath given: {path}\nReason for error: {e}")
 
 # GET GAME NUMBER FUNCTION (sub func)
 # parameter = CSV_PATH
@@ -65,6 +126,21 @@
 # else
     # recent_game_num = 1
 # return recent_game_num
+def get_game_num(path):
+    any_games = stuff_in_CSV(path)
+    if any_games == True:
+        try:
+            with open(path,'r') as file:
+                reader = csv.reader(file)
+                headers = next(reader)
+                last_line = file.readlines()[-1]
+                game_num = last_line[0]
+                new_game_num = game_num + 1
+        except Exception as e:
+            print(f"Could not open the file given.\nPath given: {path}\nReason for error: {e}")
+    else:
+        new_game_num = 1
+    return new_game_num
 
 # GET MONEY FUNCTION (func being called when a gambling game is selected)
 # parameter = CSV_PATH
@@ -74,15 +150,47 @@
 # else
     # money = 100
 # return money
+def get_money(path):
+    any_games = stuff_in_CSV(path)
+    if any_games == True:
+        try:
+            with open(path,'r') as file:
+                reader = csv.reader(file)
+                headers = next(reader)
+                last_line = file.readlines()[-1]
+                money = last_line[2]
+        except Exception as e:
+            print(f"Could not open the file given.\nPath given: {path}\nReason for error: {e}")
+    else:
+        money = 100
+    return money
 
 # WRITE TO CSV FOR SOLITAIRE (func being called by outside code)
 # parameters = CSV_PATH, WON
 # call GET GAME NUMBER and pass in CSV_PATH. This = game_num
 # open csv based off of CSV_PATH
 # append the line "game_num for Game Number and WON for Win Game"
+def write_2_solitaire(path, won):
+    game_num = get_game_num(path)
+    try:
+        with open(path, "a", newline='') as file:
+            fieldnames = ['Game Number', 'Win Game']
+            writer = csv.DictWriter(file, fieldnames=fieldnames)
+            writer.writerow({'Game Number': game_num, 'Win Game': won})
+    except Exception as e:
+        print(f"Could not open the file given.\nPath given: {path}\nReason for error: {e}")
 
 # WRITE TO CSV FOR GAMBLING (func being called by outside code)
 # parameters = CSV_PATH, WON, MONEY
 # call GET GAME NUMBER and pass in CSV_PATH. This call = game_num
 # open the csv based off of CSV_PATH
 # append write the line: "game_num for Game Number, WON for Win Game, and MONEY for Money"
+def write_2_gambling(path, won, money):
+    game_num = get_game_num(path)
+    try:
+        with open(path, "a", newline='') as file:
+            fieldnames = ['Game Number', 'Win Game', 'Money']
+            writer = csv.DictWriter(file, fieldnames=fieldnames)
+            writer.writerow({'Game Number': game_num, 'Win Game': won, 'Money': money})
+    except Exception as e:
+        print(f"Could not open the file given.\nPath given: {path}\nReason for error: {e}")
