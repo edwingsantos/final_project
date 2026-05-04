@@ -10,9 +10,9 @@
 import pygame
 import random
 import csv
-import tkinter   
+from LD_psuedocode import *
 
-# MENU - Call in Main
+# MENU - Screen set up
 # Create window
 # Add button "Play Solitaire"
 #      when clicked, start solitaire game
@@ -22,6 +22,10 @@ import tkinter
 #      close program
 # Display window
 
+screen = pygame.display.set_mode(pygame.display.get_desktop_sizes()[0]) #sets screen size to whatever the first monitor's dimension
+
+clock = pygame.time.Clock()
+font = pygame.font.SysFont(None, 40)
 
 
 # CREATE DECK -  call the JSON with the cards
@@ -30,6 +34,10 @@ import tkinter
 #     For each value (A, 2–10, J, Q, K):
 #         Add card to deck
 # Return deck
+
+def deck():
+    deck = []
+# Aun no se como hacer esta parte pero lo voy a averiguar y despues le agrego el pygame
 
 # SHUFFLE DECK
 #def shuffle_deck(deck):
@@ -64,12 +72,18 @@ def shuffle_deck(deck):
 #Create 4 empty FOUNDATION piles
 #Return tableau, stock, waste, foundations
 
+def set_board():
+    column =[] # Despues ver como hago las 7 columnas pero mas eficiente que 1-7 
+   
+
+
 # SHOW BOARD
 # Display all columns
 # Show top card clearly
 # (Maybe: hide cards underneath)
 
 # PLAYER INPUT
+# import lizzies func that makes sure if it is the same color or not 
 # Ask player for move type:
 #    1. Move card
 #    2. Draw from stock
@@ -77,6 +91,7 @@ def shuffle_deck(deck):
 #    Ask for source (column or waste)
 #    Ask for destination (column or foundation)
 #Return move choice
+
 
 # VALID MOVE CHECK -Lizzie
 # If moving card:
