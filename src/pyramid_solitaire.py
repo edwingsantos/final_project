@@ -4,6 +4,7 @@
 from solitaire import shuffle_deck
 #import csv management functions
 import json
+import pygame
 
 #setup function
 def setup():
@@ -61,31 +62,61 @@ def Accessible(tab):
                 below_row = [index_y,index_y+1]
                 card_allowable = {y:below_row}
                 blocked[x] = card_allowable
-                
+                #!!!!!!!!!FINISH LOGIC!!!!!!!!!!!
                 
     
     #output the dictionary
     return blocked
 
 #valid Combo Function (card1_id,card2_id,list_of_cards)
+def val_combo(ID_1,ID_2,tableu,draw_pile):
     #get both of the dictionaries for the cards in the JSON
+    with open("files/cards.json","r") as cards:
+        deck = json.load(cards)
     
+    card1_info = deck[ID_1]
+    card2_info = deck[ID_2]
+
     #if card1[value] + card2[value] == 13:
+    if card1_info["Value"] + card2_info["Value"] == 13:
         #pop those ids out of the tableu add them to the discard pile
+        for z in range(2):
+            for x in tableu:
+                for y in x:
+                    if y == ID_1 or y == ID_2:
+                        x.pop(y)
+
+        for i in draw_pile:
+            if i == ID_1 or i == ID_2:
+                draw_pile.pop(i)
+        
     #else:
+    else:
         #display invalid value error
+        print("NOT A VALID MATCH")
 
 #Options funcs
 
 #draw card function (draw pile, shown draw pile)
+def draw(draw_pile,shown_pile):
     #check if draw pile has cards in it
     # if yes
+    if draw_pile:
         #remove card from draw pile and add it shown draw pile and display that card face up
+        shown_pile.insert(0,draw_pile[0])
+        draw_pile.pop(0)
     #if no
+    else:
         #make draw pile equal to shown and then clear shown
+        draw_pile = shown_pile
+        shown_pile.clear()
+        
         #reverse order of draw pile to represent flipping of pile over
+        draw_pile.reverse()
 
         #remove card from draw pile and add it shown draw pile and display that card face up
+        shown_pile.insert(0,draw_pile[0])
+        draw_pile.pop(0)
 
 #Discard King function (tableu, discard pile, shown draw pile)
     #call accessibility function for accessible cards
