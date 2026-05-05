@@ -4,10 +4,20 @@
 import pygame
 import json
 import sys
+import csv 
 from betting_func import betting_money
 from solitaire import *
+from LD_psuedocode import *
+csv_path = "files/blackjack.csv"
 
 
+
+screen = pygame.display.set_mode(pygame.display.get_desktop_sizes()[0])
+clock = pygame.time.Clock()
+font = pygame.font.SysFont(None, 40)
+
+#use dictionary called point to safe the cards choosen 
+#make a dictionary for the dealers hand 
 shuffled_deck = []
 dealer_shuffled_deck = []
 
@@ -15,26 +25,35 @@ dealer_shuffled_deck = []
 def shuffle_deck(deck):   
     while len(deck) > 0:       
         random_index = random.randint(0, len(deck) - 1)
-        selected_card = deck.pop(random_index)
+        selected_card = deck.remove(random_index)
         shuffled_deck.append(selected_card)
     return shuffled_deck
 #do the same thing but just append it to the dealers hand 
 def dealer_shuffle_deck(deck):   
     while len(deck) > 0:       
         random_index = random.randint(0, len(deck) - 1)
-        selected_card = deck.pop(random_index)
+        selected_card = deck.remove(random_index)
         dealer_shuffled_deck.append(selected_card)
     return dealer_shuffled_deck
 
 
 
-#use dictionary called point to safe the cards choosen 
-#make a dictionary for the dealers hand 
+
 #use an other dictionary for the amount of games played 
+games_num =  get_game_num(csv_path)
 #use another dictianry for win games
+games_win = []
 #user another library for money 
+money = get_money(csv_path)
+
+
+#ASK LIZZIE FOR HELP IN THIS
+
+
 #check if the 3rd line of the csv is 0
 # if the 3rd line is empty give the user 100$ and append it to the money dictionary 
+
+
 
 
 #SET up screen 
@@ -42,9 +61,12 @@ def dealer_shuffle_deck(deck):
 #Have two card for the dealer and make one card show, remember one of those have to match in the dictionary
 
 #make a funtion for blackjack 
-
+def blackjakc():
+    running = True
     #call the beggingin of the betting funtion 
-
+    while running:
+        clock.tick(60)
+        screen.fill((255, 255, 255))
     #safe those amounts into the ductionaries 
 
     #show users their cards and let them see the dealers cards
@@ -73,48 +95,6 @@ def dealer_shuffle_deck(deck):
 
 
 
+blackjakc()
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#Contains classes for displaying each card
-
-#class for all clubs:
-class Clubs:
-    #initialize card size - Name, Card Value, suit is clubs, color is black, if it is a royal use royal class
-    def __init__(self, name  value, color =  "black"):
-        
-    #Show Card method (coordinates):
-
-        #design a card with pygame and then this sprite will be created and displayed at coordinates (center)
-
-#class for all spades:
-    #initialize card size - Name, Card Value, suit is spades, color is black, if it is a royal use royal class
-
-    #Show Card method (coordinates):
-        #design a card with pygame and then this sprite will be created and displayed at coordinates (center)
-
-#class for all diamonds:
-    #initialize card size - Name, Card Value, suit is diamonds, color is red, if it is a royal use royal class
-
-    #Show Card method (coordinates):
-        #design a card with pygame and then this sprite will be created and displayed at coordinates (center)
-
-#class for all hearts:
-    #initialize card size - Name, Card Value, suit is hearts, color is red, if it is a royal use royal class
-
-    #Show Card method (coordinates):
-        #design a card with pygame and then this sprite will be created and displayed at coordinates (center)
