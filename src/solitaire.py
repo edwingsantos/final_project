@@ -23,7 +23,7 @@ from LD_psuedocode import *
 # Display window
 WIDTH, HEIGHT = 1000, 700
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("LV 1 Solitaire (Pygame)")
+pygame.display.set_caption("Solitaire")
 
 GREEN = (0, 120, 0)
 WHITE = (255, 255, 255)
@@ -38,7 +38,7 @@ BLACK = (0, 0, 0)
 #     For each value (A, 2–10, J, Q, K):
 #         Add card to deck
 # Return deck
-
+# Talves en vez de clases immporto el json y de repente funciona
 class Card:
     def __init__(self, suit, value):
         self.suit = suit
@@ -76,7 +76,7 @@ def shuffle_deck(deck):
     shuffled_deck = []
     while len(deck) > 0:       
         random_index = random.randint(0, len(deck) - 1)
-        selected_card = deck.pop(random_index)
+        selected_card = deck.remove(random_index) # tengo qu avergiuar como funciona esta parte porque lamentabemente no funciona el remove
         shuffled_deck.append(selected_card)
     return shuffled_deck
 
@@ -96,6 +96,7 @@ def shuffle_deck(deck):
 #Create 4 empty FOUNDATION piles
 #Return tableau, stock, waste, foundations
 
+# Tal vez cambie esto porque tengfo que importar el json cards
 def setup_board(deck):
     tableau = [[] for _ in range(7)]
 
@@ -124,17 +125,18 @@ def setup_board(deck):
 # (Maybe: hide cards underneath)
 CARD_W, CARD_H = 70, 100
 
+# Tal vez esto cambie pero tengo que mejorar unas cuatnas cosas
 def draw_card(x, y, card):
     if card.face_up:
         pygame.draw.rect(screen, WHITE, (x, y, CARD_W, CARD_H))
-        text = FONT.render(str(card), True, BLACK)
+        #text = FONT.render(str(card), True, BLACK)
     else:
         pygame.draw.rect(screen, GRAY, (x, y, CARD_W, CARD_H))
-        text = FONT.render("X", True, BLACK)
-
+        #text = FONT.render("X", True, BLACK)
+# Encontrar porque no funciona esto de aqui
     screen.blit(text, (x + 10, y + 40))
 
-
+# Esto es para ver las 7 columnas de las cartas
 def draw_tableau(tableau):
     start_x = 50
     start_y = 120
@@ -157,7 +159,29 @@ def draw_tableau(tableau):
 #    Ask for destination (column or foundation)
 #Return move choice
 
+#Esta es la funcion pero la cosa es que lo tengo que importar mas no copiar y pegar
+# Y tengo que usar json para las cartas
+def opp_color(card_id1, card_id2):
+    def get_color(id):
+        with open("P:/DeLong, Lizzie/final_project/files/cards.json", 'r') as json:
+            for item in json:
+                if str(id) == item:
+                    color = item["Color"]
+                    break
+                else:
+                    continue
+        return color
+    
+    # main part of this function
+    card_color1 = get_color(card_id1)
+    card_color2 = get_color(card_id2)
 
+    if card_color1 == card_color2:
+        # The colors match and they cannot be on top of each other
+        return False
+    else:
+        # card colors should be opposite and therefore can be on each other
+        return True
 # VALID MOVE CHECK -Lizzie
 # If moving card:
 #     Check colors are opposite (red vs black)
@@ -166,7 +190,15 @@ def draw_tableau(tableau):
 #     Move is valid
 # Else:
 #     Move is invalid
+# Esto es de Lizzie pero tengo que importarlo mas no copiar y pegar y tnewgo que agregarlo a main
+def valid_move(moved_card_id, moved_onto_id):
+    valid_color = opp_color(moved_card_id, moved_onto_id)
+    valid_num = card_num_check(moved_card_id,moved_onto_id)
 
+    if valid_color == True and valid_num == True:
+        return True
+    else:
+        return False
 # MOVE FUNCTION
 # Take card (or stack) from source
 #Check if move is valid
@@ -186,11 +218,24 @@ def draw_tableau(tableau):
 # Check all 4 foundation piles
 # If each pile has 13 cards in correct order:
 #     Player wins
+def win():
+    # Necesito saber como hacer 4 foundation piles
+    # de acuerdo a eso 
 
 # SAVE GAME STATS - Lizzie
 # Open CSV file
 # Write win or loss
 # Save and close file
+def write_2_solitaire(path, won):
+    game_num = get_game_num(path)
+    try:
+        with open(path, "a", newline='') as file:
+            fieldnames = ['Game Number', 'Win Game']
+            writer = csv.DictWriter(file, fieldnames=fieldnames)
+            writer.writerow({'Game Number': game_num, 'Win Game': won})
+    except Exception as e:
+        print(f"Could not open the file given.\nPath given: {path}\nReason for error: {e}")
+# Esto es para guardarlo en un CSV 
 
 # GAME LOOP - Only for testing
 # While game is not over:
@@ -201,44 +246,47 @@ def draw_tableau(tableau):
 #         Print "You win"
 #         Save result
 #         End game
+# tengo que agregar el tableau en alguna parte del loop
 
-while running:
-    clock.tick(60)
-    screen.fill(GREEN)
+def loop():
+    while running: # running no esta definido y es un problema que tengo
+        #clock.tick(60)
+        screen.fill(GREEN)
 
-    # EVENTS
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+        # EVENTS
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
 
-# detects mouse is clicked, store the position of the click
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            mx, my = event.pos
+    # detects mouse is clicked, store the position of the click
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mx, my = event.pos
 
-            # check tableau clicks
-            start_x = 50
-            start_y = 120
-            spacing_x = 130
-            spacing_y = 25
+                # check tableau clicks
+                start_x = 50
+                start_y = 120
+                spacing_x = 130
+                spacing_y = 25
 
-            for col_i, col in enumerate(tableau):
-                for row_i, card in enumerate(col):
-                    x = start_x + col_i * spacing_x
-                    y = start_y + row_i * spacing_y
+                for col_i, col in enumerate(tableau):
+                    for row_i, card in enumerate(col):
+                        x = start_x + col_i * spacing_x
+                        y = start_y + row_i * spacing_y
 
-                    rect = pygame.Rect(x, y, CARD_W, CARD_H)
+                        rect = pygame.Rect(x, y, CARD_W, CARD_H)
 
-                    if rect.collidepoint(mx, my) and card.face_up:
-                        selected = card if selected is None else None
+                        if rect.collidepoint(mx, my) and card.face_up:
+                            selected = card if selected is None else None
 
-    # DRAW BOARD
-    draw_tableau(tableau)
+        # DRAW BOARD
+        draw_tableau(tableau)
 
-    # SHOW SELECTION STATUS
-    if selected:
-        text = FONT.render(f"Selected: {selected}", True, WHITE)
-        screen.blit(text, (50, 20))
+        # SHOW SELECTION STATUS
+        if selected:
+            text = FONT.render(f"Selected: {selected}", True, WHITE)
+            screen.blit(text, (50, 20))
 
-    pygame.display.flip()
+        pygame.display.flip()
 
-pygame.quit()
+    pygame.quit()
+loop()
