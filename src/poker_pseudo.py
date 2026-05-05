@@ -1,8 +1,10 @@
 # Pseudocode for Poker (LD)
 import csv
+import pygame
+import tkinter
 from treys import Evaluator, Card
 from solitaire import shuffle_deck
-from LD_psuedocode import stuff_in_CSV
+from LD_psuedocode import stuff_in_CSV, write_2_gambling
 
 #csv_path = path to poker csv
 csv_path = "files/poker.csv"
@@ -22,15 +24,21 @@ if saved_game == True:
 else:
     user_mon = 100
 
+player_hand = []
+computer_hand = []
+discard = []
+table = []
+bet_amount = 0
 
 # GAMEPLAY ASSISTANT FUNTIONS
     # CHECK HANDS (parameters = card_ID_1, card_ID_2, card_ID_3, card_ID_4, card_ID_5, card_ID_6, card_ID_7)
         # use traderbagel's treys poker hand ranking functions
-def check_hands(player_hand, table):
+def check_hands(hand, table):
     def format_cards(id):
         # FORMAT CARDS (turn a card id into a shortened version like As (Ace of spades))
             # Take in ID. Compare to number 1-52 and based on result, give abreviation
         # check the beggining. (A-K)
+        id = int(id)
         if id == 1 or id == 14 or id == 27 or id == 40:
             beginning = "A"
         elif id == 2 or id == 15 or id == 28 or id == 41:
@@ -75,7 +83,30 @@ def check_hands(player_hand, table):
         return card_name
     
     # main code for checking
-
+    abrev_hand = []
+    abrev_table = []
+    bin_hand = []
+    bin_table = []
+    evaluator = Evaluator()
+    # loop through the passed in table and had lists and get the abreviated card names
+    for item in hand:
+        abreviated = format_cards(item)
+        abrev_hand.append(abreviated)
+    for thing in table:
+        abrev = format_cards(thing)
+        abrev_table.append(abrev)
+    # use treys Card.new on each item in the lists with the abreviations. But these into new lists again
+    for i in abrev_hand:
+        card = Card.new(i)
+        bin_hand.append(card)
+    for t in abrev_table:
+        another_card = Card.new(t)
+        bin_table.append(another_card)
+    # use treys .evaluate and pass in the lists with the binary card representation created by Card.new
+    rank = evaluator.evaluate(bin_table, bin_hand) # 1 is Royal Flush. Lower the number, the better
+    score_class = evaluator.get_rank_class(rank)
+    hand_rank = evaluator.class_to_string(score_class).format(rank) # Get the actual name of the hand rank
+    return rank
 
     # PLAY ROUND: display a button to "Check" (continue without betting), "Bet" (when clicked, call bet function and add to bet_amount), "Fold" (end the game)
     # if check:
@@ -92,13 +123,14 @@ def check_hands(player_hand, table):
 
     # END GAME: call LD write to gambling csv and pass in poker.csv path, win = won, money = user_mon
         # leave game and return to main menu
+def play_round():
+    pass
+
 
 # Call LV shuffle card function
 # take the first two card ids and give them to the player (remove these ids from the list). Display the cards for these Ids. Append these cards into a list called player_hand.
 
 # take the next two card ids and give them to the computer (remove these ids from the list). Save these cards in a comp_hand list. Display card BACKS to not let the player know the computer's cards
-
-# Have a "discarded" list and a "table" list
 
 # have user bet (call ES betting func) (required!). Make sure computer MATCHES what the user has in
 # Variable: bet_amount = what the user has betted (this could be added onto with future optional bets)
@@ -117,7 +149,9 @@ def check_hands(player_hand, table):
 # Have new lists for the FORMATED cards from the table, computer, and player lists. Put "formated" infront of the new lists names
 
 # Call treys' evaluate class function and pass in formated_player_hand and formated_table. Save this call as "player_score"
+player_score = check_hands(player_hand, table)
 # Call the same function again but pass in formated_comp_hand and formated_table. Save this as "comp_score"
+comp_score = check_hands(computer_hand, table)
 
 # If player_score < comp_score (function returns a lower score for better hands): player win
     # Win = true
@@ -125,9 +159,19 @@ def check_hands(player_hand, table):
 # if player_score > comp_score (computer scored lower than player): player looses
     # Win = False
     # user_mon -= bet_amount
-# if player_score == comp_score (tie, smae hand): no one wins (i dont want to figure out high card, unless treys does that, then maybe)
+# if player_score == comp_score (tie, same hand): no one wins (i dont want to figure out high card, unless treys does that, then maybe)
     # win = Tie
     # user_mon = user_mon
+if player_score < comp_score:
+    win = 'True'
+    user_mon += bet_amount
+elif comp_score < player_score:
+    win = 'False'
+    user_mon -= bet_amount
+elif player_score == comp_score:
+    win = 'Tie'
+    user_mon = user_mon
 
 # call LD's write to CSV for gambling function and pass in csv_path, win, user_mon
 # return to main menu
+write_2_gambling(csv_path, win, user_mon)
