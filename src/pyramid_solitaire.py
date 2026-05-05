@@ -9,7 +9,7 @@ import json
 def setup():
     with open("files/cards.json","r") as cards:
         deck = json.load(cards)
-    ordered_deck = deck.keys()
+    ordered_deck = list(deck.keys())
     #call shuffle function to return a randomized list
     shuffled_deck = shuffle_deck(ordered_deck)
     #create 7 lists for each row of the pyramid and put those inside another creating a matrix
@@ -26,8 +26,11 @@ def setup():
     count = 0
     #Loop for every row (7 times)
     for x in range(7):
+        count+=1
         #put one card in row one and then 2 cards and row to and so on
-        for y in x:
+        tableu[x].append(shuffled_deck[0])
+        shuffled_deck.pop(0)
+        for y in range(x):
             tableu[x].append(shuffled_deck[0])
             shuffled_deck.pop(0)
 
@@ -38,7 +41,8 @@ def setup():
     
     discard_pile = []
     shown_draw = []
-    
+    for x in tableu:
+        print(x)
     return tableu, discard_pile ,shuffled_deck, shown_draw
 
 #Accessible cards function (tableu list)
@@ -54,8 +58,10 @@ def Accessible(tab):
             for y in x:
                 #save each of the indexes in a dict that is formatted like this: dictname:{top_row_allowable:{card1:[0,1]},second:{card2:[0,1],card3:[1,2]} etc. etc. (see activity diagram for what indexes mean)
                 index_y = x.index(y)
-                above_row = [index_y,index_y+1]
-                card_allowable = {y:above_row}
+                below_row = [index_y,index_y+1]
+                card_allowable = {y:below_row}
+                blocked[x] = card_allowable
+                
                 
     
     #output the dictionary
@@ -156,3 +162,4 @@ def Accessible(tab):
         #If user clicks the quit button
             #leave gameloop
             #save game number and lose
+        

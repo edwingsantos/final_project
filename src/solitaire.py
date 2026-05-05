@@ -44,7 +44,8 @@ def shuffle_deck(deck):
     shuffled_deck = []
     while len(deck) > 0:       
         random_index = random.randint(0, len(deck) - 1)
-        selected_card = deck.pop(random_index)
+        selected_card = deck[random_index]
+        deck.pop(int(random_index))
         shuffled_deck.append(selected_card)
     return shuffled_deck
 
