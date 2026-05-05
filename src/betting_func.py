@@ -2,6 +2,7 @@
 #Es betting fuction 
 import pygame
 import csv 
+from LD_psuedocode import *
 
 pygame.init()
 file = "files/blackjack.csv"
@@ -132,14 +133,16 @@ def starting_bet(player):
 #REMEMBER TO CALL LIZIES FUNTION 
 
 
+
+
 #make a FUNCTION for loose, take the amount of money safed in the dictionary and take it
 def losing(user_data, betting_money):
     #safe the money amount in the "money saved" dictionary and save it to the csv file
     user_data["money"] -= betting_money
-
-    save(user_data["game_number"], "Loss", user_data["money"])
-
+    #save(user_data["game_number"], "Loss", user_data["money"])
     user_data["game_number"] += 1
+    write_2_gambling()
+
 
 
 #make a FUNTION for win,take the amount of money in the "money" dictionary and double it 
@@ -147,9 +150,10 @@ def winning(user_data, betting_money):
     winnings = betting_money * 2
     user_data["money"] += winnings
     #safe the money amount in the "money saved" dictionary and save it to the csv file
-    save(user_data["game_number"], "Win", user_data["money"])
-
+    #save(user_data["game_number"], "Win", user_data["money"])
     user_data["game_number"] += 1
+    write_2_gambling()
+
 
 
 
@@ -157,5 +161,7 @@ def winning(user_data, betting_money):
 
 #make a FUNTIOM if its a tie then just return the amount of the money back to their accound and save it to the csv file
 def tie(user_data, betting_money):
-    save(user_data["game_number"], "Tie", user_data["money"])
+    #save(user_data["game_number"], "Tie", user_data["money"])
     user_data["game_number"] += 1
+    write_2_gambling()
+
