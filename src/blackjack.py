@@ -4,10 +4,28 @@
 import pygame
 import json
 import sys
-from betting_func import *
+from betting_func import betting_money
+from solitaire import *
+
+
+shuffled_deck = []
+dealer_shuffled_deck = []
 
 #call the shufle funtion from lucci and append it to the points dictionary 
-# do the same thing but just append it to the dealers hand 
+def shuffle_deck(deck):   
+    while len(deck) > 0:       
+        random_index = random.randint(0, len(deck) - 1)
+        selected_card = deck.pop(random_index)
+        shuffled_deck.append(selected_card)
+    return shuffled_deck
+#do the same thing but just append it to the dealers hand 
+def dealer_shuffle_deck(deck):   
+    while len(deck) > 0:       
+        random_index = random.randint(0, len(deck) - 1)
+        selected_card = deck.pop(random_index)
+        dealer_shuffled_deck.append(selected_card)
+    return dealer_shuffled_deck
+
 
 
 #use dictionary called point to safe the cards choosen 
@@ -24,10 +42,9 @@ from betting_func import *
 #Have two card for the dealer and make one card show, remember one of those have to match in the dictionary
 
 #make a funtion for blackjack 
-def blackjack_game():
-    print("blackjack")
+
     #call the beggingin of the betting funtion 
-    starting_bet()
+
     #safe those amounts into the ductionaries 
 
     #show users their cards and let them see the dealers cards
@@ -56,79 +73,48 @@ def blackjack_game():
 
 
 
-import tkinter as tk
 
-def show_choices(root):
-# Still have to add when to call the funcitons for each game !!!!!
-    # Title label
-    instruction = tk.Label(root, text="Choose a Game")
-    instruction.pack()
 
-    # Solitaire button
-    solitaire = tk.Button(
-        root,
-        text="Solitaire",
-        command=lambda: print("Launch Solitaire")  # replace later
-    )
-    solitaire.pack()
 
-    # Black Jack button
-    black_jack = tk.Button(
-        root,
-        text="Black Jack",
-        command=lambda: blackjack_game()
-    )
-    black_jack.pack()
 
-    # Pyramid Solitaire button
-    pyramid = tk.Button(
-        root,
-        text="Pyramid Solitaire",
-        command=lambda: print("Launch Pyramid Solitaire")
-    )
-    pyramid.pack()
 
-    # Freecell button
-    freecell = tk.Button(
-        root,
-        text="Freecell",
-        command=lambda: print("Launch Freecell")
-    )
-    freecell.pack()
 
-    # Poker button
-    poker = tk.Button(
-        root,
-        text="Poker",
-        command=lambda: print("Launch Poker")
-    )
-    poker.pack()
 
-    # Quit button
-    quit_button = tk.Button(
-        root,
-        text="Quit",
-        command=root.quit
-    )
-    quit_button.pack()
 
-def main():
 
-    root = tk.Tk()
-    root.title("Cardds Game")
-    root.geometry("300x300")
 
-    welcome = tk.Label(root, text="Welcome! Click continue to start")
-    welcome.pack()
 
-    def start_menu():
-        welcome.destroy()
-        continue_btn.destroy()
-        show_choices(root)
 
-    continue_btn = tk.Button(root, text="Continue", command=start_menu)
-    continue_btn.pack()
 
-    root.mainloop()
-    
-main()
+
+
+
+
+#Contains classes for displaying each card
+
+#class for all clubs:
+class Clubs:
+    #initialize card size - Name, Card Value, suit is clubs, color is black, if it is a royal use royal class
+    def __init__(self, name  value, color =  "black"):
+        
+    #Show Card method (coordinates):
+
+        #design a card with pygame and then this sprite will be created and displayed at coordinates (center)
+
+#class for all spades:
+    #initialize card size - Name, Card Value, suit is spades, color is black, if it is a royal use royal class
+
+    #Show Card method (coordinates):
+        #design a card with pygame and then this sprite will be created and displayed at coordinates (center)
+
+#class for all diamonds:
+    #initialize card size - Name, Card Value, suit is diamonds, color is red, if it is a royal use royal class
+
+    #Show Card method (coordinates):
+        #design a card with pygame and then this sprite will be created and displayed at coordinates (center)
+
+#class for all hearts:
+    #initialize card size - Name, Card Value, suit is hearts, color is red, if it is a royal use royal class
+
+    #Show Card method (coordinates):
+        #design a card with pygame and then this sprite will be created and displayed at coordinates (center)

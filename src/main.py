@@ -11,8 +11,8 @@ import pygame
 import tkinter as tk
 import sys
 #from blackjack import blackjack_game
-from freecell_solitaire import *
-from solitaire import *
+#from freecell_solitaire import *
+#from solitaire import *
 
 # def show_choices(root):
 #     Display a label that says "Choose a game"

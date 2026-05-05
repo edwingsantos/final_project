@@ -10,9 +10,9 @@
 import pygame
 import random
 import csv
-import tkinter   
+from LD_psuedocode import *
 
-# MENU - Call in Main
+# MENU - Screen set up
 # Create window
 # Add button "Play Solitaire"
 #      when clicked, start solitaire game
@@ -21,6 +21,14 @@ import tkinter
 # Add button "Exit"
 #      close program
 # Display window
+WIDTH, HEIGHT = 1000, 700
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("LV 1 Solitaire (Pygame)")
+
+GREEN = (0, 120, 0)
+WHITE = (255, 255, 255)
+GRAY = (80, 80, 80)
+BLACK = (0, 0, 0)
 
 
 
@@ -30,6 +38,30 @@ import tkinter
 #     For each value (A, 2–10, J, Q, K):
 #         Add card to deck
 # Return deck
+
+class Card:
+    def __init__(self, suit, value):
+        self.suit = suit
+        self.value = value
+        self.face_up = False
+
+    def color(self):
+        return "red" if self.suit in ["hearts", "diamonds"] else "black"
+
+    def __repr__(self):
+        return f"{self.value}{self.suit[0]}"
+    
+def create_deck():
+    deck = []
+    suits = ["hearts", "diamonds", "clubs", "spades"]
+    values = ["A", "2", "3", "4", "5", "6", "7",
+              "8", "9", "10", "J", "Q", "K"]
+
+    for suit in suits:
+        for value in values:
+            deck.append(Card(suit, value))
+
+    return deck
 
 # SHUFFLE DECK
 #def shuffle_deck(deck):
@@ -65,12 +97,59 @@ def shuffle_deck(deck):
 #Create 4 empty FOUNDATION piles
 #Return tableau, stock, waste, foundations
 
+def setup_board(deck):
+    tableau = [[] for _ in range(7)]
+
+    for col in range(7):
+        for row in range(col + 1):
+            card = deck.pop()
+            if row == col:
+                card.face_up = True
+            tableau[col].append(card)
+
+    stock = deck
+    waste = []
+    foundations = {
+        "hearts": [],
+        "diamonds": [],
+        "clubs": [],
+        "spades": []
+    }
+
+    return tableau, stock, waste, foundations
+
+
 # SHOW BOARD
 # Display all columns
 # Show top card clearly
 # (Maybe: hide cards underneath)
+CARD_W, CARD_H = 70, 100
+
+def draw_card(x, y, card):
+    if card.face_up:
+        pygame.draw.rect(screen, WHITE, (x, y, CARD_W, CARD_H))
+        text = FONT.render(str(card), True, BLACK)
+    else:
+        pygame.draw.rect(screen, GRAY, (x, y, CARD_W, CARD_H))
+        text = FONT.render("X", True, BLACK)
+
+    screen.blit(text, (x + 10, y + 40))
+
+
+def draw_tableau(tableau):
+    start_x = 50
+    start_y = 120
+    spacing_x = 130
+    spacing_y = 25
+
+    for col_index, column in enumerate(tableau):
+        for row_index, card in enumerate(column):
+            x = start_x + col_index * spacing_x
+            y = start_y + row_index * spacing_y
+            draw_card(x, y, card)
 
 # PLAYER INPUT
+# import lizzies func that makes sure if it is the same color or not 
 # Ask player for move type:
 #    1. Move card
 #    2. Draw from stock
@@ -78,6 +157,7 @@ def shuffle_deck(deck):
 #    Ask for source (column or waste)
 #    Ask for destination (column or foundation)
 #Return move choice
+
 
 # VALID MOVE CHECK -Lizzie
 # If moving card:
@@ -122,3 +202,44 @@ def shuffle_deck(deck):
 #         Print "You win"
 #         Save result
 #         End game
+
+while running:
+    clock.tick(60)
+    screen.fill(GREEN)
+
+    # EVENTS
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+# detects mouse is clicked, store the position of the click
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mx, my = event.pos
+
+            # check tableau clicks
+            start_x = 50
+            start_y = 120
+            spacing_x = 130
+            spacing_y = 25
+
+            for col_i, col in enumerate(tableau):
+                for row_i, card in enumerate(col):
+                    x = start_x + col_i * spacing_x
+                    y = start_y + row_i * spacing_y
+
+                    rect = pygame.Rect(x, y, CARD_W, CARD_H)
+
+                    if rect.collidepoint(mx, my) and card.face_up:
+                        selected = card if selected is None else None
+
+    # DRAW BOARD
+    draw_tableau(tableau)
+
+    # SHOW SELECTION STATUS
+    if selected:
+        text = FONT.render(f"Selected: {selected}", True, WHITE)
+        screen.blit(text, (50, 20))
+
+    pygame.display.flip()
+
+pygame.quit()
