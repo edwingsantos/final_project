@@ -15,33 +15,27 @@ user_data = {
 
 
 
-#set up screen, clock and font
-screen = pygame.display.set_mode(pygame.display.get_desktop_sizes()[0]) #sets screen size to whatever the first monitor's dimension
-
-clock = pygame.time.Clock()
-font = pygame.font.SysFont(None, 40)
-
-
-
-#make a dictionary called money to safe how much they want to bet 
-betting_money = [0]
-
-
-
-
-
-#had to add the cursor beucase it was confusing without it 
-cursor_visible = True
-cursor_timer = 0
 
 # make a function for the beginning bets
 def starting_bet():
-#BTW this is not in my spedocode so I know what is what, and a lot i used videos so im not 100% what does what, but have a very good imaje of the structure
+    
+    #set up screen, clock and font
+    screen = pygame.display.set_mode((500, 500))#sets screen size to whatever the first monitor's dimension
+
+    clock = pygame.time.Clock()
+    font = pygame.font.SysFont(None, 40)
+
+    #make a variable called money to safe how much they want to bet 
+    betting_money = 0
+
+    #had to add the cursor beucase it was confusing without it 
+    cursor_visible = True
+    cursor_timer = 0
+    #BTW this is not in my spedocode so I know what is what, and a lot i used videos so im not 100% what does what, but have a very good imaje of the structure
     typed_text = ""
     state = "typing"
     running = True
 
-    global cursor_visible, cursor_timer
     #main loop 
     while running:
         clock.tick(60)
@@ -59,7 +53,7 @@ def starting_bet():
             #the X at the screen cornert 
             if event.type == pygame.QUIT:
                 pygame.quit()
-                return
+                return 0
             if event.type == pygame.KEYDOWN:
 
                 #typing numbers
@@ -73,7 +67,7 @@ def starting_bet():
                     elif event.key == pygame.K_RETURN:
 
                         #max of 100 doolars betting 
-                        if typed_text != "" and int(typed_text) <= 100:
+                        if typed_text != "" and int(typed_text) <= 100 and int(typed_text) > 0:
                             money = typed_text
                             state = "confirm"
                             typed_text = ""
@@ -85,7 +79,7 @@ def starting_bet():
                         return betting_money
 
                     elif event.key == pygame.K_n:
-                        return starting_bet()
+                        continue
 
         #ask user what their starting amount for betting is 
         if state == "typing":
@@ -119,7 +113,6 @@ def starting_bet():
         #keep updating the display 
         pygame.display.update()
 
-    
 #running the thing 
 """starting_bet(player)"""
 #quiting the game 
@@ -137,7 +130,7 @@ def losing(user_data, betting_money):
     user_data["money"] -= betting_money
     #save(user_data["game_number"], "Loss", user_data["money"])
     user_data["game_number"] += 1
-    write_2_gambling()
+    write_2_gambling(file, "False", user_data["money"])
 
 
 
@@ -148,12 +141,12 @@ def winning(user_data, betting_money):
     #safe the money amount in the "money saved" dictionary and save it to the csv file
     #save(user_data["game_number"], "Win", user_data["money"])
     user_data["game_number"] += 1
-    write_2_gambling()
+    write_2_gambling(file, "True", user_data["money"])
 
 
 #make a FUNTIOM if its a tie then just return the amount of the money back to their accound and save it to the csv file
 def tie(user_data):
     #save(user_data["game_number"], "Tie", user_data["money"])
     user_data["games_number"] += 1
-    write_2_gambling()
+    write_2_gambling(file, "Tie", user_data["money"])
 
