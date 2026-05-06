@@ -9,7 +9,7 @@ file = "files/blackjack.csv"
 
 # starting data
 user_data = {
-    "money": 1000,
+    "money": 100,
     "game_number": 1
 }
 
@@ -22,12 +22,7 @@ clock = pygame.time.Clock()
 font = pygame.font.SysFont(None, 40)
 
 
-#dictionary for wining amount
-winning_rounds = []
-#dictionary for lossing amount
-loosing_rounds = []
-#make a money saved dictionary to put how much they have won 
-user_money = []
+
 #make a dictionary called money to safe how much they want to bet 
 betting_money = {}
 
@@ -155,13 +150,9 @@ def winning(user_data, betting_money):
     write_2_gambling()
 
 
-
-
-
-
 #make a FUNTIOM if its a tie then just return the amount of the money back to their accound and save it to the csv file
-def tie(user_data, betting_money):
+def tie(user_data):
     #save(user_data["game_number"], "Tie", user_data["money"])
-    user_data["game_number"] += 1
+    user_data["games_number"] += 1
     write_2_gambling()
 
