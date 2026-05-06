@@ -24,10 +24,10 @@ font = pygame.font.SysFont(None, 40)
 
 
 #make a dictionary called money to safe how much they want to bet 
-betting_money = {}
+betting_money = [0]
 
 
-player = "Player1"
+
 
 
 #had to add the cursor beucase it was confusing without it 
@@ -35,7 +35,7 @@ cursor_visible = True
 cursor_timer = 0
 
 # make a function for the beginning bets
-def starting_bet(player):
+def starting_bet():
 #BTW this is not in my spedocode so I know what is what, and a lot i used videos so im not 100% what does what, but have a very good imaje of the structure
     typed_text = ""
     state = "typing"
@@ -80,12 +80,12 @@ def starting_bet(player):
 
                 if state == "confirm":
                     if event.key == pygame.K_y:
-                        betting_money[player] = int(money)
+                        betting_money = int(money)
                         running = False
                         return betting_money
 
                     elif event.key == pygame.K_n:
-                        return starting_bet(player)
+                        return starting_bet()
 
         #ask user what their starting amount for betting is 
         if state == "typing":

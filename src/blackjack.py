@@ -2,11 +2,12 @@
 
 # import pygame, json, sys 
 import pygame
+import random
 import json
 import sys
 import csv 
-from betting_func import betting_money
 from solitaire import *
+from betting_func import betting_money
 from LD_psuedocode import *
 csv_path = "files/blackjack.csv"
 
@@ -27,7 +28,7 @@ def shuffle_deck(deck):
         random_index = random.randint(0, len(deck) - 1)
         selected_card = deck[random_index]
         deck.remove(int(random_index))
-        shuffled_deck.append(selected_card)
+        shuffled_deck.add(selected_card)
     return shuffled_deck
 
 
@@ -43,7 +44,7 @@ def dealer_shuffle_deck(deck):
 
 
 
-
+shuffle_deck(deck)
 
 #use an other dictionary for the amount of games played 
 games_num =  get_game_num(csv_path)
