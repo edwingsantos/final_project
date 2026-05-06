@@ -7,22 +7,11 @@ from solitaire import shuffle_deck
 from LD_psuedocode import stuff_in_CSV, write_2_gambling
 from betting_func import starting_bet
 
-#csv_path = path to poker csv
 csv_path = "files/poker.csv"
 
-# Open the poker csv. Use LD helper function to check if there are any saved games
-# if that call = True, 
-    # Open csv. read the headers. do: last_line = file.readlines()[-1]. in last_line, user_mon = last_line[2 or "Money"] <- (this depends on whether I do a reader or DictReader)
-# else: user_mon = 100
 
-
-# GAMEPLAY ASSISTANT FUNTIONS
-    # CHECK HANDS (parameters = card_ID_1, card_ID_2, card_ID_3, card_ID_4, card_ID_5, card_ID_6, card_ID_7)
-        # use traderbagel's treys poker hand ranking functions
 def check_hands(hand, table):
     def format_cards(id):
-        # FORMAT CARDS (turn a card id into a shortened version like As (Ace of spades))
-            # Take in ID. Compare to number 1-52 and based on result, give abreviation
         # check the beggining. (A-K)
         id = int(id)
         if id == 1 or id == 14 or id == 27 or id == 40:
@@ -162,12 +151,12 @@ def play():
         screen.fill("Green")
         # draw the cards
 
-
         # when drawing is done:
         #pygame.display.flip()
 
         # Make player bet
         initial_bet = starting_bet(1)
+        bet_amount += initial_bet
 
         # remove first id from shuffled deck list and put it into discared list.
         discard.append(shuffled_deck[0])
@@ -178,41 +167,39 @@ def play():
             table.append(shuffled_deck[0])
             shuffled_deck.pop(0)
 
-    # display the cards from the table list
+        # display the cards from the table list
 
-    # call PLAY ROUND func
+        # call PLAY ROUND func
 
-    # They should come here if they didn't fold
-    # call PLAY ROUND func for LAST TIME
+        # They should come here if they didn't fold
+        # call PLAY ROUND func for LAST TIME
 
-    # "Flip" computer's cards (Display the card instead of the back)
+        # "Flip" computer's cards (Display the card instead of the back)
 
-    # Have new lists for the FORMATED cards from the table, computer, and player lists. Put "formated" infront of the new lists names
+        # Have new lists for the FORMATED cards from the table, computer, and player lists. Put "formated" infront of the new lists names
 
-    # Call treys' evaluate class function and pass in formated_player_hand and formated_table. Save this call as "player_score"
-    player_score = check_hands(player_hand, table)
-    # Call the same function again but pass in formated_comp_hand and formated_table. Save this as "comp_score"
-    comp_score = check_hands(computer_hand, table)
+        # Call treys' evaluate class function and pass in formated_player_hand and formated_table. Save this call as "player_score"
+        player_score = check_hands(player_hand, table)
+        # Call the same function again but pass in formated_comp_hand and formated_table. Save this as "comp_score"
+        comp_score = check_hands(computer_hand, table)
 
-    # If player_score < comp_score (function returns a lower score for better hands): player win
-        # Win = true
-        # user_mon += bet_amount
-    # if player_score > comp_score (computer scored lower than player): player looses
-        # Win = False
-        # user_mon -= bet_amount
-    # if player_score == comp_score (tie, same hand): no one wins (i dont want to figure out high card, unless treys does that, then maybe)
-        # win = Tie
-        # user_mon = user_mon
-    if player_score < comp_score:
-        win = 'True'
-        user_mon += bet_amount
-    elif comp_score < player_score:
-        win = 'False'
-        user_mon -= bet_amount
-    elif player_score == comp_score:
-        win = 'Tie'
-        user_mon = user_mon
+        if player_score < comp_score:
+            win = 'True'
+            user_mon += bet_amount
+        elif comp_score < player_score:
+            win = 'False'
+            user_mon -= bet_amount
+        elif player_score == comp_score:
+            win = 'Tie'
+            user_mon = user_mon
+        else:
+            # something went wrong
+            print("Something happened when comparing who won in poker.\nFile:poker_psudo.py\nLine: 197")
+        
+        # Tell the user who won, new money amount, and end the Pygame loop
 
     # call LD's write to CSV for gambling function and pass in csv_path, win, user_mon
     # return to main menu
     write_2_gambling(csv_path, win, user_mon)
+
+play()

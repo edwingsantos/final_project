@@ -28,7 +28,7 @@ WIDTH, HEIGHT = 1000, 700
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Solitaire")
 
-clock = pygame.time.CLock()
+clock = pygame.time.Clock()
 FONT= pygame.font.SysFont(None,24)
 
 GREEN = (0, 120, 0)
