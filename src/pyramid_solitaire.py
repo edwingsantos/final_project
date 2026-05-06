@@ -61,9 +61,7 @@ def Accessible(tab):
                 index_y = x.index(y)
                 below_row = [index_y,index_y+1]
                 card_allowable = {y:below_row}
-                blocked[x] = card_allowable
-                #!!!!!!!!!FINISH LOGIC!!!!!!!!!!!
-                
+                blocked[tab.index(x)] = card_allowable
     
     #output the dictionary
     return blocked
@@ -119,70 +117,80 @@ def draw(draw_pile,shown_pile):
         draw_pile.pop(0)
 
 #Discard King function (tableu, discard pile, shown draw pile)
+def king_removal(tableu,discard,shown_pile,picked_card):
     #call accessibility function for accessible cards
+    takeable = Accessible(tableu)
     #allow user to select a card that is accessible
+    user_choice = 0
     
+    with open("files/cards.json","r") as card_info:
+        deck = json.load(card_info)
+
     #check if the card is a king
     
     #if yes
+    if deck[picked_card]["Value"] == 13:
         # if card is in tableu
             #remove from tableu
+        for x in tableu:
+            for y in x:
+                if x == picked_card:
+                    x.pop(y)
         #else
+        else:
             #remove from draw
+            shown_pile.pop(0)
         #add to discard pile
+        discard.insert(picked_card)
     #if no
+    else:
         #display error message stating that the card selected was not a king
+        print("PUT INVALID KING MESSAGE HERE")
 
-
-#matching check (card1, card2)
-    #use JSON reading to get values of card1 and card2
-    #if card1[value] + card2[value] is = 13
-        #output True
-    #else
-        #output false
-
-#Matching inside tableu (tableu, discard pile, shown draw pile)
-    #call acessiblility function
-    # allow user to select any valid card from tableu
-    # allow user to select another card
-    # call matching check (card1, card2)
-    #if matching check is True
-        #remove cards from tableu
-        #add cards to discard pile
-    #else
-        #display invalid match (values)
-
-#matching from draw pile and tableu (tableu, discard pile, shown draw pile)
-    #call accessibility function
-    # allow user to select a card from tableu   
-    # use card from the top of shown draw pile
-    # call matching check (tableu card, draw pile card)
-    #if matching cards check is True
-        #Remove card from tableu
-        #remove card from draw pile
-        #add both to discard pile
-    #else 
-        #display invalid match (values)
 
 
 #Gameloop (setup variables)
+def game():
     #call setup and save returned values
+    tableu,discard_pile,shuffled_deck,shown_draw_pile = setup()
     #call accessibility function and save the dict
+    blocked_cards = Accessible(tableu)
     
+    #pygame setup
+    pygame.init()
+    screen = pygame.display.set_mode((1600,1000))
+    clock = pygame.time.Clock()
+    running = True
+
     #actual gameloop
+    while running:
+        
+        #stop the program if the user exits the window
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+        
+        screen.fill("darkgreen")
+
+        pygame.draw.rect(screen,"white",(5,5,50,100),width=10,border_radius=5)
+        pygame.draw.rect(screen,"black",(100,50,1400,800),width=1,border_radius=5)
+        
+        #button sprites
+        pygame.draw.rect(screen,"blue",(100,950,100,50),width=0,border_radius=5)
+        pygame.draw.rect(screen,"red",(200,950,100,50),width=0,border_radius=5)
+        pygame.draw.rect(screen,"yellow",(300,950,100,50),width=0,border_radius=5)
+        pygame.draw.rect(screen,"purple",(400,950,100,50),width=0,border_radius=5)
 
         #allow user to click button to choose type of move to do
         #onclick of draw card button
             #call draw cards function
         #onclick of discard king button
             #call draw cards function
-        #onclick of matching inside tableu button
-            #call corresponding function
-        #onclick of matching from draw and tableu
-            #call corresponding function
+        #onclick of making a match
+            #call match making function
         
         #update display
-
+        pygame.display.flip()
         #check if tableu is gone
         #if yes
             #leave gameloop
@@ -193,4 +201,7 @@ def draw(draw_pile,shown_pile):
         #If user clicks the quit button
             #leave gameloop
             #save game number and lose
-        
+
+        #framerate variable
+        dt = clock.tick(60) / 100
+game()
