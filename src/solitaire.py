@@ -28,7 +28,7 @@ WIDTH, HEIGHT = 1000, 700
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Solitaire")
 
-clock = pygame.time.CLock()
+clock = pygame.time.Clock()
 FONT= pygame.font.SysFont(None,24)
 
 GREEN = (0, 120, 0)
@@ -56,9 +56,10 @@ class Card:
 
     def __repr__(self):
         return f"{self.value}{self.suit[0]}"
-    
+
+deck = [0]
 def create_deck():
-    deck = []
+    global deck
 
     with open("files/cards.json", "r") as f:
         data = json.load(f)
@@ -84,15 +85,18 @@ def create_deck():
         # Add that card to the shuffled deck
     # Once all cards have been moved, return the shuffled deck
 
+# Aun no hace nada para mi codigo simplemente imprime lo mismo cada vez y esto no me ayuda
+
+shuffled_deck = [0]
 def shuffle_deck(deck):   
-    shuffled_deck = []
+    global shuffled_deck
     while len(deck) > 0:       
         random_index = random.randint(0, len(deck) - 1)
         selected_card = deck[random_index]
-        deck.pop(int(random_index))
+        integer = int(random_index)
+        deck.remove(integer)  # Aun tengo que ver como funciona .remove o .pop o algo mas
         shuffled_deck.append(selected_card)
     return shuffled_deck
-
 
 # SETUP BOARD (7 COLUMNS)
 #Create 7 empty columns (tableau)
@@ -172,9 +176,6 @@ def draw_tableau(tableau):
 #    Ask for destination (column or foundation)
 #Return move choice
 
-#Esta es la funcion pero la cosa es que lo tengo que importar mas no copiar y pegar
-# Y tengo que usar json para las cartas
-
 
 # VALID MOVE CHECK -Lizzie
 # If moving card:
@@ -184,7 +185,6 @@ def draw_tableau(tableau):
 #     Move is valid
 # Else:
 #     Move is invalid
-# Esto es de Lizzie pero tengo que importarlo mas no copiar y pegar y tnewgo que agregarlo a main
 
 
 # MOVE FUNCTION
@@ -197,10 +197,75 @@ def draw_tableau(tableau):
 #ELSE:
 #    Print "Error, can't move that card"
 
+# Esto es de Lizzie pero tengo que importarlo mas no copiar y pegar y tnewgo que agregarlo a main
+
+def opp_color(card_id1, card_id2):
+    def get_color(id):
+        with open("P:/DeLong, Lizzie/final_project/files/cards.json", 'r') as json:
+            for item in json:
+                if str(id) == item:
+                    color = item["Color"]
+                    break
+                else:
+                    continue
+        return color
+    
+    # main part of this function
+    card_color1 = get_color(card_id1)
+    card_color2 = get_color(card_id2)
+
+    if card_color1 == card_color2:
+        # The colors match and they cannot be on top of each other
+        return False
+    else:
+        # card colors should be opposite and therefore can be on each other
+        return True
+
+def card_num_check(card_id1, card_id2):
+    def get_number(id):
+        with open("P:/DeLong, Lizzie/final_project/files/cards.json", 'r') as json:
+            for item in json:
+                if str(id) == item:
+                    number = item["Value"]
+                    break
+                else:
+                    continue
+        return number
+    
+    # main code of this function
+    card_num1 = get_number(card_id1)
+    card_num2 = get_number(card_id2)
+
+    if card_num1 + 1 == card_num2:
+        # the first card can be moved onto the second card. Valid
+        return True
+    else:
+        return False
+    
+def valid_move(moved_card_id, moved_onto_id):
+    valid_color = opp_color(moved_card_id, moved_onto_id)
+    valid_num = card_num_check(moved_card_id,moved_onto_id)
+
+    if valid_color == True and valid_num == True:
+        return True
+    else:
+        return False
+
+def write_2_solitaire(path, won):
+    game_num = get_game_num(path)
+    try:
+        with open(path, "a", newline='') as file:
+            fieldnames = ['Game Number', 'Win Game']
+            writer = csv.DictWriter(file, fieldnames=fieldnames)
+            writer.writerow({'Game Number': game_num, 'Win Game': won})
+    except Exception as e:
+        print(f"Could not open the file given.\nPath given: {path}\nReason for error: {e}")  
 # FOUNDATION RULES
 # Cards must be same suit
 # Must go in order: A to  K
 # Only Ace can start foundation
+
+#def rules():
 
 # WIN CONDITION
 # Check all 4 foundation piles
@@ -224,6 +289,7 @@ def draw_tableau(tableau):
 #         End game
 # tengo que agregar el tableau en alguna parte del loop
 deck = create_deck()
+#deck = shuffle_deck(deck) # Esta parte lo necesito pero hace que mi codigo sea obsoleto
 
 tableau, stock,waste,foundations = setup_board(deck) 
 
@@ -270,3 +336,7 @@ def game_loop():
         pygame.display.flip()
 
     pygame.quit()
+game_loop()
+
+# Por ahora lo que puede hacer el codigo es correr y ostrar las cartas aun no muestra las instrucciones
+# Y no me deja mover las cartas aun 
