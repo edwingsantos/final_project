@@ -9,6 +9,7 @@
 # Creo que ya lo solucione
 import pygame
 import random
+import json
 import csv
 from LD_psuedocode import *
 
@@ -21,16 +22,21 @@ from LD_psuedocode import *
 # Add button "Exit"
 #      close program
 # Display window
+pygame.init()
+
 WIDTH, HEIGHT = 1000, 700
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("LV 1 Solitaire (Pygame)")
+pygame.display.set_caption("Solitaire")
+
+clock = pygame.time.CLock()
+FONT= pygame.font.SysFont(None,24)
 
 GREEN = (0, 120, 0)
 WHITE = (255, 255, 255)
 GRAY = (80, 80, 80)
 BLACK = (0, 0, 0)
 
-
+CARD_W, CARD_H = 70,100
 
 # CREATE DECK -  call the JSON with the cards
 # Make empty list called deck
@@ -38,7 +44,7 @@ BLACK = (0, 0, 0)
 #     For each value (A, 2–10, J, Q, K):
 #         Add card to deck
 # Return deck
-
+# Talves en vez de clases immporto el json y de repente funciona
 class Card:
     def __init__(self, suit, value):
         self.suit = suit
@@ -53,13 +59,19 @@ class Card:
     
 def create_deck():
     deck = []
-    suits = ["hearts", "diamonds", "clubs", "spades"]
-    values = ["A", "2", "3", "4", "5", "6", "7",
-              "8", "9", "10", "J", "Q", "K"]
 
-    for suit in suits:
-        for value in values:
-            deck.append(Card(suit, value))
+    with open("files/cards.json", "r") as f:
+        data = json.load(f)
+
+    for key in data:
+        card_data = data[key]
+
+        card = Card(
+            suit=card_data["Suit"].lower(),
+            value=card_data["Value"]
+        )
+
+        deck.append(card)
 
     return deck
 
@@ -97,6 +109,7 @@ def shuffle_deck(deck):
 #Create 4 empty FOUNDATION piles
 #Return tableau, stock, waste, foundations
 
+# Tal vez cambie esto porque tengfo que importar el json cards
 def setup_board(deck):
     tableau = [[] for _ in range(7)]
 
@@ -125,6 +138,7 @@ def setup_board(deck):
 # (Maybe: hide cards underneath)
 CARD_W, CARD_H = 70, 100
 
+# Tal vez esto cambie pero tengo que mejorar unas cuatnas cosas
 def draw_card(x, y, card):
     if card.face_up:
         pygame.draw.rect(screen, WHITE, (x, y, CARD_W, CARD_H))
@@ -132,10 +146,10 @@ def draw_card(x, y, card):
     else:
         pygame.draw.rect(screen, GRAY, (x, y, CARD_W, CARD_H))
         text = FONT.render("X", True, BLACK)
-
+# Encontrar porque no funciona esto de aqui
     screen.blit(text, (x + 10, y + 40))
 
-
+# Esto es para ver las 7 columnas de las cartas
 def draw_tableau(tableau):
     start_x = 50
     start_y = 120
@@ -158,6 +172,9 @@ def draw_tableau(tableau):
 #    Ask for destination (column or foundation)
 #Return move choice
 
+#Esta es la funcion pero la cosa es que lo tengo que importar mas no copiar y pegar
+# Y tengo que usar json para las cartas
+
 
 # VALID MOVE CHECK -Lizzie
 # If moving card:
@@ -167,6 +184,8 @@ def draw_tableau(tableau):
 #     Move is valid
 # Else:
 #     Move is invalid
+# Esto es de Lizzie pero tengo que importarlo mas no copiar y pegar y tnewgo que agregarlo a main
+
 
 # MOVE FUNCTION
 # Take card (or stack) from source
@@ -188,6 +207,7 @@ def draw_tableau(tableau):
 # If each pile has 13 cards in correct order:
 #     Player wins
 
+
 # SAVE GAME STATS - Lizzie
 # Open CSV file
 # Write win or loss
@@ -202,44 +222,51 @@ def draw_tableau(tableau):
 #         Print "You win"
 #         Save result
 #         End game
+# tengo que agregar el tableau en alguna parte del loop
+deck = create_deck()
 
-while running:
-    clock.tick(60)
-    screen.fill(GREEN)
+tableau, stock,waste,foundations = setup_board(deck) 
 
-    # EVENTS
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+def game_loop():
+    running = True
+    selected = None
 
-# detects mouse is clicked, store the position of the click
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            mx, my = event.pos
+    while running:
+        clock.tick(60)
+        screen.fill(GREEN)
 
-            # check tableau clicks
-            start_x = 50
-            start_y = 120
-            spacing_x = 130
-            spacing_y = 25
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
 
-            for col_i, col in enumerate(tableau):
-                for row_i, card in enumerate(col):
-                    x = start_x + col_i * spacing_x
-                    y = start_y + row_i * spacing_y
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mx, my = event.pos
 
-                    rect = pygame.Rect(x, y, CARD_W, CARD_H)
+                start_x = 50
+                start_y = 120
+                spacing_x = 130
+                spacing_y = 25
 
-                    if rect.collidepoint(mx, my) and card.face_up:
-                        selected = card if selected is None else None
+                for col_i, col in enumerate(tableau):
+                    for row_i, card in enumerate(col):
+                        x = start_x + col_i * spacing_x
+                        y = start_y + row_i * spacing_y
 
-    # DRAW BOARD
-    draw_tableau(tableau)
+                        rect = pygame.Rect(x, y, CARD_W, CARD_H)
 
-    # SHOW SELECTION STATUS
-    if selected:
-        text = FONT.render(f"Selected: {selected}", True, WHITE)
-        screen.blit(text, (50, 20))
+                        if rect.collidepoint(mx, my) and card.face_up:
+                            if selected is None:
+                                selected = card
+                            else:
+                                print(f"Try move {selected} -> {card}")
+                                selected = None
 
-    pygame.display.flip()
+        draw_tableau(tableau)
 
-pygame.quit()
+        if selected:
+            text = FONT.render(f"Selected: {selected}", True, WHITE)
+            screen.blit(text, (50, 20))
+
+        pygame.display.flip()
+
+    pygame.quit()
