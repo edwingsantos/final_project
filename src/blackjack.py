@@ -25,16 +25,22 @@ dealer_shuffled_deck = []
 def shuffle_deck(deck):   
     while len(deck) > 0:       
         random_index = random.randint(0, len(deck) - 1)
-        selected_card = deck.remove(random_index)
+        selected_card = deck[random_index]
+        deck.remove(int(random_index))
         shuffled_deck.append(selected_card)
     return shuffled_deck
+
+
 #do the same thing but just append it to the dealers hand 
 def dealer_shuffle_deck(deck):   
     while len(deck) > 0:       
         random_index = random.randint(0, len(deck) - 1)
-        selected_card = deck.remove(random_index)
+        selected_card = deck[random_index]
+        deck.remove(int(random_index))
         dealer_shuffled_deck.append(selected_card)
     return dealer_shuffled_deck
+
+
 
 
 

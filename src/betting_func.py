@@ -82,6 +82,7 @@ def starting_bet(player):
                     if event.key == pygame.K_y:
                         betting_money[player] = int(money)
                         running = False
+                        return betting_money
 
                     elif event.key == pygame.K_n:
                         return starting_bet(player)
