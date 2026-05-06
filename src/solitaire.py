@@ -9,6 +9,7 @@
 # Creo que ya lo solucione
 import pygame
 import random
+import json
 import csv
 from LD_psuedocode import *
 
@@ -21,16 +22,21 @@ from LD_psuedocode import *
 # Add button "Exit"
 #      close program
 # Display window
+pygame.init()
+
 WIDTH, HEIGHT = 1000, 700
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Solitaire")
+
+clock = pygame.time.CLock()
+FONT= pygame.font.SysFont(None,24)
 
 GREEN = (0, 120, 0)
 WHITE = (255, 255, 255)
 GRAY = (80, 80, 80)
 BLACK = (0, 0, 0)
 
-
+CARD_W, CARD_H = 70,100
 
 # CREATE DECK -  call the JSON with the cards
 # Make empty list called deck
@@ -53,13 +59,19 @@ class Card:
     
 def create_deck():
     deck = []
-    suits = ["hearts", "diamonds", "clubs", "spades"]
-    values = ["A", "2", "3", "4", "5", "6", "7",
-              "8", "9", "10", "J", "Q", "K"]
 
-    for suit in suits:
-        for value in values:
-            deck.append(Card(suit, value))
+    with open("files/cards.json", "r") as f:
+        data = json.load(f)
+
+    for key in data:
+        card_data = data[key]
+
+        card = Card(
+            suit=card_data["Suit"].lower(),
+            value=card_data["Value"]
+        )
+
+        deck.append(card)
 
     return deck
 
@@ -77,6 +89,7 @@ def shuffle_deck(deck):
     while len(deck) > 0:       
         random_index = random.randint(0, len(deck) - 1)
         selected_card = deck.remove(random_index) # tengo qu avergiuar como funciona esta parte porque lamentabemente no funciona el remove
+        # de repente .pop funcione pero aun no se
         shuffled_deck.append(selected_card)
     return shuffled_deck
 
@@ -129,10 +142,10 @@ CARD_W, CARD_H = 70, 100
 def draw_card(x, y, card):
     if card.face_up:
         pygame.draw.rect(screen, WHITE, (x, y, CARD_W, CARD_H))
-        #text = FONT.render(str(card), True, BLACK)
+        text = FONT.render(str(card), True, BLACK)
     else:
         pygame.draw.rect(screen, GRAY, (x, y, CARD_W, CARD_H))
-        #text = FONT.render("X", True, BLACK)
+        text = FONT.render("X", True, BLACK)
 # Encontrar porque no funciona esto de aqui
     screen.blit(text, (x + 10, y + 40))
 
@@ -161,27 +174,8 @@ def draw_tableau(tableau):
 
 #Esta es la funcion pero la cosa es que lo tengo que importar mas no copiar y pegar
 # Y tengo que usar json para las cartas
-def opp_color(card_id1, card_id2):
-    def get_color(id):
-        with open("P:/DeLong, Lizzie/final_project/files/cards.json", 'r') as json:
-            for item in json:
-                if str(id) == item:
-                    color = item["Color"]
-                    break
-                else:
-                    continue
-        return color
-    
-    # main part of this function
-    card_color1 = get_color(card_id1)
-    card_color2 = get_color(card_id2)
 
-    if card_color1 == card_color2:
-        # The colors match and they cannot be on top of each other
-        return False
-    else:
-        # card colors should be opposite and therefore can be on each other
-        return True
+
 # VALID MOVE CHECK -Lizzie
 # If moving card:
 #     Check colors are opposite (red vs black)
@@ -191,14 +185,8 @@ def opp_color(card_id1, card_id2):
 # Else:
 #     Move is invalid
 # Esto es de Lizzie pero tengo que importarlo mas no copiar y pegar y tnewgo que agregarlo a main
-def valid_move(moved_card_id, moved_onto_id):
-    valid_color = opp_color(moved_card_id, moved_onto_id)
-    valid_num = card_num_check(moved_card_id,moved_onto_id)
 
-    if valid_color == True and valid_num == True:
-        return True
-    else:
-        return False
+
 # MOVE FUNCTION
 # Take card (or stack) from source
 #Check if move is valid
@@ -218,24 +206,12 @@ def valid_move(moved_card_id, moved_onto_id):
 # Check all 4 foundation piles
 # If each pile has 13 cards in correct order:
 #     Player wins
-def win():
-    # Necesito saber como hacer 4 foundation piles
-    # de acuerdo a eso 
+
 
 # SAVE GAME STATS - Lizzie
 # Open CSV file
 # Write win or loss
 # Save and close file
-def write_2_solitaire(path, won):
-    game_num = get_game_num(path)
-    try:
-        with open(path, "a", newline='') as file:
-            fieldnames = ['Game Number', 'Win Game']
-            writer = csv.DictWriter(file, fieldnames=fieldnames)
-            writer.writerow({'Game Number': game_num, 'Win Game': won})
-    except Exception as e:
-        print(f"Could not open the file given.\nPath given: {path}\nReason for error: {e}")
-# Esto es para guardarlo en un CSV 
 
 # GAME LOOP - Only for testing
 # While game is not over:
@@ -247,22 +223,25 @@ def write_2_solitaire(path, won):
 #         Save result
 #         End game
 # tengo que agregar el tableau en alguna parte del loop
+deck = create_deck()
 
-def loop():
-    while running: # running no esta definido y es un problema que tengo
-        #clock.tick(60)
+tableau, stock,waste,foundations = setup_board(deck) 
+
+def game_loop():
+    running = True
+    selected = None
+
+    while running:
+        clock.tick(60)
         screen.fill(GREEN)
 
-        # EVENTS
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
 
-    # detects mouse is clicked, store the position of the click
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mx, my = event.pos
 
-                # check tableau clicks
                 start_x = 50
                 start_y = 120
                 spacing_x = 130
@@ -276,12 +255,14 @@ def loop():
                         rect = pygame.Rect(x, y, CARD_W, CARD_H)
 
                         if rect.collidepoint(mx, my) and card.face_up:
-                            selected = card if selected is None else None
+                            if selected is None:
+                                selected = card
+                            else:
+                                print(f"Try move {selected} -> {card}")
+                                selected = None
 
-        # DRAW BOARD
         draw_tableau(tableau)
 
-        # SHOW SELECTION STATUS
         if selected:
             text = FONT.render(f"Selected: {selected}", True, WHITE)
             screen.blit(text, (50, 20))
@@ -289,4 +270,3 @@ def loop():
         pygame.display.flip()
 
     pygame.quit()
-loop()
