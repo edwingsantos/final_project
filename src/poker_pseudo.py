@@ -1,10 +1,11 @@
 # Pseudocode for Poker (LD)
 import csv
 import pygame
-import tkinter
+import json
 from treys import Evaluator, Card
 from solitaire import shuffle_deck
 from LD_psuedocode import stuff_in_CSV, write_2_gambling
+from betting_func import starting_bet
 
 #csv_path = path to poker csv
 csv_path = "files/poker.csv"
@@ -13,22 +14,7 @@ csv_path = "files/poker.csv"
 # if that call = True, 
     # Open csv. read the headers. do: last_line = file.readlines()[-1]. in last_line, user_mon = last_line[2 or "Money"] <- (this depends on whether I do a reader or DictReader)
 # else: user_mon = 100
-saved_game = stuff_in_CSV(csv_path)
-if saved_game == True:
-    try:
-        with open(csv_path, "r") as file:
-            last_line = file.readlines()[-1]
-            user_mon = last_line[2]
-    except Exception as e:
-        print(f"Could not open the file given.\nPath given: {csv_path}\nReason for error: {e}")
-else:
-    user_mon = 100
 
-player_hand = []
-computer_hand = []
-discard = []
-table = []
-bet_amount = 0
 
 # GAMEPLAY ASSISTANT FUNTIONS
     # CHECK HANDS (parameters = card_ID_1, card_ID_2, card_ID_3, card_ID_4, card_ID_5, card_ID_6, card_ID_7)
@@ -126,52 +112,107 @@ def check_hands(hand, table):
 def play_round():
     pass
 
+def play():
+    # This is what will be called when the user chooses to play poker.
+    # get the variables needed for play
+    saved_game = stuff_in_CSV(csv_path)
+    if saved_game == True:
+        try:
+            with open(csv_path, "r") as file:
+                last_line = file.readlines()[-1]
+                user_mon = last_line[2]
+        except Exception as e:
+            print(f"Could not open the file given.\nPath given: {csv_path}\nReason for error: {e}")
+    else:
+        user_mon = 100
 
-# Call LV shuffle card function
-# take the first two card ids and give them to the player (remove these ids from the list). Display the cards for these Ids. Append these cards into a list called player_hand.
+    player_hand = []
+    computer_hand = []
+    discard = []
+    table = []
+    bet_amount = 0
 
-# take the next two card ids and give them to the computer (remove these ids from the list). Save these cards in a comp_hand list. Display card BACKS to not let the player know the computer's cards
+    # Call LV shuffle card function
+    with open("files/cards.json","r") as cards:
+        deck = json.load(cards)
+        ordered_deck = list(deck.keys())
+        #call shuffle function to return a randomized list
+        shuffled_deck = shuffle_deck(ordered_deck)
 
-# have user bet (call ES betting func) (required!). Make sure computer MATCHES what the user has in
-# Variable: bet_amount = what the user has betted (this could be added onto with future optional bets)
+    # take the first two card ids and give them to the player (remove these ids from the list). Display the cards for these Ids. Append these cards into a list called player_hand.
+    for _ in range(2):
+        player_hand.append(shuffled_deck[0])
+        shuffled_deck.pop(0)
 
-# remove first id from shuffled deck list and put it into discared list.
-# remove next THREE ids from shuffled list and put them into the table list. 
-# display the cards from the table list
+    # take the next two card ids and give them to the computer (remove these ids from the list). Save these cards in a comp_hand list. Display card BACKS to not let the player know the computer's cards
+    for _ in range(2):
+        computer_hand.append(shuffled_deck[0])
+        shuffled_deck.pop(0)
 
-# call PLAY ROUND func
 
-# They should come here if they didn't fold
-# call PLAY ROUND func for LAST TIME
+    pygame.init()
+    screen = pygame.display.set_mode((1440, 1100))
+    running = True
+    
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+        
+        screen.fill("Green")
+        # draw the cards
 
-# "Flip" computer's cards (Display the card instead of the back)
 
-# Have new lists for the FORMATED cards from the table, computer, and player lists. Put "formated" infront of the new lists names
+        # when drawing is done:
+        #pygame.display.flip()
 
-# Call treys' evaluate class function and pass in formated_player_hand and formated_table. Save this call as "player_score"
-player_score = check_hands(player_hand, table)
-# Call the same function again but pass in formated_comp_hand and formated_table. Save this as "comp_score"
-comp_score = check_hands(computer_hand, table)
+        # Make player bet
+        initial_bet = starting_bet(1)
 
-# If player_score < comp_score (function returns a lower score for better hands): player win
-    # Win = true
-    # user_mon += bet_amount
-# if player_score > comp_score (computer scored lower than player): player looses
-    # Win = False
-    # user_mon -= bet_amount
-# if player_score == comp_score (tie, same hand): no one wins (i dont want to figure out high card, unless treys does that, then maybe)
-    # win = Tie
-    # user_mon = user_mon
-if player_score < comp_score:
-    win = 'True'
-    user_mon += bet_amount
-elif comp_score < player_score:
-    win = 'False'
-    user_mon -= bet_amount
-elif player_score == comp_score:
-    win = 'Tie'
-    user_mon = user_mon
+        # remove first id from shuffled deck list and put it into discared list.
+        discard.append(shuffled_deck[0])
+        shuffled_deck.pop(0)
 
-# call LD's write to CSV for gambling function and pass in csv_path, win, user_mon
-# return to main menu
-write_2_gambling(csv_path, win, user_mon)
+        # remove next THREE ids from shuffled list and put them into the table list. 
+        for _ in range(3):
+            table.append(shuffled_deck[0])
+            shuffled_deck.pop(0)
+
+    # display the cards from the table list
+
+    # call PLAY ROUND func
+
+    # They should come here if they didn't fold
+    # call PLAY ROUND func for LAST TIME
+
+    # "Flip" computer's cards (Display the card instead of the back)
+
+    # Have new lists for the FORMATED cards from the table, computer, and player lists. Put "formated" infront of the new lists names
+
+    # Call treys' evaluate class function and pass in formated_player_hand and formated_table. Save this call as "player_score"
+    player_score = check_hands(player_hand, table)
+    # Call the same function again but pass in formated_comp_hand and formated_table. Save this as "comp_score"
+    comp_score = check_hands(computer_hand, table)
+
+    # If player_score < comp_score (function returns a lower score for better hands): player win
+        # Win = true
+        # user_mon += bet_amount
+    # if player_score > comp_score (computer scored lower than player): player looses
+        # Win = False
+        # user_mon -= bet_amount
+    # if player_score == comp_score (tie, same hand): no one wins (i dont want to figure out high card, unless treys does that, then maybe)
+        # win = Tie
+        # user_mon = user_mon
+    if player_score < comp_score:
+        win = 'True'
+        user_mon += bet_amount
+    elif comp_score < player_score:
+        win = 'False'
+        user_mon -= bet_amount
+    elif player_score == comp_score:
+        win = 'Tie'
+        user_mon = user_mon
+
+    # call LD's write to CSV for gambling function and pass in csv_path, win, user_mon
+    # return to main menu
+    write_2_gambling(csv_path, win, user_mon)
