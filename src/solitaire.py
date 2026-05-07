@@ -277,8 +277,9 @@ def game_loop():
 
         pygame.display.flip()
 
-    pygame.quit()
-game_loop()
+    #pygame.quit()
+#game_loop()
 
 # Por ahora lo que puede hacer el codigo es correr y ostrar las cartas aun no muestra las instrucciones
 # Y no me deja mover las cartas aun 
+# Write instructions for Solitaire
