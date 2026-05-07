@@ -263,7 +263,7 @@ def game_loop():
                             if selected is None:
                                 selected = card
                             else:
-                                if valid_move(card_to_id(selected), card_to_id(card))
+                                if valid_move(card_to_id(selected), card_to_id(card)):
                                     print("Valid move")
                                 else:
                                     print("Invalid move")
