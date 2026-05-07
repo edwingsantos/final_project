@@ -181,6 +181,12 @@ def game():
         pygame.draw.rect(screen,"yellow",(300,950,100,50),width=0,border_radius=5)
         pygame.draw.rect(screen,"purple",(400,950,100,50),width=0,border_radius=5)
 
+        #Button functionality - Add functions and code
+        #if pygame.MOUSEBUTTONDOWN():
+        #    match pygame.mouse.get_pos():
+        #        case () :
+        #            print("ACTIVATE CODE")
+
         #allow user to click button to choose type of move to do
         #onclick of draw card button
             #call draw cards function
