@@ -258,7 +258,10 @@ def game_loop():
                             if selected is None:
                                 selected = card
                             else:
-                                print(f"Try move {selected} -> {card}")
+                                if valid_move(card_to_id(selected), card_to_id(card)):
+                                    print("Valid move")
+                                else:
+                                    print("Invalid move")
                                 selected = None
 
         draw_tableau(tableau)
