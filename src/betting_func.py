@@ -67,7 +67,7 @@ def starting_bet():
                     elif event.key == pygame.K_RETURN:
 
                         #max of 100 doolars betting 
-                        if typed_text != "" and int(typed_text) <= 100 and int(typed_text) > 0:
+                        if typed_text != "" and int(typed_text) <= 100 and int(typed_text) >= 0 :
                             money = typed_text
                             state = "confirm"
                             typed_text = ""
@@ -79,7 +79,7 @@ def starting_bet():
                         return betting_money
 
                     elif event.key == pygame.K_n:
-                        continue
+                        return starting_bet()
 
         #ask user what their starting amount for betting is 
         if state == "typing":
@@ -114,7 +114,7 @@ def starting_bet():
         pygame.display.update()
 
 #running the thing 
-"""starting_bet(player)"""
+"""starting_bet()"""
 #quiting the game 
 #pygame.quit()
 
