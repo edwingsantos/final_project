@@ -57,11 +57,15 @@ class Card:
     def __repr__(self):
         return f"{self.value}{self.suit[0]}"
 
-deck = [0]
-def create_deck():
-    global deck
 
-    with open("files/cards.json", "r") as f:
+def card_to_id(card):
+    return str(card.value) + "_" + card.suit
+
+def create_deck(json_path):
+
+    deck = []
+
+    with open(json_path, "r") as f:
         data = json.load(f)
 
     for key in data:
@@ -87,17 +91,13 @@ def create_deck():
 
 # Aun no hace nada para mi codigo simplemente imprime lo mismo cada vez y esto no me ayuda
 
-shuffled_deck = [0]
-def shuffle_deck(deck):   
-    global shuffled_deck
-    while len(deck) > 0:       
-        random_index = random.randint(0, len(deck) - 1)
-        selected_card = deck[random_index]
-        integer = int(random_index)
-        deck.remove(integer)  # Aun tengo que ver como funciona .remove o .pop o algo mas
-        shuffled_deck.append(selected_card)
-    return shuffled_deck
+def shuffle_deck(json_path):
 
+    deck = create_deck(json_path)
+
+    random.shuffle(deck)
+
+    return deck
 # SETUP BOARD (7 COLUMNS)
 #Create 7 empty columns (tableau)
 #FOR column = 1 TO 7:
@@ -199,67 +199,7 @@ def draw_tableau(tableau):
 
 # Esto es de Lizzie pero tengo que importarlo mas no copiar y pegar y tnewgo que agregarlo a main
 
-def opp_color(card_id1, card_id2):
-    def get_color(id):
-        with open("P:/DeLong, Lizzie/final_project/files/cards.json", 'r') as json:
-            for item in json:
-                if str(id) == item:
-                    color = item["Color"]
-                    break
-                else:
-                    continue
-        return color
-    
-    # main part of this function
-    card_color1 = get_color(card_id1)
-    card_color2 = get_color(card_id2)
 
-    if card_color1 == card_color2:
-        # The colors match and they cannot be on top of each other
-        return False
-    else:
-        # card colors should be opposite and therefore can be on each other
-        return True
-
-def card_num_check(card_id1, card_id2):
-    def get_number(id):
-        with open("P:/DeLong, Lizzie/final_project/files/cards.json", 'r') as json:
-            for item in json:
-                if str(id) == item:
-                    number = item["Value"]
-                    break
-                else:
-                    continue
-        return number
-    
-    # main code of this function
-    card_num1 = get_number(card_id1)
-    card_num2 = get_number(card_id2)
-
-    if card_num1 + 1 == card_num2:
-        # the first card can be moved onto the second card. Valid
-        return True
-    else:
-        return False
-    
-def valid_move(moved_card_id, moved_onto_id):
-    valid_color = opp_color(moved_card_id, moved_onto_id)
-    valid_num = card_num_check(moved_card_id,moved_onto_id)
-
-    if valid_color == True and valid_num == True:
-        return True
-    else:
-        return False
-
-def write_2_solitaire(path, won):
-    game_num = get_game_num(path)
-    try:
-        with open(path, "a", newline='') as file:
-            fieldnames = ['Game Number', 'Win Game']
-            writer = csv.DictWriter(file, fieldnames=fieldnames)
-            writer.writerow({'Game Number': game_num, 'Win Game': won})
-    except Exception as e:
-        print(f"Could not open the file given.\nPath given: {path}\nReason for error: {e}")  
 # FOUNDATION RULES
 # Cards must be same suit
 # Must go in order: A to  K
@@ -288,8 +228,7 @@ def write_2_solitaire(path, won):
 #         Save result
 #         End game
 # tengo que agregar el tableau en alguna parte del loop
-deck = create_deck()
-#deck = shuffle_deck(deck) # Esta parte lo necesito pero hace que mi codigo sea obsoleto
+deck = shuffle_deck("files/cards.json")
 
 tableau, stock,waste,foundations = setup_board(deck) 
 
@@ -324,7 +263,10 @@ def game_loop():
                             if selected is None:
                                 selected = card
                             else:
-                                print(f"Try move {selected} -> {card}")
+                                if valid_move(card_to_id(selected), card_to_id(card))
+                                    print("Valid move")
+                                else:
+                                    print("Invalid move")
                                 selected = None
 
         draw_tableau(tableau)
