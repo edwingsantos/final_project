@@ -19,7 +19,7 @@ font = pygame.font.SysFont(None, 40)
 
 #use dictionary called point to safe the cards choosen 
 #make a dictionary for the dealers hand 
-shuffled_deck = []
+shuffled_deck = [0]
 dealer_shuffled_deck = []
 
 #call the shufle funtion from lucci and append it to the points dictionary 
@@ -27,25 +27,28 @@ def shuffle_deck(deck):
     while len(deck) > 0:       
         random_index = random.randint(0, len(deck) - 1)
         selected_card = deck[random_index]
-        deck.remove(int(random_index))
-        shuffled_deck.add(selected_card)
+        interger = int(random_index)
+        deck.pop(interger)
+        shuffled_deck.append(selected_card)
     return shuffled_deck
 
 
-#do the same thing but just append it to the dealers hand 
-def dealer_shuffle_deck(deck):   
+def dealder_shuffle_deck(deck):   
     while len(deck) > 0:       
         random_index = random.randint(0, len(deck) - 1)
         selected_card = deck[random_index]
-        deck.remove(int(random_index))
+        interger = int(random_index)
+        deck.pop(interger)
         dealer_shuffled_deck.append(selected_card)
-    return dealer_shuffled_deck
+    return shuffled_deck
 
 
+
+#do the same thing but just append it to the dealers hand 
 
 
 shuffle_deck(deck)
-
+print(shuffle_deck)
 #use an other dictionary for the amount of games played 
 games_num =  get_game_num(csv_path)
 #use another dictianry for win games
@@ -97,11 +100,5 @@ def blackjakc():
 #ask the user if they want to play blackjack again
     #if choice is yes then call the blackjack funtion
     #if choice is no the go to the main menu
-
-
-
-
-
-blackjakc()
 
 
