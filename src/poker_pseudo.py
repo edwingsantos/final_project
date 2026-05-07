@@ -102,6 +102,21 @@ def play_round():
     pass
 
 def play():
+    FONT= pygame.font.SysFont(None,24)
+
+    GREEN = (0, 120, 0)
+    WHITE = (255, 255, 255)
+    GRAY = (80, 80, 80)
+    BLACK = (0, 0, 0)
+
+    CARD_W, CARD_H = 70,100
+    def draw_card(x, y, card):
+        if card.face_up:
+            pygame.draw.rect(screen, WHITE, (x, y, CARD_W, CARD_H))
+            text = FONT.render(str(card), True, BLACK)
+        else:
+            pygame.draw.rect(screen, GRAY, (x, y, CARD_W, CARD_H))
+            text = FONT.render("X", True, BLACK)
     # This is what will be called when the user chooses to play poker.
     # get the variables needed for play
     saved_game = stuff_in_CSV(csv_path)
@@ -148,15 +163,17 @@ def play():
             if event.type == pygame.QUIT:
                 running = False
         
-        screen.fill("Green")
+        screen.fill(GREEN)
         # draw the cards
+        
 
         # when drawing is done:
         #pygame.display.flip()
 
         # Make player bet
-        initial_bet = starting_bet(1)
+        initial_bet = starting_bet()
         bet_amount += initial_bet
+        print(bet_amount)
 
         # remove first id from shuffled deck list and put it into discared list.
         discard.append(shuffled_deck[0])
