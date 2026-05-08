@@ -2,12 +2,11 @@
 
 # import pygame, json, sys 
 import pygame
-import random
 import json
 import sys
 import csv 
-from solitaire import *
 from betting_func import betting_money
+from solitaire import *
 from LD_psuedocode import *
 csv_path = "files/blackjack.csv"
 
@@ -19,36 +18,27 @@ font = pygame.font.SysFont(None, 40)
 
 #use dictionary called point to safe the cards choosen 
 #make a dictionary for the dealers hand 
-shuffled_deck = [0]
+shuffled_deck = []
 dealer_shuffled_deck = []
 
 #call the shufle funtion from lucci and append it to the points dictionary 
 def shuffle_deck(deck):   
     while len(deck) > 0:       
         random_index = random.randint(0, len(deck) - 1)
-        selected_card = deck[random_index]
-        interger = int(random_index)
-        deck.pop(interger)
+        selected_card = deck.remove(random_index)
         shuffled_deck.append(selected_card)
     return shuffled_deck
-
-
-def dealder_shuffle_deck(deck):   
+#do the same thing but just append it to the dealers hand 
+def dealer_shuffle_deck(deck):   
     while len(deck) > 0:       
         random_index = random.randint(0, len(deck) - 1)
-        selected_card = deck[random_index]
-        interger = int(random_index)
-        deck.pop(interger)
+        selected_card = deck.remove(random_index)
         dealer_shuffled_deck.append(selected_card)
-    return shuffled_deck
+    return dealer_shuffled_deck
 
 
 
-#do the same thing but just append it to the dealers hand 
 
-
-shuffle_deck(deck)
-print(shuffle_deck)
 #use an other dictionary for the amount of games played 
 games_num =  get_game_num(csv_path)
 #use another dictianry for win games
@@ -100,5 +90,11 @@ def blackjakc():
 #ask the user if they want to play blackjack again
     #if choice is yes then call the blackjack funtion
     #if choice is no the go to the main menu
+
+
+
+
+
+blackjakc()
 
 

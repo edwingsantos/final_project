@@ -7,11 +7,22 @@ from shuffle_deck import shuffle_deck
 from LD_psuedocode import stuff_in_CSV, write_2_gambling
 from betting_func import starting_bet
 
+#csv_path = path to poker csv
 csv_path = "files/poker.csv"
 
+# Open the poker csv. Use LD helper function to check if there are any saved games
+# if that call = True, 
+    # Open csv. read the headers. do: last_line = file.readlines()[-1]. in last_line, user_mon = last_line[2 or "Money"] <- (this depends on whether I do a reader or DictReader)
+# else: user_mon = 100
 
+
+# GAMEPLAY ASSISTANT FUNTIONS
+    # CHECK HANDS (parameters = card_ID_1, card_ID_2, card_ID_3, card_ID_4, card_ID_5, card_ID_6, card_ID_7)
+        # use traderbagel's treys poker hand ranking functions
 def check_hands(hand, table):
     def format_cards(id):
+        # FORMAT CARDS (turn a card id into a shortened version like As (Ace of spades))
+            # Take in ID. Compare to number 1-52 and based on result, give abreviation
         # check the beggining. (A-K)
         id = int(id)
         if id == 1 or id == 14 or id == 27 or id == 40:
@@ -102,21 +113,6 @@ def play_round():
     pass
 
 def play():
-    FONT= pygame.font.SysFont(None,24)
-
-    GREEN = (0, 120, 0)
-    WHITE = (255, 255, 255)
-    GRAY = (80, 80, 80)
-    BLACK = (0, 0, 0)
-
-    CARD_W, CARD_H = 70,100
-    def draw_card(x, y, card):
-        if card.face_up:
-            pygame.draw.rect(screen, WHITE, (x, y, CARD_W, CARD_H))
-            text = FONT.render(str(card), True, BLACK)
-        else:
-            pygame.draw.rect(screen, GRAY, (x, y, CARD_W, CARD_H))
-            text = FONT.render("X", True, BLACK)
     # This is what will be called when the user chooses to play poker.
     # get the variables needed for play
     saved_game = stuff_in_CSV(csv_path)
@@ -177,9 +173,7 @@ def play():
         
 
         # Make player bet
-        initial_bet = starting_bet()
-        bet_amount += initial_bet
-        print(bet_amount)
+        initial_bet = starting_bet(1)
 
         # remove first id from shuffled deck list and put it into discared list.
         discard.append(shuffled_deck[0])
@@ -190,21 +184,21 @@ def play():
             table.append(shuffled_deck[0])
             shuffled_deck.pop(0)
 
-        # display the cards from the table list
+    # display the cards from the table list
 
-        # call PLAY ROUND func
+    # call PLAY ROUND func
 
-        # They should come here if they didn't fold
-        # call PLAY ROUND func for LAST TIME
+    # They should come here if they didn't fold
+    # call PLAY ROUND func for LAST TIME
 
-        # "Flip" computer's cards (Display the card instead of the back)
+    # "Flip" computer's cards (Display the card instead of the back)
 
-        # Have new lists for the FORMATED cards from the table, computer, and player lists. Put "formated" infront of the new lists names
+    # Have new lists for the FORMATED cards from the table, computer, and player lists. Put "formated" infront of the new lists names
 
-        # Call treys' evaluate class function and pass in formated_player_hand and formated_table. Save this call as "player_score"
-        player_score = check_hands(player_hand, table)
-        # Call the same function again but pass in formated_comp_hand and formated_table. Save this as "comp_score"
-        comp_score = check_hands(computer_hand, table)
+    # Call treys' evaluate class function and pass in formated_player_hand and formated_table. Save this call as "player_score"
+    player_score = check_hands(player_hand, table)
+    # Call the same function again but pass in formated_comp_hand and formated_table. Save this as "comp_score"
+    comp_score = check_hands(computer_hand, table)
 
         if player_score < comp_score:
             win = 'True'
@@ -224,5 +218,3 @@ def play():
     # call LD's write to CSV for gambling function and pass in csv_path, win, user_mon
     # return to main menu
     write_2_gambling(csv_path, win, user_mon)
-
-play()
