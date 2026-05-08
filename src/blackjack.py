@@ -5,6 +5,7 @@ import pygame
 import json
 import sys
 import csv 
+import random 
 #from solitaire import *
 from betting_func import *
 from LD_psuedocode import *
