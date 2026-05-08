@@ -5,6 +5,7 @@ from solitaire import shuffle_deck
 #import csv management functions
 import json
 import pygame
+from card_styles import *
 
 #setup function
 def setup():
@@ -164,6 +165,11 @@ def game():
 
     #actual gameloop
     while running:
+        #Title
+        font = pygame.font.SysFont(None, 48)
+        surface_for_font = font.render("Pyramid Solitaire",True,"White")
+
+        screen.blit(surface_for_font, (700,20))
         
         #stop the program if the user exits the window
         for event in pygame.event.get():
@@ -176,10 +182,15 @@ def game():
         pygame.draw.rect(screen,"black",(100,50,1400,800),width=1,border_radius=5)
         
         #button sprites
-        pygame.draw.rect(screen,"blue",(100,950,100,50),width=0,border_radius=5)
-        pygame.draw.rect(screen,"red",(200,950,100,50),width=0,border_radius=5)
-        pygame.draw.rect(screen,"yellow",(300,950,100,50),width=0,border_radius=5)
-        pygame.draw.rect(screen,"purple",(400,950,100,50),width=0,border_radius=5)
+        pygame.draw.rect(screen,"blue",(400,900,100,50),width=0,border_radius=5)
+        pygame.draw.rect(screen,"red",(500,900,100,50),width=0,border_radius=5)
+        pygame.draw.rect(screen,"yellow",(600,900,100,50),width=0,border_radius=5)
+        pygame.draw.rect(screen,"purple",(700,900,100,50),width=0,border_radius=5)
+
+
+        #Test Card with the Classes
+        test_card = Clubs("Bobert The Third",2,False)
+        test_card.show_card(screen)
 
         #Button functionality - Add functions and code
         #if pygame.MOUSEBUTTONDOWN():
