@@ -1,9 +1,9 @@
 # Pseudocode for Poker (LD)
-import csv
+import random
 import pygame
 import json
 from treys import Evaluator, Card
-from solitaire import shuffle_deck
+from shuffle_deck import shuffle_deck
 from LD_psuedocode import stuff_in_CSV, write_2_gambling
 from betting_func import starting_bet
 
@@ -52,7 +52,7 @@ def check_hands(hand, table):
         elif id == 13 or id == 26 or id == 39 or id == 52:
             beginning = "K"
         else:
-            print("Somewthing happened in formatting cards function.\nFile: poker_psuedo.py\nLine: 58")
+            print("Somewthing happened in formatting cards function.\nFile: poker_psuedo.py\nLine: 17")
         # Now get the suit
         if id <= 13 and id >= 1:
             suit = "c" # clubs
@@ -63,7 +63,7 @@ def check_hands(hand, table):
         elif id <= 52 and id >= 40:
             suit = "h" # hearts
         else:
-            print("Somewthing happened in formatting cards function.\nFile: poker_psuedo.py\nLine: 69")
+            print("Somewthing happened in formatting cards function.\nFile: poker_psuedo.py\nLine: 45")
         
         card_name = beginning+suit
         return card_name
@@ -135,9 +135,8 @@ def play():
     # Call LV shuffle card function
     with open("files/cards.json","r") as cards:
         deck = json.load(cards)
-        ordered_deck = list(deck.keys())
-        #call shuffle function to return a randomized list
-        shuffled_deck = shuffle_deck(ordered_deck)
+    shuffled_deck = list(deck.keys())
+    random.shuffle(shuffled_deck)
 
     # take the first two card ids and give them to the player (remove these ids from the list). Display the cards for these Ids. Append these cards into a list called player_hand.
     for _ in range(2):
@@ -152,19 +151,26 @@ def play():
 
     pygame.init()
     screen = pygame.display.set_mode((1440, 1100))
-    running = True
+    game = True
     
-    while running:
+    while game:
+        screen.fill(GREEN)
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                game = False
         
-        screen.fill("Green")
         # draw the cards
-
-
+        for card in player_hand:
+            pygame.draw.rect(screen, WHITE, (100, 100, CARD_W, CARD_H))
+            text = FONT.render(str(card), True, BLACK)
+            screen.blit(text, (100 + 10, 100 + 40))
+        
+        for card2 in computer_hand:
+            pygame.draw.rect(screen, GRAY, (100, 500, CARD_W, CARD_H))
+            text = FONT.render("X", True, BLACK)
         # when drawing is done:
-        #pygame.display.flip()
+        
 
         # Make player bet
         initial_bet = starting_bet(1)
@@ -194,25 +200,21 @@ def play():
     # Call the same function again but pass in formated_comp_hand and formated_table. Save this as "comp_score"
     comp_score = check_hands(computer_hand, table)
 
-    # If player_score < comp_score (function returns a lower score for better hands): player win
-        # Win = true
-        # user_mon += bet_amount
-    # if player_score > comp_score (computer scored lower than player): player looses
-        # Win = False
-        # user_mon -= bet_amount
-    # if player_score == comp_score (tie, same hand): no one wins (i dont want to figure out high card, unless treys does that, then maybe)
-        # win = Tie
-        # user_mon = user_mon
-    if player_score < comp_score:
-        win = 'True'
-        user_mon += bet_amount
-    elif comp_score < player_score:
-        win = 'False'
-        user_mon -= bet_amount
-    elif player_score == comp_score:
-        win = 'Tie'
-        user_mon = user_mon
-
+        if player_score < comp_score:
+            win = 'True'
+            user_mon += bet_amount
+        elif comp_score < player_score:
+            win = 'False'
+            user_mon -= bet_amount
+        elif player_score == comp_score:
+            win = 'Tie'
+            user_mon = user_mon
+        else:
+            # something went wrong
+            print("Something happened when comparing who won in poker.\nFile:poker_psudo.py\nLine: 197")
+        
+        # Tell the user who won, new money amount, and end the Pygame loop
+        pygame.display.flip()
     # call LD's write to CSV for gambling function and pass in csv_path, win, user_mon
     # return to main menu
     write_2_gambling(csv_path, win, user_mon)
