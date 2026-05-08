@@ -172,7 +172,7 @@ def game():
         
         screen.fill("darkgreen")
 
-        pygame.draw.rect(screen,"white",(5,5,50,100),width=10,border_radius=5)
+        pygame.draw.rect(screen,"white",(5,5,50,75),width=0,border_radius=5)
         pygame.draw.rect(screen,"black",(100,50,1400,800),width=1,border_radius=5)
         
         #button sprites
