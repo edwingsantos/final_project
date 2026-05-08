@@ -56,16 +56,11 @@ class Card:
 
     def __repr__(self):
         return f"{self.value}{self.suit[0]}"
-
-
-def card_to_id(card):
-    return str(card.value) + "_" + card.suit
-
-def create_deck(json_path):
-
+    
+def create_deck():
     deck = []
 
-    with open(json_path, "r") as f:
+    with open("files/cards.json", "r") as f:
         data = json.load(f)
 
     for key in data:
@@ -89,15 +84,16 @@ def create_deck(json_path):
         # Add that card to the shuffled deck
     # Once all cards have been moved, return the shuffled deck
 
-# Aun no hace nada para mi codigo simplemente imprime lo mismo cada vez y esto no me ayuda
+def shuffle_deck(deck):   
+    shuffled_deck = []
+    while len(deck) > 0:       
+        random_index = random.randint(0, len(deck) - 1)
+        selected_card = deck[random_index]
+        deck.pop(int(random_index))
+        shuffled_deck.append(selected_card)
+    return shuffled_deck
 
-def shuffle_deck(json_path):
 
-    deck = create_deck(json_path)
-
-    random.shuffle(deck)
-
-    return deck
 # SETUP BOARD (7 COLUMNS)
 #Create 7 empty columns (tableau)
 #FOR column = 1 TO 7:
@@ -176,6 +172,9 @@ def draw_tableau(tableau):
 #    Ask for destination (column or foundation)
 #Return move choice
 
+#Esta es la funcion pero la cosa es que lo tengo que importar mas no copiar y pegar
+# Y tengo que usar json para las cartas
+
 
 # VALID MOVE CHECK -Lizzie
 # If moving card:
@@ -185,6 +184,7 @@ def draw_tableau(tableau):
 #     Move is valid
 # Else:
 #     Move is invalid
+# Esto es de Lizzie pero tengo que importarlo mas no copiar y pegar y tnewgo que agregarlo a main
 
 
 # MOVE FUNCTION
@@ -197,15 +197,10 @@ def draw_tableau(tableau):
 #ELSE:
 #    Print "Error, can't move that card"
 
-# Esto es de Lizzie pero tengo que importarlo mas no copiar y pegar y tnewgo que agregarlo a main
-
-
 # FOUNDATION RULES
 # Cards must be same suit
 # Must go in order: A to  K
 # Only Ace can start foundation
-
-#def rules():
 
 # WIN CONDITION
 # Check all 4 foundation piles
@@ -228,7 +223,7 @@ def draw_tableau(tableau):
 #         Save result
 #         End game
 # tengo que agregar el tableau en alguna parte del loop
-deck = shuffle_deck("files/cards.json")
+deck = create_deck()
 
 tableau, stock,waste,foundations = setup_board(deck) 
 
@@ -277,8 +272,9 @@ def game_loop():
 
         pygame.display.flip()
 
-    pygame.quit()
-game_loop()
+    #pygame.quit()
+#game_loop()
 
 # Por ahora lo que puede hacer el codigo es correr y ostrar las cartas aun no muestra las instrucciones
 # Y no me deja mover las cartas aun 
+# Write instructions for Solitaire

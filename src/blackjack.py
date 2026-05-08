@@ -2,12 +2,11 @@
 
 # import pygame, json, sys 
 import pygame
-import random
 import json
 import sys
 import csv 
-#from solitaire import *
-from betting_func import *
+#from betting_func import *
+from solitaire import *
 from LD_psuedocode import *
 csv_path = "files/blackjack.csv"
 
@@ -19,7 +18,7 @@ font = pygame.font.SysFont(None, 40)
 
 #use dictionary called point to safe the cards choosen 
 #make a dictionary for the dealers hand 
-shuffled_deck = [0]
+shuffled_deck = []
 dealer_shuffled_deck = []
 
 #call the shufle funtion from lucci and append it to the points dictionary 
@@ -78,8 +77,6 @@ def shuffle_deck(json_path):
     return deck
 
 
-#do the same thing but just append it to the dealers hand 
-
 
 #shuffle_deck(deck)
 print(shuffle_deck)
@@ -134,5 +131,11 @@ def blackjakc():
 #ask the user if they want to play blackjack again
     #if choice is yes then call the blackjack funtion
     #if choice is no the go to the main menu
+
+
+
+
+
+blackjakc()
 
 
