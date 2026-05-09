@@ -109,10 +109,54 @@ def check_hands(hand, table):
 
     # END GAME: call LD write to gambling csv and pass in poker.csv path, win = won, money = user_mon
         # leave game and return to main menu
-def play_round():
-    pass
+
 
 def play():
+    def play_round():
+        continue_game = True
+        while continue_game:
+            # Show the buttons to Check, Bet, or Fold
+            check_rect = pygame.draw.rect(screen, BUTTON_COLOR, (150, 625, 50, 50), 5, 0) # Check
+            text = FONT.render(str("Check"), True, BLACK)
+            screen.blit(text, (150 + 10, 625 + 40))
+
+            bet_rect = pygame.draw.rect(screen, BUTTON_COLOR, (200, 625, 50, 50), 5, 0) # bet
+            text2 = FONT.render(str("Bet"), True, BLACK)
+            screen.blit(text2, (150 + 10, 625 + 40))
+
+            fold_rect = pygame.draw.rect(screen, BUTTON_COLOR, (250, 625, 50, 50), 5, 0) # fold
+            text3 = FONT.render(str("Fold"), True, BLACK)
+            screen.blit(text3, (150 + 10, 625 + 40))
+
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if check_rect.collidepoint(event.pos):
+                        print("They Check")
+                    elif bet_rect.collidepoint(event.pos):
+                        print("They Bet")
+                    elif fold_rect.collidepoint(event.pos):
+                        print("They Fold")
+            
+            pygame.display.flip()
+
+    def make_bet():
+        while bet:
+            # Make player bet
+            initial_bet = starting_bet()
+            bet_amount += initial_bet
+            bet = False
+
+    WIDTH, HEIGHT = 1000, 700
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    FONT= pygame.font.SysFont(None,24)
+
+    GREEN = (0, 120, 0)
+    BUTTON_COLOR = (60, 60, 60)
+    WHITE = (255, 255, 255)
+    GRAY = (80, 80, 80)
+    BLACK = (0, 0, 0)
+
+    CARD_W, CARD_H = 70,100
     # This is what will be called when the user chooses to play poker.
     # get the variables needed for play
     saved_game = stuff_in_CSV(csv_path)
@@ -152,6 +196,7 @@ def play():
     pygame.init()
     screen = pygame.display.set_mode((1440, 1100))
     game = True
+    bet = True
     
     while game:
         screen.fill(GREEN)
@@ -159,21 +204,30 @@ def play():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 game = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if bet_rect.collidepoint(event.pos):
+                    print("They Bet")
+                    make_bet()
         
         # draw the cards
         for card in player_hand:
-            pygame.draw.rect(screen, WHITE, (100, 100, CARD_W, CARD_H))
+            x_pos = 500; y_pos = 100
+            pygame.draw.rect(screen, WHITE, (x_pos, y_pos, CARD_W, CARD_H))
             text = FONT.render(str(card), True, BLACK)
-            screen.blit(text, (100 + 10, 100 + 40))
+            screen.blit(text, (x_pos + 10, y_pos + 40))
+            x_pos += 80; y_pos += 0
         
         for card2 in computer_hand:
-            pygame.draw.rect(screen, GRAY, (100, 500, CARD_W, CARD_H))
+            x = 500; y = 650
+            pygame.draw.rect(screen, GRAY, (x, y, CARD_W, CARD_H))
             text = FONT.render("X", True, BLACK)
-        # when drawing is done:
-        
+            screen.blit(text, (x + 10, y + 40))
+            x += 80; y += 0
 
-        # Make player bet
-        initial_bet = starting_bet(1)
+        # when drawing is done:
+        bet_rect = pygame.draw.rect(screen, BUTTON_COLOR, (200, 625, 50, 50), 5, 0) # bet
+        text2 = FONT.render(str("Initial Bet"), True, BLACK)
+        screen.blit(text2, (150 + 10, 625 + 40))
 
         # remove first id from shuffled deck list and put it into discared list.
         discard.append(shuffled_deck[0])
@@ -184,37 +238,43 @@ def play():
             table.append(shuffled_deck[0])
             shuffled_deck.pop(0)
 
-    # display the cards from the table list
+        # display the cards from the table list
 
-    # call PLAY ROUND func
+        # call PLAY ROUND func
+        play_round()
 
-    # They should come here if they didn't fold
-    # call PLAY ROUND func for LAST TIME
+        # They should come here if they didn't fold
+        # call PLAY ROUND func for LAST TIME
 
-    # "Flip" computer's cards (Display the card instead of the back)
+        # "Flip" computer's cards (Display the card instead of the back)
 
-    # Have new lists for the FORMATED cards from the table, computer, and player lists. Put "formated" infront of the new lists names
+        # Have new lists for the FORMATED cards from the table, computer, and player lists. Put "formated" infront of the new lists names
 
-    # Call treys' evaluate class function and pass in formated_player_hand and formated_table. Save this call as "player_score"
-    player_score = check_hands(player_hand, table)
-    # Call the same function again but pass in formated_comp_hand and formated_table. Save this as "comp_score"
-    comp_score = check_hands(computer_hand, table)
+        # Call treys' evaluate class function and pass in formated_player_hand and formated_table. Save this call as "player_score"
+        player_score = check_hands(player_hand, table)
+        # Call the same function again but pass in formated_comp_hand and formated_table. Save this as "comp_score"
+        comp_score = check_hands(computer_hand, table)
 
         if player_score < comp_score:
             win = 'True'
             user_mon += bet_amount
+            game = False
         elif comp_score < player_score:
             win = 'False'
             user_mon -= bet_amount
+            game = False
         elif player_score == comp_score:
             win = 'Tie'
             user_mon = user_mon
+            game = False
         else:
             # something went wrong
             print("Something happened when comparing who won in poker.\nFile:poker_psudo.py\nLine: 197")
         
         # Tell the user who won, new money amount, and end the Pygame loop
         pygame.display.flip()
-    # call LD's write to CSV for gambling function and pass in csv_path, win, user_mon
-    # return to main menu
+        # call LD's write to CSV for gambling function and pass in csv_path, win, user_mon
+        # return to main menu
     write_2_gambling(csv_path, win, user_mon)
+
+play()
