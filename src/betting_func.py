@@ -147,5 +147,5 @@ def winning(user_data, betting_money):
 #make a FUNTIOM if its a tie then just return the amount of the money back to their accound and save it to the csv file
 def tie(user_data):
     #save(user_data["game_number"], "Tie", user_data["money"])
-    user_data["games_number"] += 1
+    user_data["game_number"] += 1
     write_2_gambling(file, "Tie", user_data["money"])
