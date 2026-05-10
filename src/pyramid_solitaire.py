@@ -189,8 +189,7 @@ def game():
 
 
         #Test Card with the Classes
-        test_card = Clubs("Bobert The Third",2,False)
-        test_card.show_card(screen)
+        
 
         #Button functionality - Add functions and code
         #if pygame.MOUSEBUTTONDOWN():

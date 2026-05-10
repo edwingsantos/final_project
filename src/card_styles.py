@@ -2,35 +2,65 @@
 
 import pygame
 
+#!HOW TO CREATE A CARD WITH THIS CLASS! - for the team. - Delete the comments line 5 through 11 once everyone has read
+
+    #Step 1: create object
+        #ex: mycard = Card(10,"♥","red")
+    
+    #Step Two: Display the card (screen is from your pygame game-loop) You can also change the preset coords
+        #ex: mycard.show_card(screen,coords=(100,100))
+
 #class for all clubs:
-class Clubs:
-    #initialize card size - Name, Card Value, suit is clubs, color is black, if it is a royal use royal class
-    def __init__(self,card_name,card_value,is_royal):
-        self.name = card_name
+class Card:
+    #initialize card size - Name, Card Value, suit (as segoeuisymbol, look up on the internet if needed), color
+    def __init__(self,card_value,suit,color):
+        self.symbol = str(card_value)
         self.value = card_value
-        self.royalty = is_royal
+        self.color = color
+        self.suit = suit
+        
+        match self.value:
+            case "1":
+                self.symbol = "A"
+        
+            case "11":
+                self.symbol = "J"
+
+            case "12":
+                self.symbol = "Q"
+        
+            case "13":
+                self.symbol = "K"
 
     #Show Card method (coordinates):
-    def show_card(self,screen,coords_and_size=(100,100,100,140)):
-        #design a card with pygame and then this sprite will be created and displayed at coordinates (top-left)
-        pygame.draw.rect(screen,"white",coords_and_size,border_radius=5)
-        pygame.font.SysFont(self.name,216)
-        pygame.surface
-
-#class for all spades:
-    #initialize card size - Name, Card Value, suit is spades, color is black, if it is a royal use royal class
-
-    #Show Card method (coordinates):
+    def show_card(self,screen,size=(100,140),coords=(100,100)):
         #design a card with pygame and then this sprite will be created and displayed at coordinates (top-left)
 
-#class for all diamonds:
-    #initialize card size - Name, Card Value, suit is diamonds, color is red, if it is a royal use royal class
+        font = pygame.font.SysFont(None,48)
+        st_font = pygame.font.SysFont("segoeuisymbol",48)
 
-    #Show Card method (coordinates):
-        #design a card with pygame and then this sprite will be created and displayed at coordinates (top-left)
+        #stuff on card
+        font_surface = font.render(self.symbol,False,self.color)
+        suit_surface = st_font.render(self.suit,True,self.color)
 
-#class for all hearts:
-    #initialize card size - Name, Card Value, suit is hearts, color is red, if it is a royal use royal class
+        #creates surface with given size and makes the actual surface translucent
+        card = pygame.Surface(size, pygame.SRCALPHA)
+        
+        #creates shape
+        pygame.draw.rect(card, "white", card.get_rect(), border_radius=8)
+        pygame.draw.rect(card, "black", card.get_rect(), 3, border_radius=8)
+        
+        #flipped card stuff
+        flipped_text = pygame.transform.rotate(font_surface,180)
+        flipped_suit = pygame.transform.rotate(suit_surface, 180)
 
-    #Show Card method (coordinates):
-        #design a card with pygame and then this sprite will be created and displayed at coordinates (top-left)
+        #normal text
+        card.blit(font_surface,(0,10))
+        card.blit(suit_surface,(35,-10))
+        
+        #upside down text
+        card.blit(flipped_text,(65,100))
+        card.blit(flipped_suit,(35,90))
+        
+        screen.blit(card,coords)
+        
