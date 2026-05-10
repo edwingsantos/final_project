@@ -5,6 +5,7 @@ from solitaire import shuffle_deck
 #import csv management functions
 import json
 import pygame
+from card_styles import *
 
 #setup function
 def setup():
@@ -155,15 +156,28 @@ def game():
     tableu,discard_pile,shuffled_deck,shown_draw_pile = setup()
     #call accessibility function and save the dict
     blocked_cards = Accessible(tableu)
-    
+
+    #top card coords
+    top = (700,100)
+
+    #card info
+    with open("files/cards.json","r") as deck:
+        deck_info = json.load(deck)
+
+
     #pygame setup
     pygame.init()
-    screen = pygame.display.set_mode((1600,1000))
+    screen = pygame.display.set_mode((1800,1200))
     clock = pygame.time.Clock()
     running = True
 
     #actual gameloop
     while running:
+        #Title
+        font = pygame.font.SysFont(None, 48)
+        surface_for_font = font.render("Pyramid Solitaire",True,"White")
+
+        screen.blit(surface_for_font, (700,20))
         
         #stop the program if the user exits the window
         for event in pygame.event.get():
@@ -172,14 +186,50 @@ def game():
         
         screen.fill("darkgreen")
 
-        pygame.draw.rect(screen,"white",(5,5,50,100),width=10,border_radius=5)
+        pygame.draw.rect(screen,"white",(5,5,50,75),width=0,border_radius=5)
         pygame.draw.rect(screen,"black",(100,50,1400,800),width=1,border_radius=5)
         
         #button sprites
-        pygame.draw.rect(screen,"blue",(100,950,100,50),width=0,border_radius=5)
-        pygame.draw.rect(screen,"red",(200,950,100,50),width=0,border_radius=5)
-        pygame.draw.rect(screen,"yellow",(300,950,100,50),width=0,border_radius=5)
-        pygame.draw.rect(screen,"purple",(400,950,100,50),width=0,border_radius=5)
+        pygame.draw.rect(screen,"blue",(400,900,100,50),width=0,border_radius=5)
+        pygame.draw.rect(screen,"red",(500,900,100,50),width=0,border_radius=5)
+        pygame.draw.rect(screen,"yellow",(600,900,100,50),width=0,border_radius=5)
+        pygame.draw.rect(screen,"purple",(700,900,100,50),width=0,border_radius=5)
+
+
+        #display tableu
+        for row_index, row in enumerate(tableu):
+            
+            for column_index, num in enumerate(row):
+
+                card_info = deck_info[num]
+                
+                #determine suit symbol
+                match card_info["Suit"]:
+                    case "Clubs":
+                        symbol = "♣"
+                    case "Spades":
+                        symbol = "♠"
+                    case "Diamonds":
+                        symbol = "♦"
+                    case "Hearts":
+                        symbol = "♥"
+                
+                #finding position to put cards
+                coord_x,coord_y = top
+                new_x = coord_x + (column_index - row_index / 2) * 110
+                new_y = coord_y + row_index * 75
+                new_coords = (new_x,new_y)
+
+                new_card = Card(card_info["Value"],symbol,card_info["Color"])
+                new_card.show_card(screen,coords=new_coords)
+                
+        
+
+        #Button functionality - Add functions and code
+        #if pygame.MOUSEBUTTONDOWN():
+        #    match pygame.mouse.get_pos():
+        #        case () :
+        #            print("ACTIVATE CODE")
 
         #allow user to click button to choose type of move to do
         #onclick of draw card button
