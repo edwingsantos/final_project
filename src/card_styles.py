@@ -2,7 +2,9 @@
 
 import pygame
 
-#!HOW TO CREATE A CARD WITH THIS CLASS! - for the team. - Delete the comments line 5 through 11 once everyone has read
+#!HOW TO CREATE A CARD WITH THIS CLASS! - for the team. - Delete the comments line 5 through 11 once everyone has read them
+
+    #symbols: ♠ ♥ ♦ ♣
 
     #Step 1: create object
         #ex: mycard = Card(10,"♥","red")
@@ -12,7 +14,7 @@ import pygame
 
 #class for all clubs:
 class Card:
-    #initialize card size - Name, Card Value, suit (as segoeuisymbol, look up on the internet if needed), color
+    #initialize card size - Name, Card Value, suit (as segoeuisymbol - from symbols comment), color
     def __init__(self,card_value,suit,color):
         self.symbol = str(card_value)
         self.value = card_value

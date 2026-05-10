@@ -156,10 +156,18 @@ def game():
     tableu,discard_pile,shuffled_deck,shown_draw_pile = setup()
     #call accessibility function and save the dict
     blocked_cards = Accessible(tableu)
-    
+
+    #top card coords
+    top = (700,100)
+
+    #card info
+    with open("files/cards.json","r") as deck:
+        deck_info = json.load(deck)
+
+
     #pygame setup
     pygame.init()
-    screen = pygame.display.set_mode((1600,1000))
+    screen = pygame.display.set_mode((1800,1200))
     clock = pygame.time.Clock()
     running = True
 
@@ -188,7 +196,33 @@ def game():
         pygame.draw.rect(screen,"purple",(700,900,100,50),width=0,border_radius=5)
 
 
-        #Test Card with the Classes
+        #display tableu
+        for row_index, row in enumerate(tableu):
+            
+            for column_index, num in enumerate(row):
+
+                card_info = deck_info[num]
+                
+                #determine suit symbol
+                match card_info["Suit"]:
+                    case "Clubs":
+                        symbol = "♣"
+                    case "Spades":
+                        symbol = "♠"
+                    case "Diamonds":
+                        symbol = "♦"
+                    case "Hearts":
+                        symbol = "♥"
+                
+                #finding position to put cards
+                coord_x,coord_y = top
+                new_x = coord_x + (column_index - row_index / 2) * 110
+                new_y = coord_y + row_index * 75
+                new_coords = (new_x,new_y)
+
+                new_card = Card(card_info["Value"],symbol,card_info["Color"])
+                new_card.show_card(screen,coords=new_coords)
+                
         
 
         #Button functionality - Add functions and code
