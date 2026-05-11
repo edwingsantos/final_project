@@ -388,4 +388,4 @@ def game():
 
         #framerate variable
         dt = clock.tick(60) / 100
-game()
+#game()
