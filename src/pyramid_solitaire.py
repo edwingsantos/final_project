@@ -287,33 +287,36 @@ def game():
         for row_index, row in enumerate(tableu):
             
             for column_index, num in enumerate(row):
+                if num != None:
+                    card_info = deck_info[num]
+                    
+                    symbol = suit_match(card_info["Suit"])
+                    
+                    #finding position to put cards
+                    coord_x,coord_y = top
+                    new_x = coord_x + (column_index - row_index / 2) * 110
+                    new_y = coord_y + row_index * 75
+                    new_coords = (new_x,new_y)
 
-                card_info = deck_info[num]
-                
-                symbol = suit_match(card_info["Suit"])
-                
-                #finding position to put cards
-                coord_x,coord_y = top
-                new_x = coord_x + (column_index - row_index / 2) * 110
-                new_y = coord_y + row_index * 75
-                new_coords = (new_x,new_y)
+                    hit_box = [new_x,new_y,100,140]
+                    #check if already there
+                    if num not in card_hit_boxes:
+                        #save hitbox
+                        card_hit_boxes[num] = {
+                            "HitBox":hit_box,
+                            "Selected":False,
+                            "Accessible":False
+                        }
+                        hit_box_cards.append(num)
+                    
+                    else:
+                        card_hit_boxes[num]["HitBox"] = hit_box
 
-                hit_box = [new_x,new_y,100,140]
-                #check if already there
-                if num not in card_hit_boxes:
-                    #save hitbox
-                    card_hit_boxes[num] = {
-                        "HitBox":hit_box,
-                        "Selected":False,
-                        "Accessible":False
-                    }
-                    hit_box_cards.append(num)
-                
+                    new_card = Card(card_info["Value"],symbol,card_info["Color"])
+                    new_card.show_card(screen,coords=new_coords)
                 else:
-                    card_hit_boxes[num]["HitBox"] = hit_box
-
-                new_card = Card(card_info["Value"],symbol,card_info["Color"])
-                new_card.show_card(screen,coords=new_coords)
+                    print("Removed card skipped")
+                    pass
 
         if shuffled_deck:
             #shadow
