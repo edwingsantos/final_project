@@ -20,7 +20,7 @@ import csv
     # return false
 def opp_color(card_id1, card_id2):
     def get_color(id):
-        with open("P:/DeLong, Lizzie/final_project/files/cards.json", 'r') as json:
+        with open("files/cards.json", 'r') as json:
             for item in json:
                 if str(id) == item:
                     color = item["Color"]
@@ -57,7 +57,7 @@ def opp_color(card_id1, card_id2):
     # return false
 def card_num_check(card_id1, card_id2):
     def get_number(id):
-        with open("P:/DeLong, Lizzie/final_project/files/cards.json", 'r') as json:
+        with open("files/cards.json", 'r') as json:
             for item in json:
                 if str(id) == item:
                     number = item["Value"]

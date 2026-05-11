@@ -227,9 +227,10 @@ def draw_tableau(tableau):
 #         Print "You win"
 #         Save result
 #         End game
+
 # tengo que agregar el tableau en alguna parte del loop
 deck = shuffle_deck("files/cards.json")
-
+valid_move#(moved_card_id, moved_onto_id)# esto es el helper function de Lizzie
 tableau, stock,waste,foundations = setup_board(deck) 
 
 def game_loop():
@@ -277,8 +278,9 @@ def game_loop():
 
         pygame.display.flip()
 
-    #pygame.quit()
-#game_loop()
+    pygame.quit()
+game_loop()
 
 # Por ahora lo que puede hacer el codigo es correr y ostrar las cartas aun no muestra las instrucciones
 # Y no me deja mover las cartas aun 
+# Para usar el codigo de lizzie necesiot card 1d (1-52) y card id 2 que voy a averigua que es
