@@ -1,7 +1,6 @@
 #PS 1st CP2 Final - Pyramid Soliaire source code
 
-#import shuffle function
-from solitaire import shuffle_deck
+
 #import csv management functions
 import json
 import csv
@@ -60,7 +59,8 @@ def accessibility_checks(tableu,card_info):
     
     #bottom row acessible
     for card in tableu[-1]:
-        card_info[card]["Accessible"] = True
+        if not card == None:
+            card_info[card]["Accessible"] = True
 
     for row in range(len(tableu)-1):
         for column,card in enumerate(tableu[row]):
@@ -143,6 +143,7 @@ def king_removal(tableu,discard,shown_pile,picked_card):
         for x in tableu:
             for y in x:
                 if y == picked_card:
+                    x.insert(x.index(y),None)
                     x.remove(y)
                     removed = True
                     break
@@ -243,6 +244,9 @@ def game():
                             king = card
                     discard_pile, shown_draw_pile, tableu = king_removal(tableu,discard_pile,shown_draw_pile,king)
                     card_hit_boxes[king]["Selected"] = False
+                    card_hit_boxes.pop(king)
+                    hit_box_cards.remove(king)
+                    
                     selected -= 1
                     print("Successful King Removal")
                 elif selected == 2:
@@ -315,7 +319,6 @@ def game():
                     new_card = Card(card_info["Value"],symbol,card_info["Color"])
                     new_card.show_card(screen,coords=new_coords)
                 else:
-                    print("Removed card skipped")
                     pass
 
         if shuffled_deck:
@@ -351,9 +354,12 @@ def game():
         #check accessibility of cards
         card_hit_boxes = accessibility_checks(tableu,card_hit_boxes)
 
+        #check accessibility of the draw pile
         try:
             card_hit_boxes[shown_draw_pile[0]]["Accessible"] = True
         except IndexError:
+            pass
+        except KeyError:
             pass
         
         #showing buttons
