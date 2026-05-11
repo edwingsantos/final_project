@@ -11,11 +11,9 @@ from button_styles import *
 
 #setup function
 def setup():
-    with open("files/cards.json","r") as cards:
-        deck = json.load(cards)
-    ordered_deck = list(deck.keys())
+
     #call shuffle function to return a randomized list
-    shuffled_deck = shuffle_deck(ordered_deck)
+    shuffled_deck = shuffle_deck("files/cards.json")
     #create 7 lists for each row of the pyramid and put those inside another creating a matrix
     tableu = [
         [],
@@ -272,7 +270,7 @@ def game():
         for row_index, row in enumerate(tableu):
             
             for column_index, num in enumerate(row):
-
+                print(num)
                 card_info = deck_info[num]
                 
                 symbol = suit_match(card_info["Suit"])
