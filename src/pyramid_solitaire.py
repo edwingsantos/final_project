@@ -4,16 +4,16 @@
 from solitaire import shuffle_deck
 #import csv management functions
 import json
+import csv
 import pygame
 from card_styles import *
+from button_styles import *
 
 #setup function
 def setup():
-    with open("files/cards.json","r") as cards:
-        deck = json.load(cards)
-    ordered_deck = list(deck.keys())
+
     #call shuffle function to return a randomized list
-    shuffled_deck = shuffle_deck(ordered_deck)
+    shuffled_deck = shuffle_deck("files/cards.json")
     #create 7 lists for each row of the pyramid and put those inside another creating a matrix
     tableu = [
         [],
@@ -47,25 +47,30 @@ def setup():
         print(x)
     return tableu, discard_pile ,shuffled_deck, shown_draw
 
-#Accessible cards function (tableu list)
-def Accessible(tab):
-    #for each row
-    blocked = {}
-    for x in tab:
-        #check if there is a row above it
-        above = tab.index(x)-1
-        #if there is
-        if above >= 0:
-            #for each card in current row,
-            for y in x:
-                #save each of the indexes in a dict that is formatted like this: dictname:{top_row_allowable:{card1:[0,1]},second:{card2:[0,1],card3:[1,2]} etc. etc. (see activity diagram for what indexes mean)
-                index_y = x.index(y)
-                below_row = [index_y,index_y+1]
-                card_allowable = {y:below_row}
-                blocked[tab.index(x)] = card_allowable
+#Accessible cards
+def accessibility_checks(tableu,card_info):
     
-    #output the dictionary
-    return blocked
+    #reset Acessibility
+    for card in card_info:
+        card_info[card]["Accessible"] = False
+    
+    #bottom row acessible
+    for card in tableu[-1]:
+        card_info[card]["Accessible"] = True
+
+    for row in range(len(tableu)-1):
+        for column,card in enumerate(tableu[row]):
+            try:
+                blocked_left = tableu[row+1][column]
+                blocked_right = tableu[row+1][column+1]
+
+                if blocked_left is None and blocked_right is None:
+                    card_info[card]["Accessible"] = True
+            
+            except IndexError:
+                pass
+    
+    return card_info
 
 #valid Combo Function (card1_id,card2_id,list_of_cards)
 def val_combo(ID_1,ID_2,tableu,draw_pile):
@@ -107,22 +112,21 @@ def draw(draw_pile,shown_pile):
     #if no
     else:
         #make draw pile equal to shown and then clear shown
-        draw_pile = shown_pile
+        draw_pile = shown_pile.copy()
         shown_pile.clear()
         
         #reverse order of draw pile to represent flipping of pile over
         draw_pile.reverse()
 
-        #remove card from draw pile and add it shown draw pile and display that card face up
-        shown_pile.insert(0,draw_pile[0])
-        draw_pile.pop(0)
+    print(f"\n\nSHOWN {shown_pile}\n\nDRAW {draw_pile}")
+    return draw_pile, shown_pile
+    
+
 
 #Discard King function (tableu, discard pile, shown draw pile)
 def king_removal(tableu,discard,shown_pile,picked_card):
     #call accessibility function for accessible cards
-    takeable = Accessible(tableu)
-    #allow user to select a card that is accessible
-    user_choice = 0
+    
     
     with open("files/cards.json","r") as card_info:
         deck = json.load(card_info)
@@ -142,12 +146,25 @@ def king_removal(tableu,discard,shown_pile,picked_card):
             #remove from draw
             shown_pile.pop(0)
         #add to discard pile
-        discard.insert(picked_card)
+        discard.insert(0,picked_card)
     #if no
     else:
         #display error message stating that the card selected was not a king
         print("PUT INVALID KING MESSAGE HERE")
 
+def suit_match(suit):
+    match suit:
+        case "Clubs":
+            symbol = "♣"
+        case "Spades":
+            symbol = "♠"
+        case "Diamonds":
+            symbol = "♦"
+        case "Hearts":
+            symbol = "♥"
+    return symbol
+
+#def select_cards()
 
 
 #Gameloop (setup variables)
@@ -155,8 +172,9 @@ def game():
     #call setup and save returned values
     tableu,discard_pile,shuffled_deck,shown_draw_pile = setup()
     #call accessibility function and save the dict
-    blocked_cards = Accessible(tableu)
-
+    card_hit_boxes = {}
+    hit_box_cards = []
+    selected = 0
     #top card coords
     top = (700,100)
 
@@ -167,52 +185,95 @@ def game():
 
     #pygame setup
     pygame.init()
-    screen = pygame.display.set_mode((1800,1200))
+    screen = pygame.display.set_mode((1600,1100))
     clock = pygame.time.Clock()
     running = True
 
+    #Button functionality
+    show_card = Button("Draw","white","grey",position=(450,900))
+    king_discard = Button("Discard King","white","grey",position=(650,900))
+    remove = Button("Match","white","grey",position=(850,900))
+    
+
     #actual gameloop
     while running:
+        
+        screen.fill("darkgreen")
         #Title
         font = pygame.font.SysFont(None, 48)
         surface_for_font = font.render("Pyramid Solitaire",True,"White")
 
-        screen.blit(surface_for_font, (700,20))
+        screen.blit(surface_for_font, (625,20))
+        
         
         #stop the program if the user exits the window
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-        
-        screen.fill("darkgreen")
 
-        pygame.draw.rect(screen,"white",(5,5,50,75),width=0,border_radius=5)
+            #check if cards or buttons are clicked
+            if show_card.click_check(event):
+                try:
+                    card_hit_boxes.pop(shown_draw_pile[0])
+                    hit_box_cards.remove(shown_draw_pile[0])
+                except IndexError:
+                    pass
+
+                shuffled_deck,shown_draw_pile = draw(shuffled_deck,shown_draw_pile)
+                try:
+                    card_hit_boxes[shown_draw_pile[0]] = {
+                        "HitBox":[1300,350,100,140],
+                        "Selected":False,
+                        "Accessible":True
+                    }
+                    hit_box_cards.append(shown_draw_pile[0])
+                except IndexError:
+                    pass
+            
+            if king_discard.click_check(event):
+                print("KING DISCARD BUTTON TEST")
+            
+            if remove.click_check(event):
+                print("MATCH BUTTON TEST")
+            
+            #if left click happened
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                print(hit_box_cards)
+                for card in hit_box_cards:
+                    #find where a card can be clicked
+                    w,x,y,z = card_hit_boxes[card]["HitBox"]
+                    rect = pygame.Rect(w,x,y,z)
+                    #check to see if any of the cards got clicked
+                    if rect.collidepoint(event.pos):
+                        #if it is accessible
+                        if card_hit_boxes[card]["Accessible"]:
+                            #deselect
+                            if card_hit_boxes[card]["Selected"]:
+                                card_hit_boxes[card]["Selected"] = False
+                                selected -= 1 
+                            #checks to see if there is more than two cards selected
+                            elif selected >= 2:
+                                print("TOO MANY CARDS SELECTED")
+                            else:
+                                #select it
+                                if not card_hit_boxes[card]["Selected"]:
+                                    card_hit_boxes[card]["Selected"] = True
+                                    selected += 1
+        
+        
+
         pygame.draw.rect(screen,"black",(100,50,1400,800),width=1,border_radius=5)
         
-        #button sprites
-        pygame.draw.rect(screen,"blue",(400,900,100,50),width=0,border_radius=5)
-        pygame.draw.rect(screen,"red",(500,900,100,50),width=0,border_radius=5)
-        pygame.draw.rect(screen,"yellow",(600,900,100,50),width=0,border_radius=5)
-        pygame.draw.rect(screen,"purple",(700,900,100,50),width=0,border_radius=5)
 
 
         #display tableu
         for row_index, row in enumerate(tableu):
             
             for column_index, num in enumerate(row):
-
+                print(num)
                 card_info = deck_info[num]
                 
-                #determine suit symbol
-                match card_info["Suit"]:
-                    case "Clubs":
-                        symbol = "♣"
-                    case "Spades":
-                        symbol = "♠"
-                    case "Diamonds":
-                        symbol = "♦"
-                    case "Hearts":
-                        symbol = "♥"
+                symbol = suit_match(card_info["Suit"])
                 
                 #finding position to put cards
                 coord_x,coord_y = top
@@ -220,37 +281,85 @@ def game():
                 new_y = coord_y + row_index * 75
                 new_coords = (new_x,new_y)
 
+                hit_box = [new_x,new_y,100,140]
+                #check if already there
+                if num not in card_hit_boxes:
+                    #save hitbox
+                    card_hit_boxes[num] = {
+                        "HitBox":hit_box,
+                        "Selected":False,
+                        "Accessible":False
+                    }
+                    hit_box_cards.append(num)
+                
+                else:
+                    card_hit_boxes[num]["HitBox"] = hit_box
+
                 new_card = Card(card_info["Value"],symbol,card_info["Color"])
                 new_card.show_card(screen,coords=new_coords)
-                
+
+        if shuffled_deck:
+            #shadow
+            pygame.draw.rect(screen,"black",(1300,200,100+len(shuffled_deck)/2,140+len(shuffled_deck)/2),border_radius=4)
+            #create draw pile
+            #inside
+            pygame.draw.rect(screen,"red",(1300,200,100,140),0,border_radius=4)
+            #border
+            pygame.draw.rect(screen,"white",(1300,200,100,140),4,border_radius=4)
+        else:
+            pygame.draw.rect(screen,"darkgrey",(1300,200,100,140),border_radius=4)
         
+        #create shown card
+        try:
+            #shadow
+            pygame.draw.rect(screen,"black",(1300,350,100+len(shown_draw_pile)/2,140+len(shown_draw_pile)/2),border_radius=4)
+            #card
+            top_card = Card(deck_info[shown_draw_pile[0]]["Value"],suit_match(deck_info[shown_draw_pile[0]]["Suit"]),deck_info[shown_draw_pile[0]]["Color"])
+            top_card.show_card(screen,coords=(1300,350))
 
-        #Button functionality - Add functions and code
-        #if pygame.MOUSEBUTTONDOWN():
-        #    match pygame.mouse.get_pos():
-        #        case () :
-        #            print("ACTIVATE CODE")
+        except IndexError:
+            pygame.draw.rect(screen,"darkgrey",(1300,350,100,140),border_radius=4)
 
-        #allow user to click button to choose type of move to do
-        #onclick of draw card button
-            #call draw cards function
-        #onclick of discard king button
-            #call draw cards function
-        #onclick of making a match
-            #call match making function
+        #waste pile
+        try:
+            pygame.draw.rect(screen,"black",(150,350,100+len(discard_pile)/2,140+len(discard_pile)/2),border_radius=4)
+            top_card = Card(deck_info[discard_pile[0]]["Value"],suit_match(deck_info[discard_pile[0]]["Suit"]),deck_info[discard_pile[0]]["Color"])
+            top_card.show_card(screen,coords=(150,350))
+        except IndexError:
+            pygame.draw.rect(screen,"darkgrey",(150,350,100,140),border_radius=4)
+        
+        #check accessibility of cards
+        card_hit_boxes = accessibility_checks(tableu,card_hit_boxes)
+        
+        #showing buttons
+        show_card.show(screen)
+        king_discard.show(screen)
+        remove.show(screen)
+
+        #highlight for selected card
+        for card in hit_box_cards:
+            if card_hit_boxes[card]["Selected"] == True:
+                x,y,width,height = card_hit_boxes[card]["HitBox"]
+                pygame.draw.rect(screen,"yellow",(x,y,width,height),8,border_radius=4)
+        
         
         #update display
         pygame.display.flip()
+
         #check if tableu is gone
+        if not tableu[0]:
         #if yes
             #leave gameloop
+            running = False
             #save game number and win
-        #else
-            #continue
+            with open("files/pyramid_solitaire.csv","r",newline="",encoding="utf-8") as scores:
+                reader = list(csv.reader(scores))
+                game_num = int(reader[-1][0]) + 1
+                win_num = int(reader[-1][1]) + 1
 
-        #If user clicks the quit button
-            #leave gameloop
-            #save game number and lose
+            with open("files/pyramid_solitaire.csv","a",newline="",encoding="utf-8") as scores:
+                writer = csv.writer(scores)
+                writer.writerow([game_num,win_num])         
 
         #framerate variable
         dt = clock.tick(60) / 100

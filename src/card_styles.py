@@ -16,23 +16,25 @@ import pygame
 class Card:
     #initialize card size - Name, Card Value, suit (as segoeuisymbol - from symbols comment), color
     def __init__(self,card_value,suit,color):
-        self.symbol = str(card_value)
         self.value = card_value
         self.color = color
         self.suit = suit
         
         match self.value:
-            case "1":
+            case 1:
                 self.symbol = "A"
         
-            case "11":
+            case 11:
                 self.symbol = "J"
 
-            case "12":
+            case 12:
                 self.symbol = "Q"
         
-            case "13":
+            case 13:
                 self.symbol = "K"
+            
+            case _:
+                self.symbol = str(card_value)
 
     #Show Card method (coordinates):
     def show_card(self,screen,size=(100,140),coords=(100,100)):
@@ -57,7 +59,7 @@ class Card:
         flipped_suit = pygame.transform.rotate(suit_surface, 180)
 
         #normal text
-        card.blit(font_surface,(0,10))
+        card.blit(font_surface,(2,10))
         card.blit(suit_surface,(35,-10))
         
         #upside down text

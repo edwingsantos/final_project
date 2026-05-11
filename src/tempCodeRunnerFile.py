@@ -1,1 +1,0 @@
-pygame.draw.rect(card, self.color, card.get_rect(),3,border_radius=8)
