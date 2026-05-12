@@ -12,6 +12,7 @@ import random
 import json
 import csv
 from LD_psuedocode import *
+path = "files/solitaire.csv"
 
 # MENU - Screen set up
 # Create window
@@ -94,7 +95,7 @@ def create_deck(json_path):
             card_id=key,
             suit=card_data["Suit"].lower(),
             value=card_data["Value"],
-            color=card_data["Color"].lower()
+            color=card_data["Color"].lower() # Doesnt really work
         )
 
         deck.append(card)
@@ -136,7 +137,7 @@ def draw_from_stock(stock, waste):
 
             card = waste.pop()
             card.face_up = False
-            stock.append(card)
+            stock.append(card)  # Doesnt really work
 
 
 # SETUP BOARD (7 COLUMNS)
@@ -162,7 +163,7 @@ def setup_board(deck):
         for row in range(col + 1):
             card = deck.pop()
             if row == col:
-                card.face_up = True
+                card.face_up = True # Tengo que averiguar qur esta pasando aqui
             tableau[col].append(card)
 
     stock = deck
@@ -260,7 +261,7 @@ def solitaire_valid_move(selected_card, target_card):
 # Must go in order: A to  K
 # Only Ace can start foundation
 def show_instructions():
-
+# las instrucciones las voy a hacer mas detalladas para que el user entienda como funciona mi codigo
     instructions = [
         "SOLITAIRE RULES",
         "",
@@ -346,7 +347,7 @@ def move_card(tableau, selected_card, target_card):
     if source_col and target_col:
 
         source_col.remove(selected_card)
-        target_col.append(selected_card)
+        target_col.append(selected_card)    # Aqui pato algo que no se
 
         # Flip top card in old column
         if len(source_col) > 0:
@@ -374,21 +375,21 @@ tableau, stock,waste,foundations = setup_board(deck)
 def game_loop():
     running = True
     selected = None
-
+    
     while running:
         clock.tick(60)
         screen.fill(GREEN)
         draw_stock_waste(stock, waste)
 
         for event in pygame.event.get():
-
+         
             if event.type == pygame.QUIT:
                 running = False
 
             if event.type == pygame.KEYDOWN:
 
                 if event.key == pygame.K_i:
-                    show_instructions()
+                    show_instructions() # Averiguar que paso aqui que no muerstra mis instrucciones
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mx, my = event.pos
@@ -423,7 +424,7 @@ def game_loop():
         if selected:
             text = FONT.render(f"Selected: {selected}", True, WHITE)
             screen.blit(text, (50, 20))
-
+        
         pygame.display.flip()
     pygame.quit()
 game_loop()
