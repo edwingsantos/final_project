@@ -46,20 +46,38 @@ CARD_W, CARD_H = 70,100
 # Return deck
 # Talves en vez de clases immporto el json y de repente funciona
 class Card:
-    def __init__(self, suit, value):
+    def __init__(self, card_id, suit, value, color):
+        self.id = card_id
         self.suit = suit
         self.value = value
+        self.color = color
         self.face_up = False
-
-    def color(self):
-        return "red" if self.suit in ["hearts", "diamonds"] else "black"
 
     def __repr__(self):
         return f"{self.value}{self.suit[0]}"
 
+def get_card_value(value):
 
-def card_to_id(card):
-    return str(card.value) + "_" + card.suit
+    face_cardss = {
+        "ace": 1,
+        "jack": 11,
+        "queen": 12,
+        "king": 13,
+        "a": 1,
+        "j": 11,
+        "q": 12,
+        "k": 13
+    }
+
+    if isinstance(value, int):
+        return value
+
+    value = str(value).lower()
+
+    if value.isdigit():
+        return int(value)
+
+    return face_cardss[value]
 
 def create_deck(json_path):
 
@@ -69,11 +87,14 @@ def create_deck(json_path):
         data = json.load(f)
 
     for key in data:
+
         card_data = data[key]
 
         card = Card(
+            card_id=key,
             suit=card_data["Suit"].lower(),
-            value=card_data["Value"]
+            value=card_data["Value"],
+            color=card_data["Color"].lower()
         )
 
         deck.append(card)
@@ -98,6 +119,26 @@ def shuffle_deck(json_path):
     random.shuffle(deck)
 
     return deck
+
+
+
+def draw_from_stock(stock, waste):
+
+    if len(stock) > 0:
+
+        card = stock.pop()
+        card.face_up = True
+        waste.append(card)
+
+    else:
+        # Reset stock from waste
+        while len(waste) > 0:
+
+            card = waste.pop()
+            card.face_up = False
+            stock.append(card)
+
+
 # SETUP BOARD (7 COLUMNS)
 #Create 7 empty columns (tableau)
 #FOR column = 1 TO 7:
@@ -146,7 +187,8 @@ CARD_W, CARD_H = 70, 100
 def draw_card(x, y, card):
     if card.face_up:
         pygame.draw.rect(screen, WHITE, (x, y, CARD_W, CARD_H))
-        text = FONT.render(str(card), True, BLACK)
+        text_color = (200, 0, 0) if card.color == "red" else BLACK
+        text = FONT.render(str(card), True, text_color)
     else:
         pygame.draw.rect(screen, GRAY, (x, y, CARD_W, CARD_H))
         text = FONT.render("X", True, BLACK)
@@ -185,7 +227,20 @@ def draw_tableau(tableau):
 #     Move is valid
 # Else:
 #     Move is invalid
+def solitaire_valid_move(selected_card, target_card):
 
+    # Opposite colors
+    if selected_card.color == target_card.color:
+        return False
+
+    selected_value = get_card_value(selected_card.value)
+    target_value = get_card_value(target_card.value)
+
+    # Descending order
+    if selected_value + 1 == target_value:
+        return True
+
+    return False
 
 # MOVE FUNCTION
 # Take card (or stack) from source
@@ -204,14 +259,98 @@ def draw_tableau(tableau):
 # Cards must be same suit
 # Must go in order: A to  K
 # Only Ace can start foundation
+def show_instructions():
 
-#def rules():
+    instructions = [
+        "SOLITAIRE RULES",
+        "",
+        "Goal:",
+        "Move all cards to the 4 foundation piles.",
+        "",
+        "Tableau Rules:",
+        "- Alternate red and black cards",
+        "- Move cards in descending order",
+        "- Example: 8 on 9",
+        "",
+        "Foundation Rules:",
+        "- Same suit only",
+        "- Start with Ace",
+        "- Build Ace to King",
+        "",
+        "Stock:",
+        "- Click stock pile to draw cards",
+        "",
+        "Controls:",
+        "- Click a card to select it",
+        "- Click another card to move onto it",
+        "",
+        "Press ESC to return"
+    ]
+
+    running = True
+
+    while running:
+
+        screen.fill(GREEN)
+
+        y = 50
+
+        for line in instructions:
+
+            text = FONT.render(line, True, WHITE)
+            screen.blit(text, (50, y))
+
+            y += 30
+
+        pygame.display.flip()
+
+        for event in pygame.event.get():
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+
+            if event.type == pygame.KEYDOWN:
+
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+
+def draw_stock_waste(stock, waste):
+
+    # STOCK
+    if len(stock) > 0:
+        pygame.draw.rect(screen, GRAY, (50, 20, CARD_W, CARD_H))
+    else:
+        pygame.draw.rect(screen, WHITE, (50, 20, CARD_W, CARD_H), 2)
+
+    # WASTE
+    if len(waste) > 0:
+        draw_card(150, 20, waste[-1])
 
 # WIN CONDITION
 # Check all 4 foundation piles
 # If each pile has 13 cards in correct order:
 #     Player wins
+def move_card(tableau, selected_card, target_card):
 
+    source_col = None
+    target_col = None
+
+    for col in tableau:
+
+        if selected_card in col:
+            source_col = col
+
+        if target_card in col:
+            target_col = col
+
+    if source_col and target_col:
+
+        source_col.remove(selected_card)
+        target_col.append(selected_card)
+
+        # Flip top card in old column
+        if len(source_col) > 0:
+            source_col[-1].face_up = True
 
 # SAVE GAME STATS - Lizzie
 # Open CSV file
@@ -230,7 +369,6 @@ def draw_tableau(tableau):
 
 # tengo que agregar el tableau en alguna parte del loop
 deck = shuffle_deck("files/cards.json")
-valid_move#(moved_card_id, moved_onto_id)# esto es el helper function de Lizzie
 tableau, stock,waste,foundations = setup_board(deck) 
 
 def game_loop():
@@ -240,10 +378,17 @@ def game_loop():
     while running:
         clock.tick(60)
         screen.fill(GREEN)
+        draw_stock_waste(stock, waste)
 
         for event in pygame.event.get():
+
             if event.type == pygame.QUIT:
                 running = False
+
+            if event.type == pygame.KEYDOWN:
+
+                if event.key == pygame.K_i:
+                    show_instructions()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mx, my = event.pos
@@ -252,7 +397,11 @@ def game_loop():
                 start_y = 120
                 spacing_x = 130
                 spacing_y = 25
+                stock_rect = pygame.Rect(50, 20, CARD_W, CARD_H)
 
+                if stock_rect.collidepoint(mx, my):
+                    draw_from_stock(stock, waste)
+                    
                 for col_i, col in enumerate(tableau):
                     for row_i, card in enumerate(col):
                         x = start_x + col_i * spacing_x
@@ -260,16 +409,15 @@ def game_loop():
 
                         rect = pygame.Rect(x, y, CARD_W, CARD_H)
 
-                        if rect.collidepoint(mx, my) and card.face_up:
+                        if rect.collidepoint(mx, my) and card.face_up and card == col[-1]:
                             if selected is None:
                                 selected = card
                             else:
-                                if valid_move(card_to_id(selected), card_to_id(card)):
-                                    print("Valid move")
+                                if selected and selected != card and solitaire_valid_move(selected, card):
+                                    move_card(tableau, selected, card)
                                 else:
                                     print("Invalid move")
                                 selected = None
-
         draw_tableau(tableau)
 
         if selected:
@@ -277,7 +425,6 @@ def game_loop():
             screen.blit(text, (50, 20))
 
         pygame.display.flip()
-
     pygame.quit()
 game_loop()
 
