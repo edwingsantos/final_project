@@ -1,7 +1,6 @@
 #PS 1st CP2 Final - Pyramid Soliaire source code
 
-#import shuffle function
-from solitaire import shuffle_deck
+
 #import csv management functions
 import json
 import csv
@@ -60,10 +59,15 @@ def accessibility_checks(tableu,card_info):
     
     #bottom row acessible
     for card in tableu[-1]:
-        card_info[card]["Accessible"] = True
+        if not card == None:
+            card_info[card]["Accessible"] = True
 
     for row in range(len(tableu)-1):
         for column,card in enumerate(tableu[row]):
+
+            if card is None or card not in card_info:
+                continue
+
             try:
                 blocked_left = tableu[row+1][column]
                 blocked_right = tableu[row+1][column+1]
@@ -77,14 +81,14 @@ def accessibility_checks(tableu,card_info):
     return card_info
 
 #valid Combo Function (card1_id,card2_id,list_of_cards)
-def val_combo(ID_1,ID_2,tableu,draw_pile):
+def val_combo(ID_1,ID_2,tableu,draw_pile,discard_pile):
     #get both of the dictionaries for the cards in the JSON
     with open("files/cards.json","r") as cards:
         deck = json.load(cards)
-    
+
     card1_info = deck[ID_1]
     card2_info = deck[ID_2]
-
+    print(f"Combined:{card1_info["Value"]+card2_info["Value"]} 1:{card1_info["Value"]} 2:{card2_info["Value"]} name1:{card1_info["Name"]} name2: {card2_info["Name"]}")
     #if card1[value] + card2[value] == 13:
     if card1_info["Value"] + card2_info["Value"] == 13:
         #pop those ids out of the tableu add them to the discard pile
@@ -92,16 +96,20 @@ def val_combo(ID_1,ID_2,tableu,draw_pile):
             for x in tableu:
                 for y in x:
                     if y == ID_1 or y == ID_2:
-                        x.pop(y)
-
-        for i in draw_pile:
-            if i == ID_1 or i == ID_2:
-                draw_pile.pop(i)
+                        tableu[tableu.index(x)][x.index(y)] = None
+                        discard_pile.append(y)
+        if draw_pile:
+            if ID_1 == draw_pile[0] or ID_2 == draw_pile[0]:
+                draw_pile.pop(0)
+                discard_pile.append(y)
         
     #else:
     else:
         #display invalid value error
         print("NOT A VALID MATCH")
+
+    return tableu, draw_pile, discard_pile
+
 
 #Options funcs
 
@@ -143,6 +151,7 @@ def king_removal(tableu,discard,shown_pile,picked_card):
         for x in tableu:
             for y in x:
                 if y == picked_card:
+                    x.insert(x.index(y),None)
                     x.remove(y)
                     removed = True
                     break
@@ -207,9 +216,13 @@ def game():
         screen.fill("darkgreen")
         #Title
         font = pygame.font.SysFont(None, 48)
-        surface_for_font = font.render("Pyramid Solitaire",True,"White")
+        title_surface = font.render("Pyramid Solitaire",True,"White")
+        label_surface = font.render("Discard",True,"white")
+        label2_surface = font.render("Draw Pile",True,"white")
 
-        screen.blit(surface_for_font, (625,20))
+        screen.blit(title_surface, (625,20))
+        screen.blit(label_surface,(150,300))
+        screen.blit(label2_surface,(1300,150))
         
         
         #stop the program if the user exits the window
@@ -220,8 +233,16 @@ def game():
             #check if cards or buttons are clicked
             if show_card.click_check(event):
                 try:
-                    card_hit_boxes.pop(shown_draw_pile[0])
-                    hit_box_cards.remove(shown_draw_pile[0])
+                    current_card = shown_draw_pile[0]
+                    if current_card in card_hit_boxes:
+                        if card_hit_boxes[current_card]["Selected"] == True:
+                            selected -=1
+
+                    
+                        card_hit_boxes.pop(current_card)
+                        hit_box_cards.remove(current_card)
+                    
+
                 except IndexError:
                     pass
 
@@ -243,6 +264,9 @@ def game():
                             king = card
                     discard_pile, shown_draw_pile, tableu = king_removal(tableu,discard_pile,shown_draw_pile,king)
                     card_hit_boxes[king]["Selected"] = False
+                    card_hit_boxes.pop(king)
+                    hit_box_cards.remove(king)
+                    
                     selected -= 1
                     print("Successful King Removal")
                 elif selected == 2:
@@ -251,8 +275,27 @@ def game():
                     print("NO CARDS SELECTED")
             
             if remove.click_check(event):
-                print("MATCH BUTTON TEST")
-            
+                if selected < 2:
+                    print("MUST SELECT TWO CARDS")
+                else:
+                    scanned = 0
+                    selected_1 = None
+                    selected_2 = None
+                    for key, data in card_hit_boxes.items():
+                        if data["Selected"] and scanned == 0:
+                            selected_1 = key
+                            scanned+=1
+                        elif data["Selected"] and scanned == 1:
+                            selected_2 = key
+                            scanned+=1
+
+                    tableu, shown_draw_pile, discard_pile = val_combo(selected_1,selected_2,tableu,shown_draw_pile,discard_pile)
+                    card_hit_boxes[selected_1]["Accessible"] = False
+                    card_hit_boxes[selected_1]["Selected"] = False
+                    card_hit_boxes[selected_2]["Accessible"] = False
+                    card_hit_boxes[selected_2]["Selected"] = False
+                    selected -= 2
+
             #if left click happened
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 for card in hit_box_cards:
@@ -315,7 +358,6 @@ def game():
                     new_card = Card(card_info["Value"],symbol,card_info["Color"])
                     new_card.show_card(screen,coords=new_coords)
                 else:
-                    print("Removed card skipped")
                     pass
 
         if shuffled_deck:
@@ -351,9 +393,12 @@ def game():
         #check accessibility of cards
         card_hit_boxes = accessibility_checks(tableu,card_hit_boxes)
 
+        #check accessibility of the draw pile
         try:
             card_hit_boxes[shown_draw_pile[0]]["Accessible"] = True
         except IndexError:
+            pass
+        except KeyError:
             pass
         
         #showing buttons
@@ -369,13 +414,13 @@ def game():
         
         
         #update display
-        pygame.display.flip()
 
         #check if tableu is gone
-        if not tableu[0]:
-        #if yes
+        if not tableu[0][0]:
+            #if yes
             #leave gameloop
             running = False
+            print("YOU WIN!")
             #save game number and win
             with open("files/pyramid_solitaire.csv","r",newline="",encoding="utf-8") as scores:
                 reader = list(csv.reader(scores))
@@ -388,4 +433,5 @@ def game():
 
         #framerate variable
         dt = clock.tick(60) / 100
-#game()
+        pygame.display.flip()
+game()
