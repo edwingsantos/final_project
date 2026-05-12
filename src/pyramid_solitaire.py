@@ -371,7 +371,7 @@ def game():
                     else:
                         card_hit_boxes[num]["HitBox"] = hit_box
 
-                    new_card = Card(card_info["Value"],symbol,card_info["Color"])
+                    new_card = Card_styles(card_info["Value"],symbol,card_info["Color"])
                     new_card.show_card(screen,coords=new_coords)
                 else:
                     pass
@@ -392,7 +392,7 @@ def game():
             #shadow
             pygame.draw.rect(screen,"black",(1300,350,100+len(shown_draw_pile)/2,140+len(shown_draw_pile)/2),border_radius=4)
             #card
-            top_card = Card(deck_info[shown_draw_pile[0]]["Value"],suit_match(deck_info[shown_draw_pile[0]]["Suit"]),deck_info[shown_draw_pile[0]]["Color"])
+            top_card = Card_styles(deck_info[shown_draw_pile[0]]["Value"],suit_match(deck_info[shown_draw_pile[0]]["Suit"]),deck_info[shown_draw_pile[0]]["Color"])
             top_card.show_card(screen,coords=(1300,350))
 
         except IndexError:
@@ -401,7 +401,7 @@ def game():
         #waste pile
         try:
             pygame.draw.rect(screen,"black",(150,350,100+len(discard_pile)/2,140+len(discard_pile)/2),border_radius=4)
-            top_card = Card(deck_info[discard_pile[0]]["Value"],suit_match(deck_info[discard_pile[0]]["Suit"]),deck_info[discard_pile[0]]["Color"])
+            top_card = Card_styles(deck_info[discard_pile[0]]["Value"],suit_match(deck_info[discard_pile[0]]["Suit"]),deck_info[discard_pile[0]]["Color"])
             top_card.show_card(screen,coords=(150,350))
         except IndexError:
             pygame.draw.rect(screen,"darkgrey",(150,350,100,140),border_radius=4)
@@ -450,4 +450,3 @@ def game():
         #framerate variable
         dt = clock.tick(60) / 100
         pygame.display.flip()
-game()

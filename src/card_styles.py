@@ -13,7 +13,7 @@ import pygame
         #ex: mycard.show_card(screen,coords=(100,100))
 
 #class for all clubs:
-class Card:
+class Card_styles:
     #initialize card size - Name, Card Value, suit (as segoeuisymbol - from symbols comment), color
     def __init__(self,card_value,suit,color):
         self.value = card_value
