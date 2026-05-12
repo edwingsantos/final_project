@@ -1,20 +1,128 @@
-# LD Pseudocode for Freecell
+#PS 1st FreeCell pseudocode
 
-# import LD's valid move func and LV's shuffle deck function
+#import necessary libraries
+from card_styles import *
+from button_styles import *
+import json
+import pygame
+import csv
+import random
 
-# shuffle deck
+#Note:all cards are stored by ID NOT value
 
-# to deal the cards: 8 lists (these are the columns). Four lists will have 7 ids while the other four will have 6 ids
+#shuffle cards func
+def shuffle():
+    with open("files/cards.json","r") as card_info:
+        deck_info = json.load(card_info)
+    
+    deck = list(deck_info.keys())
 
-# user only can move a card that is the LAST indext in the lists
+    random.shuffle(deck)
 
-# when selecting a card to move, IF the id == 1, 14, 27 or 40, it is an Ace and can be moved to the ace spot.
-# Each of these four spots will be kept as a list. When a card is moved onto an Ace, append that ID into the correct symbol list.
+    return deck
 
-# allow user to move cards. Call LD's valid move function every time a card is moved.
+#setup func
+def setup():
+    deck = shuffle()
+    
+    #useful vars
+    freecells = []
+    ace_piles = [
+        [],
+        [],
+        [],
+        []
+    ]
+    
+    #tableau contains lists which represent columns
+    tableau = [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+    ]
+    
+    #load tableau
+    for i, card in enumerate(deck):
+        tableau[i % 8].append(card)
+    
+    return freecells, ace_piles, tableau
 
-# When ALL FOUR of the Ace lists reach a length of 13, user has moved all the cards onto the ace piles and have thus won. Win = True
+#CHECKS
+def moveable_cards(tableau,freecells,ace_piles):
+    moveable = []
+    for x in tableau:
+        moveable.append(x[-1])
+    
+    for x in freecells:
+        moveable.append(x)
+    
+    for x in ace_piles:
+        moveable.append(x-1)
+    
+    return moveable
 
-# Call LD's write to solitaire CSV function and pass in the freecell.csv path and Win
+#places to move check
 
-# return to main menu
+#valid places
+        
+
+#game func
+def free_cell_game():
+    #normal vars
+    freecells, ace_piles, tableau = setup()
+    print(tableau)
+    moveable = []
+    card_status = {}
+    selected = 0
+    landing_positions = []
+    
+    #setup pygame
+    pygame.init()
+    screen = pygame.display.set_mode((1600,1200))
+    clock = pygame.time.Clock()
+    running = True
+    
+    #put buttons here
+
+    #game loop
+    while running:
+        
+        #visuals
+        screen.fill("darkgreen")
+
+        font = pygame.font.SysFont(None,48)
+        title_surface = font.render("FreeCell",True,"white")
+        
+        screen.blit(title_surface,(700,50))
+
+
+    #check events
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+    #display tableu
+
+    #display ace piles
+
+    #display free cells
+
+    #find movable cards
+
+    #find places for cards to be moved - Ace piles, other parts of tableau, free cells
+
+    #check if game is over
+        #if yes, end game loop and save to csv
+    
+        pygame.display.flip()
+
+        dt = clock.tick(60) / 100
+    
+    pygame.quit()
+
+free_cell_game()

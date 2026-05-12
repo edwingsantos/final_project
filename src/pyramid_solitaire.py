@@ -46,8 +46,6 @@ def setup():
     
     discard_pile = []
     shown_draw = []
-    for x in tableu:
-        print(x)
     return tableu, discard_pile ,shuffled_deck, shown_draw
 
 #Accessible cards
@@ -81,14 +79,14 @@ def accessibility_checks(tableu,card_info):
     return card_info
 
 #valid Combo Function (card1_id,card2_id,list_of_cards)
-def val_combo(ID_1,ID_2,tableu,draw_pile,discard_pile):
+def val_combo(ID_1,ID_2,tableu,draw_pile,discard_pile,warning_text):
     #get both of the dictionaries for the cards in the JSON
     with open("files/cards.json","r") as cards:
         deck = json.load(cards)
 
     card1_info = deck[ID_1]
     card2_info = deck[ID_2]
-    print(f"Combined:{card1_info["Value"]+card2_info["Value"]} 1:{card1_info["Value"]} 2:{card2_info["Value"]} name1:{card1_info["Name"]} name2: {card2_info["Name"]}")
+
     #if card1[value] + card2[value] == 13:
     if card1_info["Value"] + card2_info["Value"] == 13:
         #pop those ids out of the tableu add them to the discard pile
@@ -106,9 +104,9 @@ def val_combo(ID_1,ID_2,tableu,draw_pile,discard_pile):
     #else:
     else:
         #display invalid value error
-        print("NOT A VALID MATCH")
+        warning_text = "Match Values don't add to 13"
 
-    return tableu, draw_pile, discard_pile
+    return tableu, draw_pile, discard_pile, warning_text
 
 
 #Options funcs
@@ -135,7 +133,7 @@ def draw(draw_pile,shown_pile):
 
 
 #Discard King function (tableu, discard pile, shown draw pile)
-def king_removal(tableu,discard,shown_pile,picked_card):
+def king_removal(tableu,discard,shown_pile,picked_card,warning_text):
     #call accessibility function for accessible cards
     
     
@@ -161,11 +159,11 @@ def king_removal(tableu,discard,shown_pile,picked_card):
             shown_pile.pop(0)
         #add to discard pile
         discard.insert(0,picked_card)
-        return discard, shown_pile, tableu
     #if no
     else:
         #display error message stating that the card selected was not a king
-        print("PUT INVALID KING MESSAGE HERE")
+        warning_text = "Select only one king"
+    return discard, shown_pile, tableu, warning_text
 
 def suit_match(suit):
     match suit:
@@ -190,6 +188,7 @@ def game():
     card_hit_boxes = {}
     hit_box_cards = []
     selected = 0
+    warning_text = ""
     #top card coords
     top = (700,100)
 
@@ -200,9 +199,11 @@ def game():
 
     #pygame setup
     pygame.init()
-    screen = pygame.display.set_mode((1600,1100))
+    screen = pygame.display.set_mode((2000,1100))
     clock = pygame.time.Clock()
     running = True
+    description = f"Rules for pyramid Solitaire:\nGoal: Remove all cards from the pyramid\nMethods:\n\nDiscard a king\n - select a king a click 'Discard king'\n\nMatch Cards:\n Select two cards which aren't covered and click 'Match'\n\n\nIf you lose, just exit the window and try again!\nWhen all cards are gone from the pyramid, the game ends itself.\nFinally the draw button will flip a card over in the draw pile\n so it can be used. "
+    lines = description.split("\n")
 
     #Button functionality
     show_card = Button("Draw","white","grey",position=(450,900))
@@ -214,8 +215,9 @@ def game():
     while running:
         
         screen.fill("darkgreen")
-        #Title
+        #text
         font = pygame.font.SysFont(None, 48)
+        font_2 = pygame.font.SysFont(None, 24)
         title_surface = font.render("Pyramid Solitaire",True,"White")
         label_surface = font.render("Discard",True,"white")
         label2_surface = font.render("Draw Pile",True,"white")
@@ -223,7 +225,22 @@ def game():
         screen.blit(title_surface, (625,20))
         screen.blit(label_surface,(150,300))
         screen.blit(label2_surface,(1300,150))
+
+        #surface for text to sit on
+        pygame.draw.rect(screen,"white",(1500,80,495,475),border_radius=8)
+
+        for i, line in enumerate(lines):
+            rules_surface = font_2.render(line,True,"black")
+            screen.blit(rules_surface,(1500,100 + i * 30))
+
+        #Warning Message screen
+        pygame.draw.rect(screen,"black",(1500,700,300,150),border_radius=8)
         
+        warning_surface_title = font_2.render("Warning Center: ",True,"Green")
+        screen.blit(warning_surface_title,(1550,725))
+        
+        warning_surface = font_2.render(warning_text,True,"red")
+        screen.blit(warning_surface,(1550,750))
         
         #stop the program if the user exits the window
         for event in pygame.event.get():
@@ -262,21 +279,21 @@ def game():
                     for card in hit_box_cards:
                         if card_hit_boxes[card]["Selected"] == True:
                             king = card
-                    discard_pile, shown_draw_pile, tableu = king_removal(tableu,discard_pile,shown_draw_pile,king)
+                    discard_pile, shown_draw_pile, tableu, warning_text = king_removal(tableu,discard_pile,shown_draw_pile,king,warning_text)
                     card_hit_boxes[king]["Selected"] = False
                     card_hit_boxes.pop(king)
                     hit_box_cards.remove(king)
                     
                     selected -= 1
-                    print("Successful King Removal")
+                    
                 elif selected == 2:
-                    print("TOO MANY CARDS SELECTED TO DISCARD A KING")
+                    warning_text = "Too many cards selected"
                 else:
-                    print("NO CARDS SELECTED")
+                    warning_text = "No cards selected"
             
             if remove.click_check(event):
                 if selected < 2:
-                    print("MUST SELECT TWO CARDS")
+                    warning_text = "Select two cards"
                 else:
                     scanned = 0
                     selected_1 = None
@@ -289,7 +306,7 @@ def game():
                             selected_2 = key
                             scanned+=1
 
-                    tableu, shown_draw_pile, discard_pile = val_combo(selected_1,selected_2,tableu,shown_draw_pile,discard_pile)
+                    tableu, shown_draw_pile, discard_pile, warning_text = val_combo(selected_1,selected_2,tableu,shown_draw_pile,discard_pile,warning_text)
                     card_hit_boxes[selected_1]["Accessible"] = False
                     card_hit_boxes[selected_1]["Selected"] = False
                     card_hit_boxes[selected_2]["Accessible"] = False
@@ -312,13 +329,12 @@ def game():
                                 selected -= 1 
                             #checks to see if there is more than two cards selected
                             elif selected >= 2:
-                                print("TOO MANY CARDS SELECTED")
+                                warning_text = "To many cards selected"
                             else:
                                 #select it
                                 if not card_hit_boxes[card]["Selected"]:
                                     card_hit_boxes[card]["Selected"] = True
                                     selected += 1
-                                    print(card,card_hit_boxes[card]["Accessible"])
         
         
 
@@ -355,7 +371,7 @@ def game():
                     else:
                         card_hit_boxes[num]["HitBox"] = hit_box
 
-                    new_card = Card(card_info["Value"],symbol,card_info["Color"])
+                    new_card = Card_styles(card_info["Value"],symbol,card_info["Color"])
                     new_card.show_card(screen,coords=new_coords)
                 else:
                     pass
@@ -376,7 +392,7 @@ def game():
             #shadow
             pygame.draw.rect(screen,"black",(1300,350,100+len(shown_draw_pile)/2,140+len(shown_draw_pile)/2),border_radius=4)
             #card
-            top_card = Card(deck_info[shown_draw_pile[0]]["Value"],suit_match(deck_info[shown_draw_pile[0]]["Suit"]),deck_info[shown_draw_pile[0]]["Color"])
+            top_card = Card_styles(deck_info[shown_draw_pile[0]]["Value"],suit_match(deck_info[shown_draw_pile[0]]["Suit"]),deck_info[shown_draw_pile[0]]["Color"])
             top_card.show_card(screen,coords=(1300,350))
 
         except IndexError:
@@ -385,7 +401,7 @@ def game():
         #waste pile
         try:
             pygame.draw.rect(screen,"black",(150,350,100+len(discard_pile)/2,140+len(discard_pile)/2),border_radius=4)
-            top_card = Card(deck_info[discard_pile[0]]["Value"],suit_match(deck_info[discard_pile[0]]["Suit"]),deck_info[discard_pile[0]]["Color"])
+            top_card = Card_styles(deck_info[discard_pile[0]]["Value"],suit_match(deck_info[discard_pile[0]]["Suit"]),deck_info[discard_pile[0]]["Color"])
             top_card.show_card(screen,coords=(150,350))
         except IndexError:
             pygame.draw.rect(screen,"darkgrey",(150,350,100,140),border_radius=4)
@@ -434,4 +450,3 @@ def game():
         #framerate variable
         dt = clock.tick(60) / 100
         pygame.display.flip()
-game()
