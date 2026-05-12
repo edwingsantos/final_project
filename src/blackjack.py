@@ -8,14 +8,11 @@ import csv
 import random 
 #from solitaire import *
 from betting_func import *
+from card_styles import *
 #from LD_psuedocode import *
 path = "files/blackjack.csv"
 
 
-
-screen = pygame.display.set_mode(pygame.display.get_desktop_sizes()[0])
-clock = pygame.time.Clock()
-font = pygame.font.SysFont(None, 40)
 
 #use dictionary called point to safe the cards choosen 
 #make a dictionary for the dealers hand 
@@ -190,7 +187,6 @@ def blackjack():
     running = True
     state =  "typing"
     typed_text = ""
-    cursor_visible = True
 
     #betting
     betting_money = starting_bet()
@@ -202,8 +198,6 @@ def blackjack():
     player_hand = []
     dealer_hand = []
 
-
-
     #dealing cards
     # DEAL CARDS
     player_hand.append(deck.pop())
@@ -211,9 +205,6 @@ def blackjack():
 
     dealer_hand.append(deck.pop())
     dealer_hand.append(deck.pop())
-
-    print("Player Hand:", player_hand)
-    print("Dealer Hand:", dealer_hand)
 
     #variables for games 
     player_turn = True
@@ -229,9 +220,13 @@ def blackjack():
 
 
     while running:
-        clock.tick(60)
+        pygame.init()
+        WIDTH, HEIGHT = 1000, 700
+        screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        clock = pygame.time.Clock()
+        font = pygame.font.SysFont(None, 40)
         #backround
-        screen.fill((20, 120, 20))
+        screen.fill("darkgreen")
 
         #events
         for event in pygame.event.get():
@@ -241,7 +236,6 @@ def blackjack():
                     pygame.quit()
                     sys.exit()
 
-            #keyboard
             
 
                 #hit (get more cards)
@@ -305,10 +299,12 @@ def blackjack():
 
 
 
-#write the card here, monday morning so parker helps 
+#write the card here, tuesday morning so parker helps 
 
 
+        card_test = Card_styles(11,"♥","red")
 
+        card_test.show_card(screen,(500,500))
 
 
 
@@ -319,8 +315,6 @@ def blackjack():
             text1 = font.render("PRESS H TO HIT | PRESS S TO STAND",True,(255, 255, 255))
             # cursor effect
             display_text = typed_text
-            if cursor_visible:
-                display_text += "|"
              #typing font and making sure its tru 
             text2 = font.render(display_text, True, (0, 0, 0))
             screen.blit(text1, (200, 200))
@@ -332,12 +326,8 @@ def blackjack():
             text2 = font.render("PRESS q TO EXIT",True,(255, 255, 255))
 
         screen.blit(text2, (450, 750))
-
-
         result_text = font.render(result,True,(255, 255, 0))
-
         screen.blit(result_text, (550, 350))
-
         pygame.display.update()
 
 blackjack()
