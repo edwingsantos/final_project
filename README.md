@@ -1,5 +1,9 @@
-# final_project
-describe project
+# Final Project
+We wanted a place where we could play many card games without having to go to separte, sketchy websites!
+
+This project does just that. Here, you can play poker, blackjack, standard solitaire, pyramid solitaire, and freecell solitaire!
+
+
 ![Image of running code](link)
 
 ## How to Use

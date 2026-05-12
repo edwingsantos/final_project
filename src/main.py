@@ -10,11 +10,11 @@
 import pygame
 import tkinter as tk
 import sys
-from betting_func import *
-#from blackjack import blackjack_game
-#from freecell_solitaire import *
+#from blackjack import *
+#from poker_pseudo import*
+from freecell_solitaire import *
 from solitaire import game_loop
-
+from pyramid_solitaire import game
 # def show_choices(root):
 #     Display a label that says "Choose a game"
 #     
@@ -58,7 +58,7 @@ def show_choices(root):
     black_jack = tk.Button(
         root,
         text="Black Jack",
-        command=lambda: starting_bet()
+        command=lambda: print("blackjack()")
     )
     black_jack.pack()
 
@@ -66,7 +66,7 @@ def show_choices(root):
     pyramid = tk.Button(
         root,
         text="Pyramid Solitaire",
-        command=lambda: print("Launch Pyramid Solitaire")
+        command=lambda: game()
     )
     pyramid.pack()
 
@@ -82,7 +82,7 @@ def show_choices(root):
     poker = tk.Button(
         root,
         text="Poker",
-        command=lambda: starting_bet()
+        command=lambda: print("play()")
     )
     poker.pack()
 
