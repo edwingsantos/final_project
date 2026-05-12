@@ -96,37 +96,6 @@ def check_hands(hand, table):
 
 
 def play_poker():
-    def play_round():
-        continue_game = True
-        nonlocal bet_amount
-        while continue_game:
-            # Show the buttons to Check, Bet, or Fold
-            check_rect = pygame.draw.rect(screen, BUTTON_COLOR, (150, 625, 100, 50), 5, 0) # Check
-            text = FONT.render(str("Check"), True, BLACK)
-            screen.blit(text, (150 + 10, 625 + 25))
-
-            bet_rect = pygame.draw.rect(screen, BUTTON_COLOR, (250, 625, 50, 50), 5, 0) # bet
-            text2 = FONT.render(str("Bet"), True, BLACK)
-            screen.blit(text2, (250 + 10, 625 + 25))
-
-            fold_rect = pygame.draw.rect(screen, BUTTON_COLOR, (350, 625, 50, 50), 5, 0) # fold
-            text3 = FONT.render(str("Fold"), True, BLACK)
-            screen.blit(text3, (350 + 10, 625 + 25))
-
-            for event in pygame.event.get():
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if check_rect.collidepoint(event.pos):
-                        continue_game = False
-                        return 0, "Check"
-                    elif bet_rect.collidepoint(event.pos):
-                        more_bet = make_bet()
-                        continue_game = False
-                        return more_bet, "Bet"
-                    elif fold_rect.collidepoint(event.pos):
-                        continue_game = False
-                        return 0, "Fold"
-            
-            pygame.display.flip()
 
     def make_bet():
         nonlocal bet_amount
@@ -173,46 +142,64 @@ def play_poker():
             count += 1
 
     def draw_main_game(table_amount):
-        nonlocal game
+        screen = pygame.display.set_mode((1440, 1100))
         screen.fill(GREEN)
-    
-        while game:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    game = False
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if bet_rect.collidepoint(event.pos):
-                        make_bet()
-                    elif fold_rect.collidepoint(event.pos):
-                        # BUILD: end the game
-                        pass
-            # draw the cards
-            x_pos = 500; y_pos = 100
-            for card in player_hand:
-                pygame.draw.rect(screen, WHITE, (x_pos, y_pos, CARD_W, CARD_H))
-                text = FONT.render(str(f'{card} (ID)'), True, BLACK)
-                screen.blit(text, (x_pos + 10, y_pos + 40))
-                x_pos += 80; y_pos += 0
+        nonlocal bet_amount
         
-            x = 500; y = 650
-            for _ in computer_hand:
-                pygame.draw.rect(screen, GRAY, (x, y, CARD_W, CARD_H))
-                text = FONT.render("X", True, BLACK)
-                screen.blit(text, (x + 10, y + 40))
-                x += 80; y += 0
+        # draw the cards
+        x_pos = 500; y_pos = 100
+        for card in player_hand:
+            pygame.draw.rect(screen, WHITE, (x_pos, y_pos, CARD_W, CARD_H))
+            text = FONT.render(str(f'{card} (ID)'), True, BLACK)
+            screen.blit(text, (x_pos + 10, y_pos + 40))
+            x_pos += 80; y_pos += 0
+        
+        x = 500; y = 650
+        for _ in computer_hand:
+            pygame.draw.rect(screen, GRAY, (x, y, CARD_W, CARD_H))
+            text = FONT.render("X", True, BLACK)
+            screen.blit(text, (x + 10, y + 40))
+            x += 80; y += 0
 
-            # draw a discard card
-            pygame.draw.rect(screen, WHITE, (200, 400, CARD_W, CARD_H))
-            text = FONT.render("Discard", True, BLACK)
-            screen.blit(text, (200 + 5, 400 + 40))
+        # draw a discard card
+        pygame.draw.rect(screen, WHITE, (200, 400, CARD_W, CARD_H))
+        text = FONT.render("Discard", True, BLACK)
+        screen.blit(text, (200 + 5, 400 + 40))
 
-            # display the table cards
-            draw_table(table_amount)
+        check_rect = pygame.draw.rect(screen, BUTTON_COLOR, (150, 625, 100, 50), 5, 0) # Check
+        text = FONT.render(str("Check"), True, BLACK)
+        screen.blit(text, (150 + 10, 625 + 25))
+
+        bet_rect = pygame.draw.rect(screen, BUTTON_COLOR, (250, 625, 50, 50), 5, 0) # bet
+        text2 = FONT.render(str("Bet"), True, BLACK)
+        screen.blit(text2, (250 + 10, 625 + 25))
+
+        fold_rect = pygame.draw.rect(screen, BUTTON_COLOR, (350, 625, 50, 50), 5, 0) # fold
+        text3 = FONT.render(str("Fold"), True, BLACK)
+        screen.blit(text3, (350 + 10, 625 + 25))
+
+        # display the table cards
+        draw_table(table_amount)
+        wait = True
+        while wait:
+            event = pygame.event.wait()
+            if event.type == pygame.QUIT:
+                wait = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if bet_rect.collidepoint(event.pos):
+                    more_mon = make_bet()
+                    return "Bet", more_mon
+                elif fold_rect.collidepoint(event.pos):
+                    return "Fold", 0
+                elif check_rect.collidepoint(event.pos):
+                    return "Check", 0
+        pygame.display.flip()
             
     def end_game(won=None, money = None):
         if won == None and money == None:
             won, money = determine_win()
         write_2_gambling(csv_path, won, money)
+        return
 
     WIDTH, HEIGHT = 1000, 700
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -232,11 +219,8 @@ def play_poker():
     if saved_game == True:
         try:
             with open(csv_path, "r") as file:
-                reader = csv.DictReader(file)
-                headers = next(reader)
-                for line in (file.readlines() [-1:]):
-                    mon = line["Money"]
-                    user_mon = int(mon)
+                reader = list(csv.reader(file))
+                user_mon = int(reader[-1][2])
         except Exception as e:
             print(f"Could not open the file given.\nPath given: {csv_path}\nReason for error: {e}")
             user_mon = 100
@@ -312,16 +296,16 @@ def play_poker():
     
     waiting = True
     while waiting:
+        event = pygame.event.wait()
         if event.type == pygame.MOUSEBUTTONDOWN:
             if bet_rect.collidepoint(event.pos):
                 waiting = False
-                print("Making Bet")
                 make_bet()
                 draw_main_game(3)
             elif fold_rect.collidepoint(event.pos):
                 waiting = False
                 print("Folding")
-                end_game(win="False", money=user_mon)
+                end_game("False", user_mon)
                 return
         clock.tick(60)
     
@@ -329,27 +313,33 @@ def play_poker():
     while game:
         # call PLAY ROUND func
         if bet_amount > 0:
-            # erase initial bet button (draw over it), reveal the fourth card on table, call play_round
-            draw_table(4)
-            more_mon, play_again = play_round()
+            play_again, more_mon = draw_main_game(4)
             if play_again == "Fold":
                 # display something about the user returning to games menu because of folding
-                return
+                bet_amount += more_mon
+                money = user_mon-bet_amount
+                end_game(won="False", money=money)
             elif play_again == "Check" or play_again == "Bet":
                 bet_amount += more_mon
-                final_bet, final_play = play_round()
+                final_bet, final_play = draw_main_game(5)
             else:
                 print("Something went wrong with playing again. See line 310")
         
             # determine if they went through with the final play
-            draw_table(5)
             if final_play == "Fold":
                 # display something about the user returning to games menu because of folding
-                return
+                money = user_mon - bet_amount
+                end_game(won="False", money=money)
             elif final_play == "Check" or final_play == "Bet":
                 bet_amount += final_bet
                 # "Flip" computer's cards (Display the card instead of the back)
                 # THIS SHOULD HAPPEN IF USER NEVER FOLDED (fingers crossed)
+                x = 500; y = 650
+                for card in computer_hand:
+                    pygame.draw.rect(screen, GRAY, (x, y, CARD_W, CARD_H))
+                    text = FONT.render(f"{card} (ID)", True, BLACK)
+                    screen.blit(text, (x + 10, y + 40))
+                    x += 80; y += 0
 
                 player_score = check_hands(player_hand, table)
                 comp_score = check_hands(computer_hand, table)
