@@ -134,29 +134,86 @@ def val_choice(card_ID,destination_ID,tableau,freecells,acepiles,card_status):
     
     match destination_type:
         case "Freecell":
-            #Check if there is a card already there
-            if freecells[int(destination_ID[-1])] == None:
-                pass
+            freecell_index = int(destination_ID[1:])
+
+            # Check if freecell empty
+            if freecells[freecell_index] is None:
+
+                # Remove card from tableau
+                for column in tableau:
+                    if card_ID in column:
+                        column.remove(card_ID)
+                        break
+
+                # Place into freecell
+                freecells[freecell_index] = card_ID
+            
             else:
-                print("FAIL")
+                print("Invalid move")
         case "AcePile":
-            #Check if value is 1, and is the same suit
-            if card["Value"] == 1 and card["Suit"] == card_status[destination_ID]["Suit"]:
-                if card_status[destination_ID]["Suit"] == "Spades":
-                    acepiles[0].append(card_ID)
-                if card_status[destination_ID]["Suit"] == "Clubs":
-                    acepiles[1].append(card_ID)
-                if card_status[destination_ID]["Suit"] == "Hearts":
-                    acepiles[2].append(card_ID)
-                if card_status[destination_ID]["Suit"] == "Diamonds":
-                    acepiles[3].append(card_ID)
+            #get the right ace pile
+            pile_suit = card_status[destination_ID]["Suit"]
+
+            suit_map = {
+                "Spades":0,
+                "Clubs":1,
+                "Hearts":2,
+                "Diamonds":3
+            }
+            
+            pile_index = suit_map[pile_suit]
+            pile = acepiles[pile_index]
+
+            if len(pile) == 0:
+
+                #Check if value is 1, and is the same suit
+                if card["Value"] == 1 and card["Suit"] == pile_suit:
+
+                    for col in tableau:
+                        if card_ID in col:
+                            col.remove(card_ID)
+                            break
+                
+                pile.append(card_ID)
+
+
+
         case "AnotherCard":
-            #Check if color is opposite, Check if number of incoming is +1 of destination
-            print()
+            #Check if card outside Tableau
+            for col in tableau:
+                for c in col:
+                    if c == destination_ID:
+                        in_tableau = True
+                        break
+            
+            for x in acepiles:
+                if destination_ID in acepiles:
+                    in_ace = True
+                    break
 
-
-
-
+            if in_tableau:
+                #Check if color is opposite, Check if number of incoming is +1 of destination
+                if card["Color"] != destination["Color"]:
+                    if int(card["Value"]) == (int(destination["Value"])+1):
+                        #find card then put on top of destination
+                        for column in tableau:
+                            for cd in column:
+                                if card_ID == cd:
+                                    column.pop(card_ID)
+                                    break
+                        tableau[col].append(card_ID)
+            
+            elif in_ace:
+                #make sure that suit match
+                if card["Suit"] == destination["Suit"]:
+                    #make sure that card is +1 of card already there
+                    if card["Value"] == (destination["Value"]+1):
+                        acepiles[x].append(destination_ID)
+    
+    card_status[destination_ID]["Selected"] = False
+    card_status[card_ID]["Selected"] = False
+    
+    return tableau,freecells,acepiles,card_status
 
 
 #match suit (for displaying)
@@ -324,8 +381,8 @@ def free_cell_game():
                 if selected != 2:
                     warning_message = "Must select start+end points"
                 else:
-                    print("Move clicked")
-
+                    tableau, freecells, ace_piles, card_status = val_choice(move_select,place_select,tableau,freecells,ace_piles,card_status)
+                    selected -= 2
             #mouse button clicked and it is the left button
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 #scan to see if card clicked
