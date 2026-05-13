@@ -131,16 +131,13 @@ def get_game_num(path):
     if any_games == True:
         try:
             with open(path,'r') as file:
-                reader = csv.reader(file)
-                headers = next(reader)
-                last_line = file.readlines()[-1]
-                game_num = last_line[0]
-                new_game_num = game_num + 1
+                reader = list(csv.reader(file))
+                game_num = int(reader[-1][0]) + 1
         except Exception as e:
             print(f"Could not open the file given.\nPath given: {path}\nReason for error: {e}")
     else:
-        new_game_num = 1
-    return new_game_num
+        game_num = 1
+    return game_num
 
 # GET MONEY FUNCTION (func being called when a gambling game is selected)
 # parameter = CSV_PATH
@@ -155,10 +152,8 @@ def get_money(path):
     if any_games == True:
         try:
             with open(path,'r') as file:
-                reader = csv.reader(file)
-                headers = next(reader)
-                last_line = file.readlines()[-1]
-                money = last_line[2]
+                reader = list(csv.reader(file))
+                money = int(reader[-1][2])
         except Exception as e:
             print(f"Could not open the file given.\nPath given: {path}\nReason for error: {e}")
     else:
