@@ -10,6 +10,7 @@
 import pygame
 import random
 import json
+import sys
 import csv
 from LD_psuedocode import *
 path = "files/solitaire.csv"
@@ -322,88 +323,47 @@ def move_card(tableau, selected_card, target_card):
 deck = shuffle_deck("files/cards.json")
 tableau, stock,waste,foundations = setup_board(deck) 
 
-def solitaire():
-    global state
+class Button:
+    def __init__(self, text, x, y, w, h, action):
+        self.text = text
+        self.rect = pygame.Rect(x, y, w, h)
+        self.action = action
 
-    next_button = pygame.Rect(0, 0, 0, 0)
+    def draw(self):
+        pygame.draw.rect(screen, GRAY, self.rect)
+        label = FONT.render(self.text, True, WHITE)
+        screen.blit(label, (self.rect.x + 20, self.rect.y + 15))
 
-    running = True
-    while running:
-        screen.fill(GREEN)
+    def click(self, pos):
+        if self.rect.collidepoint(pos):
+            self.action()
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                mx, my = event.pos
-
-                if state == "menu":
-                    play_btn = draw_button("Play Solitaire", 350, 200, 300, 60)
-                    inst_btn = draw_button("Instructions", 350, 300, 300, 60)
-                    exit_btn = draw_button("Exit", 350, 400, 300, 60)
-
-                    if play_btn.collidepoint(mx, my):
-                        state = "game"
-
-                    if inst_btn.collidepoint(mx, my):
-                        state = "instructions"
-
-                    if exit_btn.collidepoint(mx, my):
-                        running = False
-
-                elif state == "instructions":
-                    if next_button.collidepoint(mx, my):
-                        state = "game"
-
-        # DRAW MENU
-        if state == "menu":
-            draw_button("Play Solitaire", 350, 200, 300, 60)
-            draw_button("Instructions", 350, 300, 300, 60)
-            draw_button("Exit", 350, 400, 300, 60)
-
-        # DRAW INSTRUCTIONS SCREEN
-        elif state == "instructions":
-            screen.fill(GREEN)
-
-            instructions = [
-                "HOW TO PLAY SOLITAIRE",
-                "",
-                "Goal: Move all cards to foundations (Ace → King).",
-                "",
-                "Rules:",
-                "- Build tableau in alternating colors",
-                "- Build foundation by same suit",
-                "- Only Kings can go into empty columns",
-                "",
-                "Controls:",
-                "- Click card to select",
-                "- Click destination to move",
-                "- Click stock to draw cards",
-                "",
-                "Press NEXT to start game"
-            ]
-
-            y = 60
-            for line in instructions:
-                text = FONT.render(line, True, WHITE)
-                screen.blit(text, (50, y))
-                y += 28
-
-            next_button = draw_button("NEXT", 400, 600, 200, 50)
-
-        # START GAME
-        elif state == "game":
-            game_loop()
-
-        pygame.display.flip()
-
+def instruction():
     pygame.quit()
+    print("Freecell not ready yet")
+    sys.exit()
+# Necesito una funcion que ya tenfa las instucciones
 
-def game_loop():
-    global state
-    running = True
-    selected = None
+# No se que botones necesito agragar pero lo voy a agregar mas como quit y eso
+def launch_pyramid(): 
+    pygame.quit()
+    print("Freecell not ready yet")
+    sys.exit()
 
-    while running and state == "game":
+def launch_freecell():
+    pygame.quit()
+    print("Freecell not ready yet")
+    sys.exit()
 
+
+def solitaire():
+     buttons = [
+        Button("Solitaire", 300, 150, 300, 70, instruction),
+        Button("Pyramid Solitaire", 300, 250, 300, 70, launch_pyramid),
+        Button("Freecell", 300, 350, 300, 70, launch_freecell),
+        Button("Quit", 300, 450, 300, 70, lambda: sys.exit())
+    ]
+    
+    # Necestio instrucciones, donde van las cartas el deck por si no hay cartas que se puedan conbinar
+    #Necesito vasar todo mi loop de acuerdo a lo que el otro companero hizo para su solitaire y de acuerdo a lo que yo hice en main
+    
