@@ -96,7 +96,6 @@ def check_hands(hand, table):
 
 
 def play_poker():
-
     def make_bet():
         nonlocal bet_amount
         bet = True
@@ -127,14 +126,16 @@ def play_poker():
     
     def draw_table(cards_shown):
         x_possition = 500; y_possition = 400
-        count = 1
+        count = 0
         for the_card in table:
-            if count <= cards_shown:
+            if count < cards_shown:
+                print("Card drawn")
                 pygame.draw.rect(screen, WHITE, (x_possition, y_possition, CARD_W, CARD_H))
                 text = FONT.render(str(f'{the_card} (ID)'), True, BLACK)
                 screen.blit(text, (x_possition + 10, y_possition + 40))
                 x_possition += 80; y_possition += 0
             else:
+                print("Null card drawn")
                 pygame.draw.rect(screen, GRAY, (x_possition, y_possition, CARD_W, CARD_H))
                 text = FONT.render("X", True, BLACK)
                 screen.blit(text, (x_possition + 10, y_possition + 40))
@@ -162,6 +163,8 @@ def play_poker():
             screen.blit(text, (x + 10, y + 40))
             x += 80; y += 0
 
+        draw_table(table_amount)
+
         # draw a discard card
         pygame.draw.rect(screen, WHITE, (200, 400, CARD_W, CARD_H))
         text = FONT.render("Discard", True, BLACK)
@@ -171,19 +174,19 @@ def play_poker():
         text = FONT.render(str("Check"), True, BLACK)
         screen.blit(text, (150 + 10, 625 + 25))
 
-        bet_rect = pygame.draw.rect(screen, BUTTON_COLOR, (250, 625, 50, 50), 5, 0) # bet
+        bet_rect = pygame.draw.rect(screen, BUTTON_COLOR, (150, 725, 100, 50), 5, 0) # bet
         text2 = FONT.render(str("Bet"), True, BLACK)
-        screen.blit(text2, (250 + 10, 625 + 25))
+        screen.blit(text2, (150 + 10, 725 + 25))
 
-        fold_rect = pygame.draw.rect(screen, BUTTON_COLOR, (350, 625, 50, 50), 5, 0) # fold
+        fold_rect = pygame.draw.rect(screen, BUTTON_COLOR, (150, 825, 100, 50), 5, 0) # fold
         text3 = FONT.render(str("Fold"), True, BLACK)
-        screen.blit(text3, (350 + 10, 625 + 25))
+        screen.blit(text3, (150 + 10, 825 + 25))
 
         mon_text = FONT.render(str(f"You have bet ${bet_amount}. You have ${user_mon-bet_amount} left"), True, BLACK)
         screen.blit(mon_text, (100, 100))
-        draw_table(table_amount)
 
         pygame.display.flip()
+
         wait = True
         while wait:
             event = pygame.event.wait()
@@ -270,6 +273,8 @@ def play_poker():
         # discard and put the next card into table (card four and five for the table)
         discard.append(shuffled_deck[0])
         shuffled_deck.pop(0)
+        table.append(shuffled_deck[0])
+        shuffled_deck.pop(0)
 
     pygame.init()
     screen = pygame.display.set_mode((1440, 1100))
@@ -315,14 +320,17 @@ def play_poker():
         clock.tick(60)
     
     play, any_mon = draw_main_game(3)
+    print(f"Play:{play}, Money bet: {any_mon}")
     if play == 0 and any_mon == 0:
         # the user hit the close button on the window
         return
     
-    game = True
-    while game:
-        if bet_amount > 0 or (play == "Check" or play == "Bet"):
+    game1 = True
+    game2 = False
+    while game1:
+        if play == "Check" or play == "Bet":
             bet_amount += any_mon
+            print(f"Bet amount: {bet_amount}")
             play_again, more_mon = draw_main_game(4)
             print("In game with four cards on the table")
             if play_again == "Fold":
@@ -332,38 +340,49 @@ def play_poker():
                 end_game(won="False", money=money)
                 return
             elif play_again == "Check" or play_again == "Bet":
+                print(f"Play:{play_again}, Money bet: {bet_amount}")
                 bet_amount += more_mon
-                final_bet, final_play = draw_main_game(5)
+                final_play, final_bet = draw_main_game(5)
+                game2 = True
+                break
+            elif play_again == 0 and more_mon == 0:
+                return
             else:
                 print("Something went wrong with playing again. See line 310")
-        
-            # determine if they went through with the final play
-            if final_play == "Fold":
-                # display something about the user returning to games menu because of folding
-                money = user_mon - bet_amount
-                end_game(won="False", money=money)
-                return
-            elif final_play == "Check" or final_play == "Bet":
-                bet_amount += final_bet
-                # "Flip" computer's cards (Display the card instead of the back)
-                # THIS SHOULD HAPPEN IF USER NEVER FOLDED (fingers crossed)
-                x = 500; y = 650
-                for card in computer_hand:
-                    pygame.draw.rect(screen, GRAY, (x, y, CARD_W, CARD_H))
-                    text = FONT.render(f"{card} (ID)", True, BLACK)
-                    screen.blit(text, (x + 10, y + 40))
-                    x += 80; y += 0
+        else:
+            pass # condition for fold from main game
+        pygame.display.flip()
+    
+    while game2:
+        # determine if they went through with the final play
+        if final_play == "Fold":
+            # display something about the user returning to games menu because of folding
+            money = user_mon - bet_amount
+            end_game(won="False", money=money)
+            return
+        elif final_play == "Check" or final_play == "Bet":
+            bet_amount += final_bet
+            # "Flip" computer's cards (Display the card instead of the back)
+            # THIS SHOULD HAPPEN IF USER NEVER FOLDED (fingers crossed)
+            x = 500; y = 650
+            for card in computer_hand:
+                pygame.draw.rect(screen, GRAY, (x, y, CARD_W, CARD_H))
+                text = FONT.render(f"{card} (ID)", True, BLACK)
+                screen.blit(text, (x + 10, y + 40))
+                x += 80; y += 0
 
-                player_score = check_hands(player_hand, table)
-                comp_score = check_hands(computer_hand, table)
-            else:
-                print("Something went wrong with playing again. See line 319")
+            player_score = check_hands(player_hand, table)
+            comp_score = check_hands(computer_hand, table)
+            won, final_mon = determine_win()
+            write_2_gambling(csv_path, won, final_mon)
+            break
+        elif final_play == 0 and final_bet == 0:
+            return
+        else:
+            print("Something went wrong with playing again. See line 319")
         pygame.display.flip()
         # Tell the user who won, new money amount, and end the Pygame loop
-        #pygame.display.flip()
-        #game = False
-        # call LD's write to CSV for gambling function and pass in csv_path, win, user_mon
-        # return to main menu
+
         clock.tick(60)
 
 play_poker()
