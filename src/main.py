@@ -9,6 +9,8 @@
 # import sys
 import pygame
 import sys
+#from solitaire import solitaire
+#from pyramid_solitaire import *
 # def show_choices(root):
 #     Display a label that says "Choose a game"
 #     
@@ -57,7 +59,7 @@ pygame.init()
 
 WIDTH, HEIGHT = 900, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Card Games Menu")
+pygame.display.set_caption("Main Menu")
 
 FONT = pygame.font.SysFont(None, 40)
 
@@ -84,12 +86,14 @@ class Button:
 
 def launch_solitaire():
     pygame.quit()
-    solitaire.game_loop()
+    print("Freecell not ready yet")
     sys.exit()
 
+
+# Need to add buttons for poker, and blackjack
 def launch_pyramid():
     pygame.quit()
-    pyramid_solitaire.game()
+    print("Freecell not ready yet")
     sys.exit()
 
 def launch_freecell():
@@ -104,6 +108,7 @@ def main():
         Button("Pyramid Solitaire", 300, 250, 300, 70, launch_pyramid),
         Button("Freecell", 300, 350, 300, 70, launch_freecell),
         Button("Quit", 300, 450, 300, 70, lambda: sys.exit())
+
     ]
 
     running = True
