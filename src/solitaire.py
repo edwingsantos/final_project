@@ -12,6 +12,7 @@ import random
 import json
 import csv
 from LD_psuedocode import *
+path = "files/solitaire.csv"
 
 # MENU - Screen set up
 # Create window
@@ -46,20 +47,38 @@ CARD_W, CARD_H = 70,100
 # Return deck
 # Talves en vez de clases immporto el json y de repente funciona
 class Card:
-    def __init__(self, suit, value):
+    def __init__(self, card_id, suit, value, color):
+        self.id = card_id
         self.suit = suit
         self.value = value
+        self.color = color
         self.face_up = False
-
-    def color(self):
-        return "red" if self.suit in ["hearts", "diamonds"] else "black"
 
     def __repr__(self):
         return f"{self.value}{self.suit[0]}"
 
+def get_card_value(value):
 
-def card_to_id(card):
-    return str(card.value) + "_" + card.suit
+    face_cardss = {
+        "ace": 1,
+        "jack": 11,
+        "queen": 12,
+        "king": 13,
+        "a": 1,
+        "j": 11,
+        "q": 12,
+        "k": 13
+    }
+
+    if isinstance(value, int):
+        return value
+
+    value = str(value).lower()
+
+    if value.isdigit():
+        return int(value)
+
+    return face_cardss[value]
 
 def create_deck(json_path):
 
@@ -69,11 +88,14 @@ def create_deck(json_path):
         data = json.load(f)
 
     for key in data:
+
         card_data = data[key]
 
         card = Card(
+            card_id=key,
             suit=card_data["Suit"].lower(),
-            value=card_data["Value"]
+            value=card_data["Value"],
+            color=card_data["Color"].lower() # Doesnt really work
         )
 
         deck.append(card)
@@ -98,6 +120,26 @@ def shuffle_deck(json_path):
     random.shuffle(deck)
 
     return deck
+
+
+
+def draw_from_stock(stock, waste):
+
+    if len(stock) > 0:
+
+        card = stock.pop()
+        card.face_up = True
+        waste.append(card)
+
+    else:
+        # Reset stock from waste
+        while len(waste) > 0:
+
+            card = waste.pop()
+            card.face_up = False
+            stock.append(card)  # Doesnt really work
+
+
 # SETUP BOARD (7 COLUMNS)
 #Create 7 empty columns (tableau)
 #FOR column = 1 TO 7:
@@ -121,7 +163,7 @@ def setup_board(deck):
         for row in range(col + 1):
             card = deck.pop()
             if row == col:
-                card.face_up = True
+                card.face_up = True # Tengo que averiguar qur esta pasando aqui
             tableau[col].append(card)
 
     stock = deck
@@ -146,7 +188,8 @@ CARD_W, CARD_H = 70, 100
 def draw_card(x, y, card):
     if card.face_up:
         pygame.draw.rect(screen, WHITE, (x, y, CARD_W, CARD_H))
-        text = FONT.render(str(card), True, BLACK)
+        text_color = (200, 0, 0) if card.color == "red" else BLACK
+        text = FONT.render(str(card), True, text_color)
     else:
         pygame.draw.rect(screen, GRAY, (x, y, CARD_W, CARD_H))
         text = FONT.render("X", True, BLACK)
@@ -185,7 +228,20 @@ def draw_tableau(tableau):
 #     Move is valid
 # Else:
 #     Move is invalid
+def solitaire_valid_move(selected_card, target_card):
 
+    # Opposite colors
+    if selected_card.color == target_card.color:
+        return False
+
+    selected_value = get_card_value(selected_card.value)
+    target_value = get_card_value(target_card.value)
+
+    # Descending order
+    if selected_value + 1 == target_value:
+        return True
+
+    return False
 
 # MOVE FUNCTION
 # Take card (or stack) from source
@@ -204,14 +260,48 @@ def draw_tableau(tableau):
 # Cards must be same suit
 # Must go in order: A to  K
 # Only Ace can start foundation
+def draw_button(text, x, y, w, h):
+    pygame.draw.rect(screen, GRAY, (x, y, w, h))
+    label = FONT.render(text, True, WHITE)
+    screen.blit(label, (x + 10, y + 10))
+    return pygame.Rect(x, y, w, h)
+def draw_stock_waste(stock, waste):
 
-#def rules():
+    # STOCK
+    if len(stock) > 0:
+        pygame.draw.rect(screen, GRAY, (50, 20, CARD_W, CARD_H))
+    else:
+        pygame.draw.rect(screen, WHITE, (50, 20, CARD_W, CARD_H), 2)
+
+    # WASTE
+    if len(waste) > 0:
+        draw_card(150, 20, waste[-1])
 
 # WIN CONDITION
 # Check all 4 foundation piles
 # If each pile has 13 cards in correct order:
 #     Player wins
+def move_card(tableau, selected_card, target_card):
 
+    source_col = None
+    target_col = None
+
+    for col in tableau:
+
+        if selected_card in col:
+            source_col = col
+
+        if target_card in col:
+            target_col = col
+
+    if source_col and target_col:
+
+        source_col.remove(selected_card)
+        target_col.append(selected_card)    # Aqui pato algo que no se
+
+        # Flip top card in old column
+        if len(source_col) > 0:
+            source_col[-1].face_up = True
 
 # SAVE GAME STATS - Lizzie
 # Open CSV file
@@ -230,15 +320,15 @@ def draw_tableau(tableau):
 
 # tengo que agregar el tableau en alguna parte del loop
 deck = shuffle_deck("files/cards.json")
-valid_move#(moved_card_id, moved_onto_id)# esto es el helper function de Lizzie
 tableau, stock,waste,foundations = setup_board(deck) 
 
-def game_loop():
-    running = True
-    selected = None
+def solitaire():
+    global state
 
+    next_button = pygame.Rect(0, 0, 0, 0)
+
+    running = True
     while running:
-        clock.tick(60)
         screen.fill(GREEN)
 
         for event in pygame.event.get():
@@ -248,39 +338,72 @@ def game_loop():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mx, my = event.pos
 
-                start_x = 50
-                start_y = 120
-                spacing_x = 130
-                spacing_y = 25
+                if state == "menu":
+                    play_btn = draw_button("Play Solitaire", 350, 200, 300, 60)
+                    inst_btn = draw_button("Instructions", 350, 300, 300, 60)
+                    exit_btn = draw_button("Exit", 350, 400, 300, 60)
 
-                for col_i, col in enumerate(tableau):
-                    for row_i, card in enumerate(col):
-                        x = start_x + col_i * spacing_x
-                        y = start_y + row_i * spacing_y
+                    if play_btn.collidepoint(mx, my):
+                        state = "game"
 
-                        rect = pygame.Rect(x, y, CARD_W, CARD_H)
+                    if inst_btn.collidepoint(mx, my):
+                        state = "instructions"
 
-                        if rect.collidepoint(mx, my) and card.face_up:
-                            if selected is None:
-                                selected = card
-                            else:
-                                if valid_move(card_to_id(selected), card_to_id(card)):
-                                    print("Valid move")
-                                else:
-                                    print("Invalid move")
-                                selected = None
+                    if exit_btn.collidepoint(mx, my):
+                        running = False
 
-        draw_tableau(tableau)
+                elif state == "instructions":
+                    if next_button.collidepoint(mx, my):
+                        state = "game"
 
-        if selected:
-            text = FONT.render(f"Selected: {selected}", True, WHITE)
-            screen.blit(text, (50, 20))
+        # DRAW MENU
+        if state == "menu":
+            draw_button("Play Solitaire", 350, 200, 300, 60)
+            draw_button("Instructions", 350, 300, 300, 60)
+            draw_button("Exit", 350, 400, 300, 60)
+
+        # DRAW INSTRUCTIONS SCREEN
+        elif state == "instructions":
+            screen.fill(GREEN)
+
+            instructions = [
+                "HOW TO PLAY SOLITAIRE",
+                "",
+                "Goal: Move all cards to foundations (Ace → King).",
+                "",
+                "Rules:",
+                "- Build tableau in alternating colors",
+                "- Build foundation by same suit",
+                "- Only Kings can go into empty columns",
+                "",
+                "Controls:",
+                "- Click card to select",
+                "- Click destination to move",
+                "- Click stock to draw cards",
+                "",
+                "Press NEXT to start game"
+            ]
+
+            y = 60
+            for line in instructions:
+                text = FONT.render(line, True, WHITE)
+                screen.blit(text, (50, y))
+                y += 28
+
+            next_button = draw_button("NEXT", 400, 600, 200, 50)
+
+        # START GAME
+        elif state == "game":
+            game_loop()
 
         pygame.display.flip()
 
     pygame.quit()
-game_loop()
 
-# Por ahora lo que puede hacer el codigo es correr y ostrar las cartas aun no muestra las instrucciones
-# Y no me deja mover las cartas aun 
-# Para usar el codigo de lizzie necesiot card 1d (1-52) y card id 2 que voy a averigua que es
+def game_loop():
+    global state
+    running = True
+    selected = None
+
+    while running and state == "game":
+
