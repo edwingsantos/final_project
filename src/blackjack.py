@@ -210,36 +210,29 @@ def get_game_num(path):
 
 def blackjack():
 
-
     running = True
     state =  "typing"
     typed_text = ""
 
-
     #betting
     betting_money = starting_bet()
-
 
     #shoufle deck
     deck = shuffle_deck("files/cards.json")
 
-
     #hands
     player_hand = []
     dealer_hand = []
-
 
     #dealing cards
     # DEAL CARDS
     player_hand.append(deck.pop())
     player_hand.append(deck.pop())
 
-
     dealer_hand.append(deck.pop())
     dealer_hand.append(deck.pop())
 
     print(player_hand,dealer_hand)
-
 
     #variables for games
     player_turn = True
@@ -250,18 +243,14 @@ def blackjack():
         result = "You win! you got 21"
         winning(user_data, betting_money)
         player_turn = False
-
+    pygame.init()
+    WIDTH, HEIGHT = 1600, 1200
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    clock = pygame.time.Clock()
+    font = pygame.font.SysFont(None, 40)
+    #backround
+    screen.fill("darkgreen")
     while running:
-        pygame.init()
-        WIDTH, HEIGHT = 1000, 700
-        screen = pygame.display.set_mode((WIDTH, HEIGHT))
-        clock = pygame.time.Clock()
-        font = pygame.font.SysFont(None, 40)
-        #backround
-        screen.fill("darkgreen")
-
-
-        
         #events
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
@@ -320,8 +309,8 @@ def blackjack():
 
 
 
-        card_test = Card_styles(11,"♥","red")
-        card_test.show_card(screen,(250,200))
+        first_dealer_card = Card_styles(dealer_hand[0],"♥","red")
+        first_dealer_card.show_card(screen,size=(100,140),coords=(250,200))
 
 
 
@@ -331,12 +320,12 @@ def blackjack():
 
 
         if player_turn and state == "typing":
-            text1 = font.render("press H to hit | press S to stand",True,(255, 255, 255))
+            text1 = font.render("press H to hit | press S to stand",True,(200, 205, 205))
             #cursor effect
             display_text = typed_text
              #typing font and making sure its tru
             text2 = font.render(display_text, True, (0, 0, 0))
-            screen.blit(text1, (200, 200))
+            screen.blit(text1, (500, 1000))
             screen.blit(text2, (200, 300))
         else:
             text2 = font.render("PRESS q TO EXIT",True,(255, 255, 255))
@@ -347,3 +336,14 @@ def blackjack():
 
 
 blackjack()
+
+
+
+
+
+
+
+
+
+
+#parker thing for instructions in line 240 through 243
