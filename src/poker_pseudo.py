@@ -140,6 +140,7 @@ def play_poker():
                 screen.blit(text, (x_possition + 10, y_possition + 40))
                 x_possition += 80; y_possition += 0
             count += 1
+            pygame.display.flip()
 
     def draw_main_game(table_amount):
         screen = pygame.display.set_mode((1440, 1100))
@@ -178,22 +179,28 @@ def play_poker():
         text3 = FONT.render(str("Fold"), True, BLACK)
         screen.blit(text3, (350 + 10, 625 + 25))
 
-        # display the table cards
+        mon_text = FONT.render(str(f"You have bet ${bet_amount}. You have ${user_mon-bet_amount} left"), True, BLACK)
+        screen.blit(mon_text, (100, 100))
         draw_table(table_amount)
+
+        pygame.display.flip()
         wait = True
         while wait:
             event = pygame.event.wait()
             if event.type == pygame.QUIT:
                 wait = False
+                return 0, 0
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if bet_rect.collidepoint(event.pos):
+                    wait = False
                     more_mon = make_bet()
                     return "Bet", more_mon
                 elif fold_rect.collidepoint(event.pos):
+                    wait = False
                     return "Fold", 0
                 elif check_rect.collidepoint(event.pos):
+                    wait = False
                     return "Check", 0
-        pygame.display.flip()
             
     def end_game(won=None, money = None):
         if won == None and money == None:
@@ -301,24 +308,29 @@ def play_poker():
             if bet_rect.collidepoint(event.pos):
                 waiting = False
                 make_bet()
-                draw_main_game(3)
             elif fold_rect.collidepoint(event.pos):
                 waiting = False
-                print("Folding")
                 end_game("False", user_mon)
                 return
         clock.tick(60)
     
+    play, any_mon = draw_main_game(3)
+    if play == 0 and any_mon == 0:
+        # the user hit the close button on the window
+        return
+    
     game = True
     while game:
-        # call PLAY ROUND func
-        if bet_amount > 0:
+        if bet_amount > 0 or (play == "Check" or play == "Bet"):
+            bet_amount += any_mon
             play_again, more_mon = draw_main_game(4)
+            print("In game with four cards on the table")
             if play_again == "Fold":
                 # display something about the user returning to games menu because of folding
                 bet_amount += more_mon
                 money = user_mon-bet_amount
                 end_game(won="False", money=money)
+                return
             elif play_again == "Check" or play_again == "Bet":
                 bet_amount += more_mon
                 final_bet, final_play = draw_main_game(5)
@@ -330,6 +342,7 @@ def play_poker():
                 # display something about the user returning to games menu because of folding
                 money = user_mon - bet_amount
                 end_game(won="False", money=money)
+                return
             elif final_play == "Check" or final_play == "Bet":
                 bet_amount += final_bet
                 # "Flip" computer's cards (Display the card instead of the back)
@@ -345,7 +358,7 @@ def play_poker():
                 comp_score = check_hands(computer_hand, table)
             else:
                 print("Something went wrong with playing again. See line 319")
-
+        pygame.display.flip()
         # Tell the user who won, new money amount, and end the Pygame loop
         #pygame.display.flip()
         #game = False
