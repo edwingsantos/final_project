@@ -164,8 +164,8 @@ def val_choice(card_ID,destination_ID,tableau,freecells,acepiles,card_status):
             pile_index = suit_map[pile_suit]
             pile = acepiles[pile_index]
 
+            #if there is no cards in the ace pile
             if len(pile) == 0:
-
                 #Check if value is 1, and is the same suit
                 if card["Value"] == 1 and card["Suit"] == pile_suit:
 
@@ -174,12 +174,14 @@ def val_choice(card_ID,destination_ID,tableau,freecells,acepiles,card_status):
                             col.remove(card_ID)
                             break
                 
-                pile.append(card_ID)
+                    pile.append(card_ID)
+                    card_status[card_ID]["InAcePile"] = True
 
 
 
         case "AnotherCard":
             #Check if card outside Tableau
+            
             for col in tableau:
                 for c in col:
                     if c == destination_ID:
@@ -192,16 +194,21 @@ def val_choice(card_ID,destination_ID,tableau,freecells,acepiles,card_status):
                     break
 
             if in_tableau:
+                print("In Tableau detected")
                 #Check if color is opposite, Check if number of incoming is +1 of destination
                 if card["Color"] != destination["Color"]:
-                    if int(card["Value"]) == (int(destination["Value"])+1):
+                    print("Color Check Passed")
+                    if card["Value"] == (destination["Value"]-1):
+                        print("Value Check Passed")
+
                         #find card then put on top of destination
                         for column in tableau:
-                            for cd in column:
-                                if card_ID == cd:
-                                    column.pop(card_ID)
-                                    break
-                        tableau[col].append(card_ID)
+                            if card_ID == column[-1]:
+                                column.remove(card_ID)
+                                print("REMOVED")
+                                break
+                        print("APPENDED")
+                        tableau[column].append(card_ID)
             
             elif in_ace:
                 #make sure that suit match
@@ -233,7 +240,6 @@ def suit_match(suit):
 def free_cell_game():
     #normal vars
     freecells, ace_piles, tableau = setup()
-    print(tableau)
     moveable = []
     #all moveable cards are stored with selected bool, accessibility bool, rect-object and in_ace_pile bool
     card_status = {}
@@ -319,7 +325,7 @@ def free_cell_game():
             except (IndexError,KeyError):
                 pygame.draw.rect(screen,"darkgrey",(newer_x,125,100,140),border_radius=4)
                 symbols = ["♠", "♣", "♥", "♦"]
-                symbol_surface = st_font.render(symbols[x],True,"red")
+                symbol_surface = st_font.render(symbols[x],True,"darkgreen")
                 screen.blit(symbol_surface,(180+(125*x),150))
                 key = f"FreeCellEmpty{x}"
 
