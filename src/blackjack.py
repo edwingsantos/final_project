@@ -12,6 +12,22 @@ from card_styles import *
 #from LD_psuedocode import *
 path = "files/blackjack.csv"
 
+pygame.init()
+
+WIDTH, HEIGHT = 1000, 700
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Solitaire")
+
+clock = pygame.time.Clock()
+FONT= pygame.font.SysFont(None,24)
+
+GREEN = (0, 120, 0)
+WHITE = (255, 255, 255)
+GRAY = (80, 80, 80)
+BLACK = (0, 0, 0)
+
+CARD_W, CARD_H = 70,100
+
 
 
 #use dictionary called point to safe the cards choosen 
@@ -154,20 +170,26 @@ except:
     #if choice is no the go to the main menu
 def get_game_num(path):
 
+
     try:
         with open(path, "r") as file:
+
 
             reader = csv.reader(file)
             rows = list(reader)
 
+
             # remove header row
             data_rows = rows[1:]
+
 
             # if no data yet
             if len(data_rows) == 0:
                 return 1
 
+
             last_line = data_rows[-1]
+
 
             # try to read first column as number
             try:
@@ -176,48 +198,58 @@ def get_game_num(path):
                 game_num = 0
             return game_num + 1
 
+
     except Exception as e:
         print(f"CSV error: {e}")
         return 1
 
 
 
+
+
+
 def blackjack():
+
 
     running = True
     state =  "typing"
     typed_text = ""
 
+
     #betting
     betting_money = starting_bet()
+
 
     #shoufle deck
     deck = shuffle_deck("files/cards.json")
 
+
     #hands
     player_hand = []
     dealer_hand = []
+
 
     #dealing cards
     # DEAL CARDS
     player_hand.append(deck.pop())
     player_hand.append(deck.pop())
 
+
     dealer_hand.append(deck.pop())
     dealer_hand.append(deck.pop())
 
-    #variables for games 
+    print(player_hand,dealer_hand)
+
+
+    #variables for games
     player_turn = True
     result = ""
 
-    # check for instant win 
+    # check for instant win
     if hand_value(player_hand) == 21:
         result = "You win! you got 21"
         winning(user_data, betting_money)
         player_turn = False
-
-
-
 
     while running:
         pygame.init()
@@ -228,15 +260,15 @@ def blackjack():
         #backround
         screen.fill("darkgreen")
 
+
+        
         #events
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
-            #quit thing 
+            #quit thing
                 if event.key == pygame.K_q:
                     pygame.quit()
                     sys.exit()
-
-            
 
                 #hit (get more cards)
                 if event.key == pygame.K_h and player_turn:
@@ -254,80 +286,64 @@ def blackjack():
                         player_turn = False
 
 
-
                 #stand (like not to get cards)
                 if event.key == pygame.K_s and player_turn:
                     player_turn = False
-
                     #dealer draws card
                     while hand_value(dealer_hand) < 17:
                         dealer_hand.append(deck.pop())
-
                     #total hand values
                     player_total = hand_value(player_hand)
                     dealer_total = hand_value(dealer_hand)
-
                     #results
                     if dealer_total > 21:
                         result = "dealer busts, you win "
                         winning(user_data, betting_money)
-
-
                     elif dealer_total > player_total:
                         result = "dealer wins, you loose"
                         losing(user_data, betting_money)
-
-
                     elif dealer_total < player_total:
-
                         result = "You win, got bigger value than dealer"
                         winning(user_data, betting_money)
-
                     else:
                         result = "tie"
                         tie(user_data)
 
-
-
         player_title = font.render("PLAYER",True,(255, 255, 255))
-
         screen.blit(player_title, (650, 450))
 
 
 
 
+#write the card here, tuesday morning so parker helps
 
 
-
-#write the card here, tuesday morning so parker helps 
 
 
         card_test = Card_styles(11,"♥","red")
-
-        card_test.show_card(screen,(500,500))
-
+        card_test.show_card(screen,(250,200))
 
 
 
 
-        
+
+
+
+
         if player_turn and state == "typing":
-            text1 = font.render("PRESS H TO HIT | PRESS S TO STAND",True,(255, 255, 255))
-            # cursor effect
+            text1 = font.render("press H to hit | press S to stand",True,(255, 255, 255))
+            #cursor effect
             display_text = typed_text
-             #typing font and making sure its tru 
+             #typing font and making sure its tru
             text2 = font.render(display_text, True, (0, 0, 0))
             screen.blit(text1, (200, 200))
             screen.blit(text2, (200, 300))
-
-
-            
         else:
             text2 = font.render("PRESS q TO EXIT",True,(255, 255, 255))
-
         screen.blit(text2, (450, 750))
         result_text = font.render(result,True,(255, 255, 0))
         screen.blit(result_text, (550, 350))
         pygame.display.update()
+
 
 blackjack()
