@@ -8,13 +8,7 @@
 # import tkinter
 # import sys
 import pygame
-import tkinter as tk
 import sys
-#from blackjack import *
-#from poker_pseudo import*
-from freecell_solitaire import *
-from solitaire import game_loop
-from pyramid_solitaire import game
 # def show_choices(root):
 #     Display a label that says "Choose a game"
 #     
@@ -40,60 +34,6 @@ from pyramid_solitaire import game
 # def exit_program():
 #     Use system command to close program -sys.exit
 
-def show_choices(root):
-# Still have to add when to call the funcitons for each game !!!!!
-    # Title label
-    instruction = tk.Label(root, text="Choose a Game")
-    instruction.pack()
-
-    # Solitaire button
-    solitaire = tk.Button(
-        root,
-        text="Solitaire",
-        command=lambda: game_loop()
-    )
-    solitaire.pack()
-
-    # Black Jack button
-    black_jack = tk.Button(
-        root,
-        text="Black Jack",
-        command=lambda: print("blackjack()")
-    )
-    black_jack.pack()
-
-    # Pyramid Solitaire button
-    pyramid = tk.Button(
-        root,
-        text="Pyramid Solitaire",
-        command=lambda: game()
-    )
-    pyramid.pack()
-
-    # Freecell button
-    freecell = tk.Button(
-        root,
-        text="Freecell",
-        command=lambda: print("Launch Freecell")
-    )
-    freecell.pack()
-
-    # Poker button
-    poker = tk.Button(
-        root,
-        text="Poker",
-        command=lambda: print("play()")
-    )
-    poker.pack()
-
-    # Quit button
-    quit_button = tk.Button(
-        root,
-        text="Quit",
-        command=root.quit
-    )
-    quit_button.pack()
-
 # MAIN FUNCTION
 # def main():
 
@@ -113,21 +53,81 @@ def show_choices(root):
 #     Start the program loop (root.mainloop)
 #         This keeps the window open and running
 #main()
+pygame.init()
+
+WIDTH, HEIGHT = 900, 600
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Card Games Menu")
+
+FONT = pygame.font.SysFont(None, 40)
+
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+GRAY = (70, 70, 70)
+GREEN = (0, 120, 0)
+
+class Button:
+    def __init__(self, text, x, y, w, h, action):
+        self.text = text
+        self.rect = pygame.Rect(x, y, w, h)
+        self.action = action
+
+    def draw(self):
+        pygame.draw.rect(screen, GRAY, self.rect)
+        label = FONT.render(self.text, True, WHITE)
+        screen.blit(label, (self.rect.x + 20, self.rect.y + 15))
+
+    def click(self, pos):
+        if self.rect.collidepoint(pos):
+            self.action()
+
+
+def launch_solitaire():
+    pygame.quit()
+    solitaire.game_loop()
+    sys.exit()
+
+def launch_pyramid():
+    pygame.quit()
+    pyramid_solitaire.game()
+    sys.exit()
+
+def launch_freecell():
+    pygame.quit()
+    print("Freecell not ready yet")
+    sys.exit()
+
+
 def main():
+    buttons = [
+        Button("Solitaire", 300, 150, 300, 70, launch_solitaire),
+        Button("Pyramid Solitaire", 300, 250, 300, 70, launch_pyramid),
+        Button("Freecell", 300, 350, 300, 70, launch_freecell),
+        Button("Quit", 300, 450, 300, 70, lambda: sys.exit())
+    ]
 
-    root = tk.Tk()
-    root.title("Cards Game")
-    root.attributes('-fullscreen', True) # Fullscreen!!!!
-    welcome = tk.Label(root, text="Welcome! Click continue to start")
-    welcome.pack()
+    running = True
 
-    def start_menu():
-        welcome.destroy()
-        continue_btn.destroy()
-        show_choices(root)
+    while running:
+        screen.fill(GREEN)
 
-    continue_btn = tk.Button(root, text="Continue", command=start_menu)
-    continue_btn.pack()
+        title = FONT.render("Choose a Game", True, WHITE)
+        screen.blit(title, (330, 50))
 
-    root.mainloop()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                pygame.quit()
+                sys.exit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                for b in buttons:
+                    b.click(event.pos)
+
+        for b in buttons:
+            b.draw()
+
+        pygame.display.flip()
+
+
 main()

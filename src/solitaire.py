@@ -260,61 +260,11 @@ def solitaire_valid_move(selected_card, target_card):
 # Cards must be same suit
 # Must go in order: A to  K
 # Only Ace can start foundation
-def show_instructions():
-# las instrucciones las voy a hacer mas detalladas para que el user entienda como funciona mi codigo
-    instructions = [
-        "SOLITAIRE RULES",
-        "",
-        "Goal:",
-        "Move all cards to the 4 foundation piles.",
-        "",
-        "Tableau Rules:",
-        "- Alternate red and black cards",
-        "- Move cards in descending order",
-        "- Example: 8 on 9",
-        "",
-        "Foundation Rules:",
-        "- Same suit only",
-        "- Start with Ace",
-        "- Build Ace to King",
-        "",
-        "Stock:",
-        "- Click stock pile to draw cards",
-        "",
-        "Controls:",
-        "- Click a card to select it",
-        "- Click another card to move onto it",
-        "",
-        "Press ESC to return"
-    ]
-
-    running = True
-
-    while running:
-
-        screen.fill(GREEN)
-
-        y = 50
-
-        for line in instructions:
-
-            text = FONT.render(line, True, WHITE)
-            screen.blit(text, (50, y))
-
-            y += 30
-
-        pygame.display.flip()
-
-        for event in pygame.event.get():
-
-            if event.type == pygame.QUIT:
-                pygame.quit()
-
-            if event.type == pygame.KEYDOWN:
-
-                if event.key == pygame.K_ESCAPE:
-                    running = False
-
+def draw_button(text, x, y, w, h):
+    pygame.draw.rect(screen, GRAY, (x, y, w, h))
+    label = FONT.render(text, True, WHITE)
+    screen.blit(label, (x + 10, y + 10))
+    return pygame.Rect(x, y, w, h)
 def draw_stock_waste(stock, waste):
 
     # STOCK
@@ -372,63 +322,88 @@ def move_card(tableau, selected_card, target_card):
 deck = shuffle_deck("files/cards.json")
 tableau, stock,waste,foundations = setup_board(deck) 
 
-def game_loop():
+def solitaire():
+    global state
+
+    next_button = pygame.Rect(0, 0, 0, 0)
+
     running = True
-    selected = None
-    
     while running:
-        clock.tick(60)
         screen.fill(GREEN)
-        draw_stock_waste(stock, waste)
 
         for event in pygame.event.get():
-         
             if event.type == pygame.QUIT:
                 running = False
-
-            if event.type == pygame.KEYDOWN:
-
-                if event.key == pygame.K_i:
-                    show_instructions() # Averiguar que paso aqui que no muerstra mis instrucciones
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mx, my = event.pos
 
-                start_x = 50
-                start_y = 120
-                spacing_x = 130
-                spacing_y = 25
-                stock_rect = pygame.Rect(50, 20, CARD_W, CARD_H)
+                if state == "menu":
+                    play_btn = draw_button("Play Solitaire", 350, 200, 300, 60)
+                    inst_btn = draw_button("Instructions", 350, 300, 300, 60)
+                    exit_btn = draw_button("Exit", 350, 400, 300, 60)
 
-                if stock_rect.collidepoint(mx, my):
-                    draw_from_stock(stock, waste)
-                    
-                for col_i, col in enumerate(tableau):
-                    for row_i, card in enumerate(col):
-                        x = start_x + col_i * spacing_x
-                        y = start_y + row_i * spacing_y
+                    if play_btn.collidepoint(mx, my):
+                        state = "game"
 
-                        rect = pygame.Rect(x, y, CARD_W, CARD_H)
+                    if inst_btn.collidepoint(mx, my):
+                        state = "instructions"
 
-                        if rect.collidepoint(mx, my) and card.face_up and card == col[-1]:
-                            if selected is None:
-                                selected = card
-                            else:
-                                if selected and selected != card and solitaire_valid_move(selected, card):
-                                    move_card(tableau, selected, card)
-                                else:
-                                    print("Invalid move")
-                                selected = None
-        draw_tableau(tableau)
+                    if exit_btn.collidepoint(mx, my):
+                        running = False
 
-        if selected:
-            text = FONT.render(f"Selected: {selected}", True, WHITE)
-            screen.blit(text, (50, 20))
-        
+                elif state == "instructions":
+                    if next_button.collidepoint(mx, my):
+                        state = "game"
+
+        # DRAW MENU
+        if state == "menu":
+            draw_button("Play Solitaire", 350, 200, 300, 60)
+            draw_button("Instructions", 350, 300, 300, 60)
+            draw_button("Exit", 350, 400, 300, 60)
+
+        # DRAW INSTRUCTIONS SCREEN
+        elif state == "instructions":
+            screen.fill(GREEN)
+
+            instructions = [
+                "HOW TO PLAY SOLITAIRE",
+                "",
+                "Goal: Move all cards to foundations (Ace → King).",
+                "",
+                "Rules:",
+                "- Build tableau in alternating colors",
+                "- Build foundation by same suit",
+                "- Only Kings can go into empty columns",
+                "",
+                "Controls:",
+                "- Click card to select",
+                "- Click destination to move",
+                "- Click stock to draw cards",
+                "",
+                "Press NEXT to start game"
+            ]
+
+            y = 60
+            for line in instructions:
+                text = FONT.render(line, True, WHITE)
+                screen.blit(text, (50, y))
+                y += 28
+
+            next_button = draw_button("NEXT", 400, 600, 200, 50)
+
+        # START GAME
+        elif state == "game":
+            game_loop()
+
         pygame.display.flip()
-    pygame.quit()
-game_loop()
 
-# Por ahora lo que puede hacer el codigo es correr y ostrar las cartas aun no muestra las instrucciones
-# Y no me deja mover las cartas aun 
-# Para usar el codigo de lizzie necesiot card 1d (1-52) y card id 2 que voy a averigua que es
+    pygame.quit()
+
+def game_loop():
+    global state
+    running = True
+    selected = None
+
+    while running and state == "game":
+
