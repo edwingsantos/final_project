@@ -182,6 +182,7 @@ def suit_match(suit):
 
 #Gameloop (setup variables)
 def game():
+    
     #call setup and save returned values
     tableu,discard_pile,shuffled_deck,shown_draw_pile = setup()
     #call accessibility function and save the dict
@@ -196,13 +197,20 @@ def game():
     with open("files/cards.json","r") as deck:
         deck_info = json.load(deck)
 
+    #music setup
+    pygame.mixer.init()
+    try:
+        pygame.mixer.music.load("final_project/files/Aria Math.mp3")
+    except:
+        pygame.mixer.music.load("files/Aria Math.mp3")
+    pygame.mixer.music.play(loops=-1)
 
     #pygame setup
     pygame.init()
     screen = pygame.display.set_mode((2000,1100))
     clock = pygame.time.Clock()
     running = True
-    description = f"Rules for pyramid Solitaire:\nGoal: Remove all cards from the pyramid\nMethods:\n\nDiscard a king\n - select a king a click 'Discard king'\n\nMatch Cards:\n Select two cards which aren't covered and click 'Match'\n\n\nIf you lose, just exit the window and try again!\nWhen all cards are gone from the pyramid, the game ends itself.\nFinally the draw button will flip a card over in the draw pile\n so it can be used. "
+    description = f"Rules for pyramid Solitaire:\nGoal: Remove all cards from the pyramid\nMethods:\n\nDiscard a king\n - select a king a click 'Discard king'\n\nMatch Cards:\n Select two cards which aren't covered and click 'Match' \n they have to have their values adding to 13\nKings are 13, Queens are 12, Jacks are 11, and Ace is one\nIf you lose, just exit the window and try again!\nWhen all cards are gone from the pyramid, the game ends itself.\nFinally the draw button will flip a card over in the draw pile\n so it can be used. "
     lines = description.split("\n")
 
     #Button functionality
@@ -445,7 +453,8 @@ def game():
 
             with open("files/pyramid_solitaire.csv","a",newline="",encoding="utf-8") as scores:
                 writer = csv.writer(scores)
-                writer.writerow([game_num,win_num])         
+                writer.writerow([game_num,win_num])
+            pygame.mixer_music.stop()
 
         #framerate variable
         dt = clock.tick(60) / 100
