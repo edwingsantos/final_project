@@ -20,32 +20,21 @@ class Card_styles:
         self.color = color
         self.suit = suit
 
-        if self.value == 1:
-            self.symbol = "A"
-        elif self.value == 11:
-            self.symbol = "J"
-        elif self.value == 12:
-            self.symbol = "Q"
-        elif self.value == 13:
-            self.symbol = "K"
-        else:
-            self.symbol = str(card_value)
-
-        #match self.value:
-            #case 1:
-                #self.symbol = "A"
+        match self.value:
+            case 1:
+                self.symbol = "A"
         
-            #case 11:
-                #self.symbol = "J"
+            case 11:
+                self.symbol = "J"
 
-            #case 12:
-                #self.symbol = "Q"
+            case 12:
+                self.symbol = "Q"
         
-            #case 13:
-                #self.symbol = "K"
+            case 13:
+                self.symbol = "K"
             
-            #case _:
-                #self.symbol = str(card_value)
+            case _:
+                self.symbol = str(card_value)
 
     #Show Card method (coordinates):
     def show_card(self,screen,size=(100,140),coords=(100,100)):
