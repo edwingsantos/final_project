@@ -150,6 +150,9 @@ def launch_pyramid():
 def launch_freecell():
     free_cell_game()
 
+def launch_blackjack():
+    instructions()
+
 def launch_poker():
     poker_instructions()
     sys.exit()
