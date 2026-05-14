@@ -269,6 +269,7 @@ def blackjack():
                 if event.key == pygame.K_q:
                     pygame.quit()
                     sys.exit()
+                    return main
                 if event.key == pygame.K_r:
                     return blackjack()
 
@@ -357,34 +358,32 @@ def blackjack():
             screen.blit(text1, (400, 400))
             screen.blit(text2, (100, 300))
             screen.blit(text3, (450, 100))
+            
         else:
-            text2 = font.render(f"PRESS q TO EXIT or PRESS r TO REPEAT \n(total money is: ${user_data['money']})",True,(255, 255, 255))
-
+            text4 = font.render("PRESS q TO EXIT or PRESS r TO REPEAT",True,(255, 255, 255))
+            text5 = font.render(f"(total money is: ${user_data['money']})",True,(255, 255, 255))
+            screen.blit(text4, (450, 775))
+            screen.blit(text5, (450, 800))
+            
 
 
 
 
 
     #ask parker about this
-
-
-            lines = text2.split("\n")
-
-
-
-
-
-
-
-
-
-
-
-
-        screen.blit(text2, (350, 750))
-        result_text = font.render(result,True,(255, 255, 0))
-        screen.blit(result_text, (450, 350))
         pygame.display.update()
+
+
+
+
+def intructions():
+    pygame.init()
+    WIDTH, HEIGHT = 1000, 900
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    clock = pygame.time.Clock()
+    font = pygame.font.SysFont(None, 40)
+
+        
 
 
 blackjack()
