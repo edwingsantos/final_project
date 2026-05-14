@@ -6,6 +6,7 @@ import csv
 from treys import Evaluator, Card
 from LD_psuedocode import stuff_in_CSV, write_2_gambling
 from betting_func import starting_bet
+# from card_styles import Card_styles
 
 #csv_path = path to poker csv
 csv_path = "files/poker.csv"
@@ -284,8 +285,6 @@ def play_poker():
         write_2_gambling(csv_path, won, money)
         return
 
-    WIDTH, HEIGHT = 1000, 700
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
     FONT= pygame.font.SysFont(None,24)
 
@@ -353,11 +352,6 @@ def play_poker():
     screen = pygame.display.set_mode((1440, 1100))
     screen.fill(GREEN)
     
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            game = False
-            waiting = False
-
     # show the user what they have and ask if they want to bet and play with it, or fold and not play this round
     
     hand_text = FONT.render("This is what you have. If you want to play with this hand, click 'Initial Bet' If you don't want to play with this hand, click 'Fold'", True, (BLACK))
@@ -365,6 +359,9 @@ def play_poker():
 
     x_pos = 500; y_pos = 200
     for card in player_hand:
+        # card_info = deck[card]
+        # pretty_card = Card_styles(card_info["Value"], card_info["Suit"], card_info["Color"])
+        # pretty_card.show_card(screen=screen, size=(CARD_W, CARD_H), coords=(x_pos, y_pos))
         pygame.draw.rect(screen, WHITE, (x_pos, y_pos, CARD_W, CARD_H))
         text = FONT.render(str(f'{card} (ID)'), True, BLACK)
         screen.blit(text, (x_pos + 10, y_pos + 40))
@@ -382,7 +379,10 @@ def play_poker():
     waiting = True
     while waiting:
         event = pygame.event.wait()
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        if event.type == pygame.QUIT:
+            game1 = False
+            waiting = False
+        elif event.type == pygame.MOUSEBUTTONDOWN:
             if bet_rect.collidepoint(event.pos):
                 waiting = False
                 make_bet()
@@ -450,4 +450,20 @@ def play_poker():
 
         clock.tick(60)
 
-play_poker()
+def poker_instructions():
+    pygame.init()
+    GREEN = (0, 120, 0)
+    FONT= pygame.font.SysFont(None,24)
+    screen = pygame.display.set_mode((1440, 1100))
+    screen.fill(GREEN)
+    
+    # Text to display
+    description = f"How to Play Poker:\nPoker is a betting game where you want to get the best of five cards possible.\nThe rankings from best to worst are:\nRoyal Flush: Ace, King, Queen, Jack, and Ten in the SAME SUIT\n Straight Flush: Five consecutive cards in the SAME SUIT (ex: 7, 8, 9, 10, Jack all in clubs)\nFour of a Kind: Four cards with the same number, suit doesn't matter\nFull House: Three cards with the same number AND two cards with the same number (3 Aces and 2 Kings)\nFlush: Five cards with the same suit (card number doesn't matter)\nStraight: Five consecutive numbers (suit does not matter)\nThree of a Kind: Three cards with the same number\nTwo Pair: two cards with matching numbers, plus another two cards with matching numbers (2 Aces and 2 Queens)\nPair: Two cards with matching numbers\nHigh Card: When no other combination is possible, the card with the highest value from your hand.\nIf you believe you have a higher hand than the computer, put in money! You want to maximize your winnings!"
+    lines = description.split("\n")
+    for i, line in enumerate(lines):
+        rules_surface = FONT.render(line,True,"black")
+        screen.blit(rules_surface,(1500,100 + i * 30))
+    pygame.display.flip()
+
+#play_poker()
+poker_instructions()
