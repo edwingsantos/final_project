@@ -140,10 +140,10 @@ def launch_solitaire():
     game_screen("Solitaire")
 
 def launch_pyramid():
-    game_screen("Pyramid Solitaire")
+    game()
 
 def launch_freecell():
-    game_screen("Freecell")
+    free_cell_game()
 
 def launch_blackjack():
     game_screen("Blackjack")
