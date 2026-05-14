@@ -18,15 +18,25 @@ csv_path = "files/poker.csv"
 
 #match suit (for displaying)
 def suit_match(suit):
-    match suit:
-        case "Clubs":
-            symbol = "♣"
-        case "Spades":
-            symbol = "♠"
-        case "Diamonds":
-            symbol = "♦"
-        case "Hearts":
-            symbol = "♥"
+    if suit == "Clubs":
+        symbol = "♣"
+    elif suit == "Spades":
+        symbol = "♠"
+    elif suit == "Diamonds":
+        symbol = "♦"
+    elif suit == "Hearts":
+        symbol = "♥"
+    else:
+        print("Code broke. Line 21, suit_match function")
+    #match suit:
+        #case "Clubs":
+            #symbol = "♣"
+        #case "Spades":
+            #symbol = "♠"
+        #case "Diamonds":
+            #symbol = "♦"
+        #case "Hearts":
+            #symbol = "♥"
     return symbol
 
 
@@ -324,6 +334,7 @@ def play_poker():
     WHITE = (255, 255, 255)
     GRAY = (80, 80, 80)
     BLACK = (0, 0, 0)
+    st_font = pygame.font.SysFont("segoeuisymbol",48)
 
     CARD_W, CARD_H = 70,100
     # This is what will be called when the user chooses to play poker.
@@ -496,5 +507,5 @@ def poker_instructions():
         screen.blit(rules_surface,(1500,100 + i * 30))
     pygame.display.flip()
 
-#play_poker()
-poker_instructions()
+play_poker()
+#poker_instructions()
