@@ -6,6 +6,7 @@ import csv
 from treys import Evaluator, Card
 from LD_psuedocode import stuff_in_CSV, write_2_gambling
 from betting_func import starting_bet
+from card_styles import *
 
 #csv_path = path to poker csv
 csv_path = "files/poker.csv"
@@ -14,6 +15,19 @@ csv_path = "files/poker.csv"
 # if that call = True, 
     # Open csv. read the headers. do: last_line = file.readlines()[-1]. in last_line, user_mon = last_line[2 or "Money"] <- (this depends on whether I do a reader or DictReader)
 # else: user_mon = 100
+
+#match suit (for displaying)
+def suit_match(suit):
+    match suit:
+        case "Clubs":
+            symbol = "♣"
+        case "Spades":
+            symbol = "♠"
+        case "Diamonds":
+            symbol = "♦"
+        case "Hearts":
+            symbol = "♥"
+    return symbol
 
 
 # GAMEPLAY ASSISTANT FUNTIONS
@@ -127,9 +141,12 @@ def play_poker():
         for the_card in table:
             if count < cards_shown:
                 print("Card drawn")
-                pygame.draw.rect(screen, WHITE, (x_possition, y_possition, CARD_W, CARD_H))
-                text = FONT.render(str(f'{the_card} (ID)'), True, BLACK)
-                screen.blit(text, (x_possition + 10, y_possition + 40))
+                card_info = deck[the_card]
+                pretty_card = Card_styles(card_info["Value"],suit_match(card_info["Suit"]),card_info["Color"])
+                pretty_card.show_card(screen,coords=(x_possition,y_possition))
+                #pygame.draw.rect(screen, WHITE, (x_possition, y_possition, CARD_W, CARD_H))
+                #text = FONT.render(str(f'{the_card} (ID)'), True, BLACK)
+                #screen.blit(text, (x_possition + 10, y_possition + 40))
                 x_possition += 80; y_possition += 0
             else:
                 print("Null card drawn")
@@ -148,9 +165,12 @@ def play_poker():
         # draw the cards
         x_pos = 500; y_pos = 100
         for card in player_hand:
-            pygame.draw.rect(screen, WHITE, (x_pos, y_pos, CARD_W, CARD_H))
-            text = FONT.render(str(f'{card} (ID)'), True, BLACK)
-            screen.blit(text, (x_pos + 10, y_pos + 40))
+            card_info = deck[card]
+            pretty_card = Card_styles(card_info["Value"],suit_match(card_info["Suit"]),card_info["Color"])
+            pretty_card.show_card(screen,coords=(x_pos,y_pos))
+            #pygame.draw.rect(screen, WHITE, (x_pos, y_pos, CARD_W, CARD_H))
+            #text = FONT.render(str(f'{card} (ID)'), True, BLACK)
+            #screen.blit(text, (x_pos + 10, y_pos + 40))
             x_pos += 80; y_pos += 0
         
         x = 500; y = 650
@@ -163,9 +183,12 @@ def play_poker():
         draw_table(table_amount)
 
         # draw a discard card
-        pygame.draw.rect(screen, WHITE, (200, 400, CARD_W, CARD_H))
-        text = FONT.render("Discard", True, BLACK)
-        screen.blit(text, (200 + 5, 400 + 40))
+        card_info = deck[card]
+        pretty_card = Card_styles(card_info["Value"],suit_match(card_info["Suit"]),card_info["Color"])
+        pretty_card.show_card(screen,coords=(x_pos,y_pos))
+        #pygame.draw.rect(screen, WHITE, (200, 400, CARD_W, CARD_H))
+        #text = FONT.render("Discard", True, BLACK)
+        #screen.blit(text, (200 + 5, 400 + 40))
 
         check_rect = pygame.draw.rect(screen, BUTTON_COLOR, (150, 625, 100, 50), 5, 0) # Check
         text = FONT.render(str("Check"), True, BLACK)
@@ -215,24 +238,33 @@ def play_poker():
         # draw the cards
         x_pos = 500; y_pos = 100
         for card in player_hand:
-            pygame.draw.rect(screen, WHITE, (x_pos, y_pos, CARD_W, CARD_H))
-            text = FONT.render(str(f'{card} (ID)'), True, BLACK)
-            screen.blit(text, (x_pos + 10, y_pos + 40))
+            card_info = deck[card]
+            pretty_card = Card_styles(card_info["Value"],suit_match(card_info["Suit"]),card_info["Color"])
+            pretty_card.show_card(screen,coords=(x_pos,y_pos))
+            #pygame.draw.rect(screen, WHITE, (x_pos, y_pos, CARD_W, CARD_H))
+            #text = FONT.render(str(f'{card} (ID)'), True, BLACK)
+            #screen.blit(text, (x_pos + 10, y_pos + 40))
             x_pos += 80; y_pos += 0
         
         x = 500; y = 650
         for cards in computer_hand:
-            pygame.draw.rect(screen, WHITE, (x, y, CARD_W, CARD_H))
-            text = FONT.render(f"{cards} (ID)", True, BLACK)
-            screen.blit(text, (x + 10, y + 40))
+            card_info = deck[cards]
+            pretty_card = Card_styles(card_info["Value"],suit_match(card_info["Suit"]),card_info["Color"])
+            pretty_card.show_card(screen,coords=(x_pos,y_pos))
+            #pygame.draw.rect(screen, WHITE, (x, y, CARD_W, CARD_H))
+            #text = FONT.render(f"{cards} (ID)", True, BLACK)
+            #screen.blit(text, (x + 10, y + 40))
             x += 80; y += 0
 
         draw_table(5)
 
         # draw a discard card
-        pygame.draw.rect(screen, WHITE, (200, 400, CARD_W, CARD_H))
-        text = FONT.render("Discard", True, BLACK)
-        screen.blit(text, (200 + 5, 400 + 40))
+        card_info = deck[cards]
+        pretty_card = Card_styles(card_info["Value"],suit_match(card_info["Suit"]),card_info["Color"])
+        pretty_card.show_card(screen,coords=(x_pos,y_pos))
+        #pygame.draw.rect(screen, WHITE, (200, 400, CARD_W, CARD_H))
+        #text = FONT.render("Discard", True, BLACK)
+        #screen.blit(text, (200 + 5, 400 + 40))
 
         # tell the user the results
         # first get the words for the hands they have
@@ -365,9 +397,12 @@ def play_poker():
 
     x_pos = 500; y_pos = 200
     for card in player_hand:
-        pygame.draw.rect(screen, WHITE, (x_pos, y_pos, CARD_W, CARD_H))
-        text = FONT.render(str(f'{card} (ID)'), True, BLACK)
-        screen.blit(text, (x_pos + 10, y_pos + 40))
+        card_info = deck[card]
+        pretty_card = Card_styles(card_info["Value"],suit_match(card_info["Suit"]),card_info["Color"])
+        pretty_card.show_card(screen,coords=(x_pos,y_pos))
+        #pygame.draw.rect(screen, WHITE, (x_pos, y_pos, CARD_W, CARD_H))
+        #text = FONT.render(str(f'{card} (ID)'), True, BLACK)
+        #screen.blit(text, (x_pos + 10, y_pos + 40))
         x_pos += 80; y_pos += 0
 
     bet_rect = pygame.draw.rect(screen, BUTTON_COLOR, (200, 625, 150, 75), 5, 0) # bet
