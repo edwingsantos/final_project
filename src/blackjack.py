@@ -16,7 +16,7 @@ pygame.init()
 
 WIDTH, HEIGHT = 1000, 700
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Solitaire")
+pygame.display.set_caption("blackjack")
 
 clock = pygame.time.Clock()
 FONT= pygame.font.SysFont(None,24)
@@ -24,7 +24,7 @@ FONT= pygame.font.SysFont(None,24)
 GREEN = (0, 120, 0)
 WHITE = (255, 255, 255)
 GRAY = (80, 80, 80)
-BLACK = (0, 0, 0)
+
 
 CARD_W, CARD_H = 70,100
 
@@ -376,14 +376,39 @@ def blackjack():
 
 
 
-def intructions():
+def blackjack_instructions():
+    running =  True
     pygame.init()
     WIDTH, HEIGHT = 1000, 900
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
     font = pygame.font.SysFont(None, 40)
+    screen.fill("darkgreen")
 
-        
+    while running:
+        #events
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+            #quit thing
+                if event.key == pygame.K_c:
+                    running = False
+                    blackjack()
+
+        description = f"hi"
+        lines = description.split("\n")
+        for i, line in enumerate(lines):
+            rules_surface = font.render(line,True,"black")
+            screen.blit(rules_surface,(100,100 + i * 30))
+        pygame.display.flip()
 
 
-blackjack()
+
+
+blackjack_instructions()
+
+
+
+
+
+
+#MAKE SO THE DEALER SHOWS ONE SINGULAR CARD,   YOU CAN PLACE A SHAPE OVER IT AND WHEN THE USER STANDS THEN TAKE IT AWAY
