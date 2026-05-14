@@ -11,6 +11,9 @@ import pygame
 import sys
 from freecell_solitaire import free_cell_game
 from pyramid_solitaire import game
+from solitaire import solitaire
+from blackjack import blackjack_instructions
+from poker_pseudo import play_poker
 #from solitaire import solitaire
 #from pyramid_solitaire import *
 # def show_choices(root):
@@ -137,19 +140,19 @@ def game_screen(game_name):
 
 # GAME FUNCTIONS 
 def launch_solitaire():
-    game_screen("Solitaire")
+    solitaire()
 
 def launch_pyramid():
-    game_screen("Pyramid Solitaire")
+    game()
 
 def launch_freecell():
-    game_screen("Freecell")
+    free_cell_game()
 
 def launch_blackjack():
-    game_screen("Blackjack")
+    instructions()
 
 def launch_poker():
-    game_screen("Poker")
+    play_poker()
 
 #  MAIN MENU 
 def main():
