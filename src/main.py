@@ -65,7 +65,7 @@ import sys
 
 pygame.init()
 
-WIDTH, HEIGHT = 900, 600
+WIDTH, HEIGHT = 1200, 700
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Card Game Collection")
 
@@ -103,6 +103,9 @@ class Button:
 
 def launch_solitaire():
     print("Solitaire not ready yet")
+# QUIT FUNCTION 
+def quit_program():
+    pygame.quit()
     sys.exit()
 
 # GAME PLACEHOLDER SCREEN
@@ -165,9 +168,11 @@ def main():
 
     buttons = [
         Button("Solitaire", 300, 150, 300, 70, launch_solitaire),
-        Button("Pyramid Solitaire", 300, 250, 300, 70, launch_pyramid),
-        Button("Freecell", 300, 350, 300, 70, launch_freecell),
-        Button("Quit", 300, 450, 300, 70, lambda: sys.exit())
+        Button("Pyramid Solitaire", 300, 225, 300, 70, launch_pyramid),
+        Button("Freecell", 300, 300, 350, 70, launch_freecell),
+        Button("Poker", 300, 375, 300, 70, launch_poker),
+        Button("Blackjack", 300, 450, 300, 70, launch_blackjack),
+        Button("Quit", 300, 525, 300, 70, lambda: sys.exit())
 
     ]
 
