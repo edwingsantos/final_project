@@ -65,8 +65,7 @@ import sys
 
 pygame.init()
 
-# SCREEN SETUP 
-WIDTH, HEIGHT = 900, 600
+WIDTH, HEIGHT = 1200, 700
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Card Game Collection")
 
@@ -101,6 +100,9 @@ class Button:
         if self.rect.collidepoint(pos):
             self.action()
 
+
+def launch_solitaire():
+    print("Solitaire not ready yet")
 # QUIT FUNCTION 
 def quit_program():
     pygame.quit()
@@ -148,28 +150,26 @@ def launch_pyramid():
 def launch_freecell():
     free_cell_game()
 
-def launch_blackjack():
-    instructions()
-
 def launch_poker():
-    play_poker()
+    poker_instructions()
+    sys.exit()
+
+def launch_blackjack():
+    
+    blackjack_instructions()
+    sys.exit()
+
 
 #  MAIN MENU 
 def main():
 
     buttons = [
-
-        Button("Solitaire", 300, 120, 300, 60, launch_solitaire),
-
-        Button("Pyramid Solitaire", 300, 190, 300, 60, launch_pyramid),
-
-        Button("Freecell", 300, 260, 300, 60, launch_freecell),
-
-        Button("Blackjack", 300, 330, 300, 60, launch_blackjack),
-
-        Button("Poker", 300, 400, 300, 60, launch_poker),
-
-        Button("Quit", 300, 470, 300, 60, quit_program)
+        Button("Solitaire", 300, 150, 300, 70, launch_solitaire),
+        Button("Pyramid Solitaire", 300, 225, 300, 70, launch_pyramid),
+        Button("Freecell", 300, 300, 350, 70, launch_freecell),
+        Button("Poker", 300, 375, 300, 70, launch_poker),
+        Button("Blackjack", 300, 450, 300, 70, launch_blackjack),
+        Button("Quit", 300, 525, 300, 70, lambda: sys.exit())
 
     ]
 

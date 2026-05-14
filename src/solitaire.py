@@ -337,6 +337,7 @@ def draw_button(text, x, y, w, h):
     label = FONT.render(text, True, WHITE)
     screen.blit(label, (x + 10, y + 10))
     return pygame.Rect(x, y, w, h)
+
 def draw_stock_waste(stock, waste):
 
     # STOCK
