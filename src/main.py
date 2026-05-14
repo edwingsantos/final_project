@@ -11,9 +11,9 @@ import pygame
 import sys
 from freecell_solitaire import free_cell_game
 from pyramid_solitaire import game
-from solitaire import solitaire
+#from solitaire import solitaire
 from blackjack import blackjack_instructions
-from poker_pseudo import play_poker
+from poker_pseudo import poker_instructions
 #from solitaire import solitaire
 #from pyramid_solitaire import *
 # def show_choices(root):
@@ -141,8 +141,7 @@ def game_screen(game_name):
         pygame.display.flip()
 
 # GAME FUNCTIONS 
-def launch_solitaire():
-    solitaire()
+# Poker would be here, but it is not complete. The files exist for future improvement
 
 def launch_pyramid():
     game()
@@ -150,26 +149,18 @@ def launch_pyramid():
 def launch_freecell():
     free_cell_game()
 
-def launch_blackjack():
-    instructions()
-
 def launch_poker():
     poker_instructions()
-    sys.exit()
 
 def launch_blackjack():
-    
     blackjack_instructions()
-    sys.exit()
-
 
 #  MAIN MENU 
 def main():
 
     buttons = [
-        Button("Solitaire", 300, 150, 300, 70, launch_solitaire),
         Button("Pyramid Solitaire", 300, 225, 300, 70, launch_pyramid),
-        Button("Freecell", 300, 300, 350, 70, launch_freecell),
+        Button("Freecell", 300, 300, 300, 70, launch_freecell),
         Button("Poker", 300, 375, 300, 70, launch_poker),
         Button("Blackjack", 300, 450, 300, 70, launch_blackjack),
         Button("Quit", 300, 525, 300, 70, lambda: sys.exit())

@@ -262,9 +262,9 @@ def blackjack():
             if event.type == pygame.KEYDOWN:
             #quit thing
                 if event.key == pygame.K_q:
-                    pygame.quit()
-                    sys.exit()
-                    return main
+                    sys.exit() 
+                    return
+                    
                 if event.key == pygame.K_r:
                     return blackjack()
 
@@ -389,7 +389,7 @@ def blackjack_instructions():
                     running = False
                     blackjack()
 
-        description = f"Objective: Beat the dealer by having a higher total,\n without exceeding 21.\n\nCard Values: Number cards (2 to 10) are face value. \nJacks, Queens, and Kings are worth 10. \nAces are worth 1 or 11.\n\nThe Setup: Players place bets, and each is dealt two cards face up.\n The dealer receives one card face up and one face down (the hole card\n\nHit: Ask for another card to increase your total. You can hit until you stand or exceed 21.\n\nStand: Keep your current total and end your turn.\n\nBust: If your hand total exceeds 21, you immediately lose your wager.\n\nWinning: You win if your total is higher than the dealer's or if the dealer busts.\n\n\nPRESS c TO CONTINUE)."
+        description = f"Objective: Beat the dealer by having a higher total,\n without exceeding 21.\n\nCard Values: Number cards (2 to 10) are face value. \nJacks, Queens, and Kings are worth 10. \nAces are worth 1 or 11.\n\nThe Setup: Players place bets, and each is dealt two cards face up.\n The dealer receives one card face up and one face down (the hole card\n\nHit: Ask for another card to increase your total.\n You can hit until you stand or exceed 21.\n\nStand: Keep your current total and end your turn.\n\nBust: If your hand total exceeds 21, you immediately lose your wager.\n\nWinning: You win if your total is higher than the dealer's or if the dealer busts.\n\n\nPRESS c TO CONTINUE)."
         lines = description.split("\n")
         for i, line in enumerate(lines):
             rules_surface = font.render(line,True,"black")
