@@ -9,6 +9,8 @@
 # import sys
 import pygame
 import sys
+from freecell_solitaire import free_cell_game
+from pyramid_solitaire import game
 #from solitaire import solitaire
 #from pyramid_solitaire import *
 # def show_choices(root):
@@ -93,12 +95,12 @@ def launch_solitaire():
 # Need to add buttons for poker, and blackjack
 def launch_pyramid():
     pygame.quit()
-    print("Freecell not ready yet")
+    game()
     sys.exit()
 
 def launch_freecell():
     pygame.quit()
-    print("Freecell not ready yet")
+    free_cell_game()
     sys.exit()
 
 

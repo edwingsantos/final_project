@@ -598,5 +598,3 @@ def free_cell_game():
         dt = clock.tick(60) / 100
     
     pygame.quit()
-
-free_cell_game()
