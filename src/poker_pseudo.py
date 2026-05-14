@@ -105,20 +105,17 @@ def play_poker():
             bet_amount += initial_bet
             bet = False
     
-    def determine_win():
+    def determine_win(player, comp):
         nonlocal user_mon
-        if player_score < comp_score:
+        if player < comp:
             win = 'True'
             user_mon += bet_amount
-            game = False
-        elif comp_score < player_score:
+        elif comp < player:
             win = 'False'
             user_mon -= bet_amount
-            game = False
-        elif player_score == comp_score:
+        elif player == comp:
             win = 'Tie'
             user_mon = user_mon
-            game = False
         else:
             # something went wrong
             print("Something happened when comparing who won in poker.\nFile:poker_psudo.py\nLine: 197")
@@ -204,10 +201,86 @@ def play_poker():
                 elif check_rect.collidepoint(event.pos):
                     wait = False
                     return "Check", 0
+    def draw_ending():
+        evaluator = Evaluator()
+
+        player_score = check_hands(player_hand, table)
+        comp_score = check_hands(computer_hand, table)
+        won, final_mon = determine_win(player_score, comp_score)
+        write_2_gambling(csv_path, won, final_mon)
+        screen = pygame.display.set_mode((1440, 1100))
+        screen.fill(GREEN)
+        nonlocal bet_amount, user_mon
+        
+        # draw the cards
+        x_pos = 500; y_pos = 100
+        for card in player_hand:
+            pygame.draw.rect(screen, WHITE, (x_pos, y_pos, CARD_W, CARD_H))
+            text = FONT.render(str(f'{card} (ID)'), True, BLACK)
+            screen.blit(text, (x_pos + 10, y_pos + 40))
+            x_pos += 80; y_pos += 0
+        
+        x = 500; y = 650
+        for cards in computer_hand:
+            pygame.draw.rect(screen, WHITE, (x, y, CARD_W, CARD_H))
+            text = FONT.render(f"{cards} (ID)", True, BLACK)
+            screen.blit(text, (x + 10, y + 40))
+            x += 80; y += 0
+
+        draw_table(5)
+
+        # draw a discard card
+        pygame.draw.rect(screen, WHITE, (200, 400, CARD_W, CARD_H))
+        text = FONT.render("Discard", True, BLACK)
+        screen.blit(text, (200 + 5, 400 + 40))
+
+        # tell the user the results
+        # first get the words for the hands they have
+        player_score_class = evaluator.get_rank_class(player_score)
+        player_hand_rank = evaluator.class_to_string(player_score_class).format(player_score)
+        comp_score_class = evaluator.get_rank_class(comp_score)
+        comp_hand_rank = evaluator.class_to_string(comp_score_class).format(comp_score)
+        # get the result for the player to display later
+        if player_score < comp_score:
+            player_won = "You Won!!!"
+            win = "True"
+            money = user_mon + bet_amount
+        elif comp_score < player_score:
+            player_won = "You Lost. :("
+            win = "False"
+            money = user_mon - bet_amount
+        elif player_score == comp_score:
+            player_won = "It was a Tie!"
+            win = "Tie"
+            money = user_mon
+        else:
+            print("Something went wrong... Line 244")
+        # draw text about player winning
+        win_text = FONT.render(str(f"Your hand: {player_hand_rank}    Computer's hand: {comp_hand_rank}    {player_won}"), True, BLACK)
+        screen.blit(win_text, (100, 100))
+
+        # draw a button to leave (and write result to CSV)
+        end_rect = pygame.draw.rect(screen, BUTTON_COLOR, (150, 625, 200, 50), 5, 0)
+        end_text = FONT.render(str("End Game & Go Back"), True, BLACK)
+        screen.blit(end_text, (150 + 10, 625 + 25))
+
+        pygame.display.flip()
+
+        wait = True
+        while wait:
+            event = pygame.event.wait()
+            if event.type == pygame.QUIT:
+                wait = False
+                return 0, 0
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if end_rect.collidepoint(event.pos):
+                    wait = False
+                    write_2_gambling(csv_path, win, money)
+                    return
             
     def end_game(won=None, money = None):
         if won == None and money == None:
-            won, money = determine_win()
+            won, money = determine_win(player=check_hands(player_hand), comp=check_hands(computer_hand))
         write_2_gambling(csv_path, won, money)
         return
 
@@ -350,7 +423,9 @@ def play_poker():
             else:
                 print("Something went wrong with playing again. See line 310")
         else:
-            pass # condition for fold from main game
+            money = user_mon-bet_amount
+            end_game(won="False", money=money)
+            return
         pygame.display.flip()
     
     while game2:
@@ -364,17 +439,7 @@ def play_poker():
             bet_amount += final_bet
             # "Flip" computer's cards (Display the card instead of the back)
             # THIS SHOULD HAPPEN IF USER NEVER FOLDED (fingers crossed)
-            x = 500; y = 650
-            for card in computer_hand:
-                pygame.draw.rect(screen, GRAY, (x, y, CARD_W, CARD_H))
-                text = FONT.render(f"{card} (ID)", True, BLACK)
-                screen.blit(text, (x + 10, y + 40))
-                x += 80; y += 0
-
-            player_score = check_hands(player_hand, table)
-            comp_score = check_hands(computer_hand, table)
-            won, final_mon = determine_win()
-            write_2_gambling(csv_path, won, final_mon)
+            draw_ending()
             break
         elif final_play == 0 and final_bet == 0:
             return
