@@ -62,23 +62,23 @@ import sys
 
 pygame.init()
 
-# ---------------- SCREEN SETUP ----------------
+# SCREEN SETUP 
 WIDTH, HEIGHT = 900, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Card Game Collection")
 
-# ---------------- COLORS ----------------
+# COLORS 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = (70, 70, 70)
 GREEN = (0, 120, 0)
 BLUE = (40, 40, 120)
 
-# ---------------- FONT ----------------
+# FONT
 FONT = pygame.font.SysFont(None, 40)
 TITLE_FONT = pygame.font.SysFont(None, 60)
 
-# ---------------- BUTTON CLASS ----------------
+#  BUTTON CLASS
 class Button:
     def __init__(self, text, x, y, w, h, action):
         self.text = text
@@ -98,12 +98,12 @@ class Button:
         if self.rect.collidepoint(pos):
             self.action()
 
-# ---------------- QUIT FUNCTION ----------------
+# QUIT FUNCTION 
 def quit_program():
     pygame.quit()
     sys.exit()
 
-# ---------------- GAME PLACEHOLDER SCREEN ----------------
+# GAME PLACEHOLDER SCREEN
 def game_screen(game_name):
     """
     Temporary game screen until the real game is added
@@ -135,7 +135,7 @@ def game_screen(game_name):
 
         pygame.display.flip()
 
-# ---------------- GAME FUNCTIONS ----------------
+# GAME FUNCTIONS 
 def launch_solitaire():
     game_screen("Solitaire")
 
@@ -151,7 +151,7 @@ def launch_blackjack():
 def launch_poker():
     game_screen("Poker")
 
-# ---------------- MAIN MENU ----------------
+#  MAIN MENU 
 def main():
 
     buttons = [
@@ -194,5 +194,4 @@ def main():
 
         pygame.display.flip()
 
-# ---------------- START PROGRAM ----------------
 main()

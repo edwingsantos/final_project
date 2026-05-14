@@ -450,7 +450,7 @@ def solitaire():
         screen.fill(GREEN)
 
         # TITLE
-        title = FONT.render("Klondike Solitaire", True, WHITE)
+        title = FONT.render("Solitaire", True, WHITE)
         screen.blit(title, (400, 20))
 
         # DRAW STOCK + WASTE
@@ -534,4 +534,4 @@ def solitaire():
         pygame.display.flip()
 
         clock.tick(60)
-solitaire()
+#solitaire()
