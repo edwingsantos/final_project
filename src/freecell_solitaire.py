@@ -323,7 +323,7 @@ def free_cell_game():
     selected = 0
     move_select = ""
     place_select = ""
-    rules = "Rules For FreeCell:\n\nGoal: Remove all cards from the tableau (big grid with cards)\nAnd put them all in the foundation piles (piles with suit logos)\n\nWays to do this:\n\nMove cards onto other stacks to free up space\nMove cards to freecells (limited one card per spot)\nMove Cards into Suit Piles (cards go from ace-king or 1-13 in value)\n\nCaveat - You can only move one card at a time,\n\n if at any time the puzzle seems impossible to complete,\n\nQuit the game and start over!\n\n Yellow highlight is the card to move,\n red highlight is the place to move it to"
+    rules = "Rules For FreeCell:\n\nGoal: Remove all cards from the tableau (big grid with cards)\nAnd put them all in the foundation piles (piles with suit logos)\n\nWays to do this:\n\nMove cards onto other stacks to free up space\nMove cards to freecells (limited one card per spot)\nMove Cards into Suit Piles (cards go from ace-king or 1-13 in value)\n\nCaveat - You can only move one card at a time,\n\n if at any time the puzzle seems impossible to complete,\n\nClose the tab and run main again!\n\n Yellow highlight is the card to move,\n red highlight is the place to move it to"
     lines = rules.split("\n")
     warning_message = ""
 
