@@ -104,6 +104,37 @@ def create_deck(json_path,face_cardss,value):
 
     return face_cardss.get(value,0)
 
+def king_removal(tableu,discard,shown_pile,picked_card,warning_text):
+    #call accessibility function for accessible cards
+    
+    
+    with open("files/cards.json","r") as card_info:
+        deck = json.load(card_info)
+
+    #check if the card is a king
+    removed = False
+    #if yes
+    if deck[picked_card]["Value"] == 13:
+        # if card is in tableu
+            #remove from tableu
+        for x in tableu:
+            for y in x:
+                if y == picked_card:
+                    x.insert(x.index(y),None)
+                    x.remove(y)
+                    removed = True
+                    break
+        #else
+        if removed == False:
+            #remove from draw
+            shown_pile.pop(0)
+        #add to discard pile
+        discard.insert(0,picked_card)
+    #if no
+    else:
+        #display error message stating that the card selected was not a king
+        warning_text = "Select only one king"
+    return discard, shown_pile, tableu, warning_text
 
 def create_deck(json_path):
 
