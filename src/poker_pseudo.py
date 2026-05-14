@@ -6,6 +6,7 @@ import csv
 from treys import Evaluator, Card
 from LD_psuedocode import stuff_in_CSV, write_2_gambling
 from betting_func import starting_bet
+from card_styles import *
 
 #csv_path = path to poker csv
 csv_path = "files/poker.csv"
@@ -14,6 +15,29 @@ csv_path = "files/poker.csv"
 # if that call = True, 
     # Open csv. read the headers. do: last_line = file.readlines()[-1]. in last_line, user_mon = last_line[2 or "Money"] <- (this depends on whether I do a reader or DictReader)
 # else: user_mon = 100
+
+#match suit (for displaying)
+def suit_match(suit):
+    if suit == "Clubs":
+        symbol = "♣"
+    elif suit == "Spades":
+        symbol = "♠"
+    elif suit == "Diamonds":
+        symbol = "♦"
+    elif suit == "Hearts":
+        symbol = "♥"
+    else:
+        print("Code broke. Line 21, suit_match function")
+    #match suit:
+        #case "Clubs":
+            #symbol = "♣"
+        #case "Spades":
+            #symbol = "♠"
+        #case "Diamonds":
+            #symbol = "♦"
+        #case "Hearts":
+            #symbol = "♥"
+    return symbol
 
 
 # GAMEPLAY ASSISTANT FUNTIONS
@@ -105,20 +129,17 @@ def play_poker():
             bet_amount += initial_bet
             bet = False
     
-    def determine_win():
+    def determine_win(player, comp):
         nonlocal user_mon
-        if player_score < comp_score:
+        if player < comp:
             win = 'True'
             user_mon += bet_amount
-            game = False
-        elif comp_score < player_score:
+        elif comp < player:
             win = 'False'
             user_mon -= bet_amount
-            game = False
-        elif player_score == comp_score:
+        elif player == comp:
             win = 'Tie'
             user_mon = user_mon
-            game = False
         else:
             # something went wrong
             print("Something happened when comparing who won in poker.\nFile:poker_psudo.py\nLine: 197")
@@ -130,15 +151,20 @@ def play_poker():
         for the_card in table:
             if count < cards_shown:
                 print("Card drawn")
-                pygame.draw.rect(screen, WHITE, (x_possition, y_possition, CARD_W, CARD_H))
-                text = FONT.render(str(f'{the_card} (ID)'), True, BLACK)
-                screen.blit(text, (x_possition + 10, y_possition + 40))
+                card_info = deck[the_card]
+                pretty_card = Card_styles(card_info["Value"],suit_match(card_info["Suit"]),card_info["Color"])
+                pretty_card.show_card(screen,coords=(x_possition,y_possition))
+                #pygame.draw.rect(screen, WHITE, (x_possition, y_possition, CARD_W, CARD_H))
+                #text = FONT.render(str(f'{the_card} (ID)'), True, BLACK)
+                #screen.blit(text, (x_possition + 10, y_possition + 40))
                 x_possition += 80; y_possition += 0
             else:
                 print("Null card drawn")
-                pygame.draw.rect(screen, GRAY, (x_possition, y_possition, CARD_W, CARD_H))
-                text = FONT.render("X", True, BLACK)
-                screen.blit(text, (x_possition + 10, y_possition + 40))
+                pygame.draw.rect(screen,"red",(1300,200,100,140),0,border_radius=4)
+                pygame.draw.rect(screen,"white",(1300,200,100,140),4,border_radius=4)
+                #pygame.draw.rect(screen, GRAY, (x_possition, y_possition, CARD_W, CARD_H))
+                #text = FONT.render("X", True, BLACK)
+                #screen.blit(text, (x_possition + 10, y_possition + 40))
                 x_possition += 80; y_possition += 0
             count += 1
             pygame.display.flip()
@@ -151,24 +177,32 @@ def play_poker():
         # draw the cards
         x_pos = 500; y_pos = 100
         for card in player_hand:
-            pygame.draw.rect(screen, WHITE, (x_pos, y_pos, CARD_W, CARD_H))
-            text = FONT.render(str(f'{card} (ID)'), True, BLACK)
-            screen.blit(text, (x_pos + 10, y_pos + 40))
+            card_info = deck[card]
+            pretty_card = Card_styles(card_info["Value"],suit_match(card_info["Suit"]),card_info["Color"])
+            pretty_card.show_card(screen,coords=(x_pos,y_pos))
+            #pygame.draw.rect(screen, WHITE, (x_pos, y_pos, CARD_W, CARD_H))
+            #text = FONT.render(str(f'{card} (ID)'), True, BLACK)
+            #screen.blit(text, (x_pos + 10, y_pos + 40))
             x_pos += 80; y_pos += 0
         
         x = 500; y = 650
         for _ in computer_hand:
-            pygame.draw.rect(screen, GRAY, (x, y, CARD_W, CARD_H))
-            text = FONT.render("X", True, BLACK)
-            screen.blit(text, (x + 10, y + 40))
+            pygame.draw.rect(screen,"red",(x,y,100,140),0,border_radius=4)
+            pygame.draw.rect(screen,"white",(x,y,100,140),4,border_radius=4)
+            #pygame.draw.rect(screen, GRAY, (x, y, CARD_W, CARD_H))
+            #text = FONT.render("X", True, BLACK)
+            #screen.blit(text, (x + 10, y + 40))
             x += 80; y += 0
 
         draw_table(table_amount)
 
         # draw a discard card
-        pygame.draw.rect(screen, WHITE, (200, 400, CARD_W, CARD_H))
-        text = FONT.render("Discard", True, BLACK)
-        screen.blit(text, (200 + 5, 400 + 40))
+        card_info = deck[card]
+        pretty_card = Card_styles(card_info["Value"],suit_match(card_info["Suit"]),card_info["Color"])
+        pretty_card.show_card(screen,coords=(x_pos,y_pos))
+        #pygame.draw.rect(screen, WHITE, (200, 400, CARD_W, CARD_H))
+        #text = FONT.render("Discard", True, BLACK)
+        #screen.blit(text, (200 + 5, 400 + 40))
 
         check_rect = pygame.draw.rect(screen, BUTTON_COLOR, (150, 625, 100, 50), 5, 0) # Check
         text = FONT.render(str("Check"), True, BLACK)
@@ -204,25 +238,104 @@ def play_poker():
                 elif check_rect.collidepoint(event.pos):
                     wait = False
                     return "Check", 0
+    def draw_ending():
+        evaluator = Evaluator()
+
+        player_score = check_hands(player_hand, table)
+        comp_score = check_hands(computer_hand, table)
+        won, final_mon = determine_win(player_score, comp_score)
+        write_2_gambling(csv_path, won, final_mon)
+        screen = pygame.display.set_mode((1440, 1100))
+        screen.fill(GREEN)
+        nonlocal bet_amount, user_mon
+        
+        # draw the cards
+        x_pos = 500; y_pos = 100
+        for card in player_hand:
+            card_info = deck[card]
+            pretty_card = Card_styles(card_info["Value"],suit_match(card_info["Suit"]),card_info["Color"])
+            pretty_card.show_card(screen,coords=(x_pos,y_pos))
+            #pygame.draw.rect(screen, WHITE, (x_pos, y_pos, CARD_W, CARD_H))
+            #text = FONT.render(str(f'{card} (ID)'), True, BLACK)
+            #screen.blit(text, (x_pos + 10, y_pos + 40))
+            x_pos += 80; y_pos += 0
+        
+        x = 500; y = 650
+        for cards in computer_hand:
+            card_info = deck[cards]
+            pretty_card = Card_styles(card_info["Value"],suit_match(card_info["Suit"]),card_info["Color"])
+            pretty_card.show_card(screen,coords=(x_pos,y_pos))
+            #pygame.draw.rect(screen, WHITE, (x, y, CARD_W, CARD_H))
+            #text = FONT.render(f"{cards} (ID)", True, BLACK)
+            #screen.blit(text, (x + 10, y + 40))
+            x += 80; y += 0
+
+        draw_table(5)
+
+        # draw a discard card
+        card_info = deck[cards]
+        pretty_card = Card_styles(card_info["Value"],suit_match(card_info["Suit"]),card_info["Color"])
+        pretty_card.show_card(screen,coords=(x_pos,y_pos))
+        #pygame.draw.rect(screen, WHITE, (200, 400, CARD_W, CARD_H))
+        #text = FONT.render("Discard", True, BLACK)
+        #screen.blit(text, (200 + 5, 400 + 40))
+
+        # tell the user the results
+        # first get the words for the hands they have
+        player_score_class = evaluator.get_rank_class(player_score)
+        player_hand_rank = evaluator.class_to_string(player_score_class).format(player_score)
+        comp_score_class = evaluator.get_rank_class(comp_score)
+        comp_hand_rank = evaluator.class_to_string(comp_score_class).format(comp_score)
+        # get the result for the player to display later
+        if player_score < comp_score:
+            player_won = "You Won!!!"
+            win = "True"
+            money = user_mon + bet_amount
+        elif comp_score < player_score:
+            player_won = "You Lost. :("
+            win = "False"
+            money = user_mon - bet_amount
+        elif player_score == comp_score:
+            player_won = "It was a Tie!"
+            win = "Tie"
+            money = user_mon
+        else:
+            print("Something went wrong... Line 244")
+        # draw text about player winning
+        win_text = FONT.render(str(f"Your hand: {player_hand_rank}    Computer's hand: {comp_hand_rank}    {player_won}"), True, BLACK)
+        screen.blit(win_text, (100, 100))
+
+        # draw a button to leave (and write result to CSV)
+        end_rect = pygame.draw.rect(screen, BUTTON_COLOR, (150, 625, 200, 50), 5, 0)
+        end_text = FONT.render(str("End Game & Go Back"), True, BLACK)
+        screen.blit(end_text, (150 + 10, 625 + 25))
+
+        pygame.display.flip()
+
+        wait = True
+        while wait:
+            event = pygame.event.wait()
+            if event.type == pygame.QUIT:
+                wait = False
+                return 0, 0
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if end_rect.collidepoint(event.pos):
+                    wait = False
+                    write_2_gambling(csv_path, win, money)
+                    return
             
     def end_game(won=None, money = None):
         if won == None and money == None:
-            won, money = determine_win()
+            won, money = determine_win(player=check_hands(player_hand), comp=check_hands(computer_hand))
         write_2_gambling(csv_path, won, money)
         return
 
-    WIDTH, HEIGHT = 1000, 700
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
     FONT= pygame.font.SysFont(None,24)
 
     GREEN = (0, 120, 0)
     BUTTON_COLOR = (60, 60, 60)
-    WHITE = (255, 255, 255)
-    GRAY = (80, 80, 80)
     BLACK = (0, 0, 0)
-
-    CARD_W, CARD_H = 70,100
     # This is what will be called when the user chooses to play poker.
     # get the variables needed for play
     saved_game = stuff_in_CSV(csv_path)
@@ -280,11 +393,6 @@ def play_poker():
     screen = pygame.display.set_mode((1440, 1100))
     screen.fill(GREEN)
     
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            game = False
-            waiting = False
-
     # show the user what they have and ask if they want to bet and play with it, or fold and not play this round
     
     hand_text = FONT.render("This is what you have. If you want to play with this hand, click 'Initial Bet' If you don't want to play with this hand, click 'Fold'", True, (BLACK))
@@ -292,9 +400,12 @@ def play_poker():
 
     x_pos = 500; y_pos = 200
     for card in player_hand:
-        pygame.draw.rect(screen, WHITE, (x_pos, y_pos, CARD_W, CARD_H))
-        text = FONT.render(str(f'{card} (ID)'), True, BLACK)
-        screen.blit(text, (x_pos + 10, y_pos + 40))
+        card_info = deck[card]
+        pretty_card = Card_styles(card_info["Value"],suit_match(card_info["Suit"]),card_info["Color"])
+        pretty_card.show_card(screen,coords=(x_pos,y_pos))
+        #pygame.draw.rect(screen, WHITE, (x_pos, y_pos, CARD_W, CARD_H))
+        #text = FONT.render(str(f'{card} (ID)'), True, BLACK)
+        #screen.blit(text, (x_pos + 10, y_pos + 40))
         x_pos += 80; y_pos += 0
 
     bet_rect = pygame.draw.rect(screen, BUTTON_COLOR, (200, 625, 150, 75), 5, 0) # bet
@@ -309,7 +420,10 @@ def play_poker():
     waiting = True
     while waiting:
         event = pygame.event.wait()
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        if event.type == pygame.QUIT:
+            game1 = False
+            waiting = False
+        elif event.type == pygame.MOUSEBUTTONDOWN:
             if bet_rect.collidepoint(event.pos):
                 waiting = False
                 make_bet()
@@ -350,7 +464,9 @@ def play_poker():
             else:
                 print("Something went wrong with playing again. See line 310")
         else:
-            pass # condition for fold from main game
+            money = user_mon-bet_amount
+            end_game(won="False", money=money)
+            return
         pygame.display.flip()
     
     while game2:
@@ -364,17 +480,7 @@ def play_poker():
             bet_amount += final_bet
             # "Flip" computer's cards (Display the card instead of the back)
             # THIS SHOULD HAPPEN IF USER NEVER FOLDED (fingers crossed)
-            x = 500; y = 650
-            for card in computer_hand:
-                pygame.draw.rect(screen, GRAY, (x, y, CARD_W, CARD_H))
-                text = FONT.render(f"{card} (ID)", True, BLACK)
-                screen.blit(text, (x + 10, y + 40))
-                x += 80; y += 0
-
-            player_score = check_hands(player_hand, table)
-            comp_score = check_hands(computer_hand, table)
-            won, final_mon = determine_win()
-            write_2_gambling(csv_path, won, final_mon)
+            draw_ending()
             break
         elif final_play == 0 and final_bet == 0:
             return
@@ -385,4 +491,20 @@ def play_poker():
 
         clock.tick(60)
 
-play_poker()
+def poker_instructions():
+    pygame.init()
+    GREEN = (0, 120, 0)
+    FONT= pygame.font.SysFont(None,24)
+    screen = pygame.display.set_mode((1440, 1100))
+    screen.fill(GREEN)
+    
+    # Text to display
+    description = f"How to Play Poker:\nPoker is a betting game where you want to get the best of five cards possible.\nThe rankings from best to worst are:\nRoyal Flush: Ace, King, Queen, Jack, and Ten in the SAME SUIT\n Straight Flush: Five consecutive cards in the SAME SUIT (ex: 7, 8, 9, 10, Jack all in clubs)\nFour of a Kind: Four cards with the same number, suit doesn't matter\nFull House: Three cards with the same number AND two cards with the same number (3 Aces and 2 Kings)\nFlush: Five cards with the same suit (card number doesn't matter)\nStraight: Five consecutive numbers (suit does not matter)\nThree of a Kind: Three cards with the same number\nTwo Pair: two cards with matching numbers, plus another two cards with matching numbers (2 Aces and 2 Queens)\nPair: Two cards with matching numbers\nHigh Card: When no other combination is possible, the card with the highest value from your hand.\nIf you believe you have a higher hand than the computer, put in money! You want to maximize your winnings!"
+    lines = description.split("\n")
+    for i, line in enumerate(lines):
+        rules_surface = FONT.render(line,True,"black")
+        screen.blit(rules_surface,(1500,100 + i * 30))
+    pygame.display.flip()
+
+#play_poker()
+#poker_instructions()

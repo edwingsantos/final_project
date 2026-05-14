@@ -9,6 +9,8 @@
 # import sys
 import pygame
 import sys
+from freecell_solitaire import free_cell_game
+from pyramid_solitaire import game
 #from solitaire import solitaire
 #from pyramid_solitaire import *
 # def show_choices(root):
