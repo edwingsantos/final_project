@@ -64,9 +64,20 @@ def create_deck(json_path):
             value=card_data["Value"]
         )
 
+        match card.suit:
+            case "clubs":
+                card.symbol = "♣"
+            case "spades":
+                card.symbol = "♠"
+            case "diamonds":
+                card.symbol = "♦"
+            case "hearts":
+                card.symbol = "♥"
+
         deck.append(card)
 
     return deck
+
 
 # SHUFFLE DECK
 #def shuffle_deck(deck):
@@ -111,6 +122,8 @@ def hand_value(hand):
         aces -= 1
 
     return total
+
+
 
 
 #use an other dictionary for the amount of games played 
@@ -232,8 +245,6 @@ def blackjack():
     dealer_hand.append(deck.pop())
     dealer_hand.append(deck.pop())
 
-    print(player_hand,dealer_hand)
-
     #variables for games
     player_turn = True
     result = ""
@@ -244,7 +255,7 @@ def blackjack():
         winning(user_data, betting_money)
         player_turn = False
     pygame.init()
-    WIDTH, HEIGHT = 1600, 1200
+    WIDTH, HEIGHT = 1000, 900
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
     font = pygame.font.SysFont(None, 40)
@@ -258,6 +269,8 @@ def blackjack():
                 if event.key == pygame.K_q:
                     pygame.quit()
                     sys.exit()
+                if event.key == pygame.K_r:
+                    return blackjack()
 
                 #hit (get more cards)
                 if event.key == pygame.K_h and player_turn:
@@ -299,51 +312,79 @@ def blackjack():
                         tie(user_data)
 
         player_title = font.render("PLAYER",True,(255, 255, 255))
-        screen.blit(player_title, (650, 450))
+        screen.blit(player_title, (450, 450))
 
 
+        x = 375
+
+        for card in dealer_hand:
+
+            draw_card = Card_styles(
+            card.value,
+            card.symbol,
+            card.color()
+        )
+            draw_card.show_card(
+            screen,
+            size=(100,140),
+            coords=(x,200)
+        )
+            x += 125
 
 
-#write the card here, tuesday morning so parker helps
+        x = 375
 
+        for card in player_hand:
 
+            draw_card = Card_styles(card.value,card.symbol,card.color())
 
+            draw_card.show_card(
+            screen,size=(100,140),coords=(x,600))
 
-        first_dealer_card = Card_styles(dealer_hand[0],"♥","red")
-        first_dealer_card.show_card(screen,size=(100,140),coords=(250,200))
-
-
-
+            x += 125
 
 
 
 
 
         if player_turn and state == "typing":
-            text1 = font.render("press H to hit | press S to stand",True,(200, 205, 205))
+            text1 = font.render("press H to hit | press S to stand",True,(250, 250, 250))
+            text3 = font.render("DEALER",True,(250, 250, 250))
             #cursor effect
             display_text = typed_text
              #typing font and making sure its tru
             text2 = font.render(display_text, True, (0, 0, 0))
-            screen.blit(text1, (500, 1000))
-            screen.blit(text2, (200, 300))
+            screen.blit(text1, (400, 400))
+            screen.blit(text2, (100, 300))
+            screen.blit(text3, (450, 100))
         else:
-            text2 = font.render("PRESS q TO EXIT",True,(255, 255, 255))
-        screen.blit(text2, (450, 750))
+            text2 = font.render(f"PRESS q TO EXIT or PRESS r TO REPEAT \n(total money is: ${user_data['money']})",True,(255, 255, 255))
+
+
+
+
+
+
+    #ask parker about this
+
+
+            lines = text2.split("\n")
+
+
+
+
+
+
+
+
+
+
+
+
+        screen.blit(text2, (350, 750))
         result_text = font.render(result,True,(255, 255, 0))
-        screen.blit(result_text, (550, 350))
+        screen.blit(result_text, (450, 350))
         pygame.display.update()
 
 
 blackjack()
-
-
-
-
-
-
-
-
-
-
-#parker thing for instructions in line 240 through 243
