@@ -14,7 +14,7 @@ import sys
 import csv
 from LD_psuedocode import *
 path = "files/solitaire.csv"
-
+from card_styles import Card_styles
 # MENU - Screen set up
 # Create window
 # Add button "Play Solitaire"
@@ -78,8 +78,32 @@ def get_card_value(value):
 
     if value.isdigit():
         return int(value)
+    
+def create_deck(json_path,face_cardss,value):
+
+    deck = []
+
+    with open(json_path, "r") as f:
+        data = json.load(f)
+    for key in data:
+        card_data = data[key]
+    card = Card(
+            suit=card_data["Suit"].lower(),
+            value=card_data["Value"]
+        )
+
+    match deck.suit:
+        case "Clubs":
+            symbol = "♣"
+        case "Spades":
+            symbol = "♠"
+        case "Diamonds":
+            symbol = "♦"
+        case "Hearts":
+            symbol = "♥"
 
     return face_cardss.get(value,0)
+
 
 def create_deck(json_path):
 
@@ -461,7 +485,9 @@ def solitaire():
 
         # STOCK HITBOX
         stock_rect = pygame.Rect(50, 20, CARD_W, CARD_H)
-
+        king_discard = Button("Discard King","white","grey",position=(650,900))
+        hit_box_cards = []
+        card_hit_boxes = {}
         # CREATE BUTTONS HERE
         instruction_button = draw_button(
             "Instructions",
@@ -493,6 +519,22 @@ def solitaire():
                 if stock_rect.collidepoint(event.pos):
                     draw_from_stock(stock, waste)
 
+            if king_discard.click_check(event):
+                if selected == 1:
+                    for card in hit_box_cards:
+                        if card_hit_boxes[card]["Selected"] == True:
+                            king = card
+                    discard_pile, shown_draw_pile, tableu, warning_text = king_removal(tableu,discard_pile,shown_draw_pile,king,warning_text)
+                    card_hit_boxes[king]["Selected"] = False
+                    card_hit_boxes.pop(king)
+                    hit_box_cards.remove(king)
+                    
+                    selected -= 1
+                    
+                elif selected == 2:
+                    warning_text = "Too many cards selected"
+                else:
+                    warning_text = "No cards selected"
                 # INSTRUCTIONS BUTTON
                 if instruction_button.collidepoint(event.pos):
                     instruction_screen()
@@ -534,4 +576,4 @@ def solitaire():
         pygame.display.flip()
 
         clock.tick(60)
-#solitaire()
+solitaire()
