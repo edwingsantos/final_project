@@ -12,23 +12,6 @@ from card_styles import *
 #from LD_psuedocode import *
 path = "files/blackjack.csv"
 
-pygame.init()
-
-WIDTH, HEIGHT = 1000, 700
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("blackjack")
-
-clock = pygame.time.Clock()
-FONT= pygame.font.SysFont(None,24)
-
-GREEN = (0, 120, 0)
-WHITE = (255, 255, 255)
-GRAY = (80, 80, 80)
-
-
-CARD_W, CARD_H = 70,100
-
-
 
 #use dictionary called point to safe the cards choosen 
 #make a dictionary for the dealers hand 
@@ -129,17 +112,7 @@ def hand_value(hand):
 #use an other dictionary for the amount of games played 
 
 #use another dictianry for win games
-games_win = []
-#user another library for money 
-try:
-    games_num = get_game_num(path)
-except:
-    games_num = 1
 
-try:
-    money = get_money(path)
-except:
-    money = 100
 
 #ASK LIZZIE FOR HELP IN THIS
 
@@ -222,6 +195,28 @@ def get_game_num(path):
 
 
 def blackjack():
+    pygame.init()
+
+    WIDTH, HEIGHT = 1000, 700
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption("blackjack")
+
+    clock = pygame.time.Clock()
+    FONT= pygame.font.SysFont(None,24)
+
+    CARD_W, CARD_H = 70,100
+
+    games_win = []
+    #user another library for money 
+    try:
+        games_num = get_game_num(path)
+    except:
+        games_num = 1
+
+    try:
+        money = get_money(path)
+    except:
+        money = 100
 
     running = True
     state =  "typing"
@@ -394,7 +389,7 @@ def blackjack_instructions():
                     running = False
                     blackjack()
 
-        description = f"hi"
+        description = f"Objective: Beat the dealer by having a higher total,\n without exceeding 21.\n\nCard Values: Number cards (2 to 10) are face value. \nJacks, Queens, and Kings are worth 10. \nAces are worth 1 or 11.\n\nThe Setup: Players place bets, and each is dealt two cards face up.\n The dealer receives one card face up and one face down (the hole card\n\nHit: Ask for another card to increase your total. You can hit until you stand or exceed 21.\n\nStand: Keep your current total and end your turn.\n\nBust: If your hand total exceeds 21, you immediately lose your wager.\n\nWinning: You win if your total is higher than the dealer's or if the dealer busts.\n\n\nPRESS c TO CONTINUE)."
         lines = description.split("\n")
         for i, line in enumerate(lines):
             rules_surface = font.render(line,True,"black")
@@ -404,7 +399,6 @@ def blackjack_instructions():
 
 
 
-blackjack_instructions()
 
 
 

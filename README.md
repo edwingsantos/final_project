@@ -7,7 +7,11 @@ This project does just that. Here, you can play poker, blackjack, standard solit
 ![Image of running code](link)
 
 ## How to Use
-things to install and how to install
+### Things to Install
+- treys
+    - type 'pip install treys' into your terminal
+- pygame
+     - type 'pip install pygame' into your teminal
 
 ## Features
 list the features (Have fun and use emojis)

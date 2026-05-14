@@ -11,6 +11,8 @@ import pygame
 import sys
 from freecell_solitaire import free_cell_game
 from pyramid_solitaire import game
+from poker_pseudo import poker_instructions
+from blackjack import blackjack_instructions
 #from solitaire import solitaire
 #from pyramid_solitaire import *
 # def show_choices(root):
@@ -59,7 +61,7 @@ from pyramid_solitaire import game
 #main()
 pygame.init()
 
-WIDTH, HEIGHT = 900, 600
+WIDTH, HEIGHT = 1200, 700
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Main Menu")
 
@@ -87,29 +89,37 @@ class Button:
 
 
 def launch_solitaire():
-    pygame.quit()
-    print("Freecell not ready yet")
+    print("Solitaire not ready yet")
     sys.exit()
 
 
 # Need to add buttons for poker, and blackjack
 def launch_pyramid():
-    pygame.quit()
     game()
     sys.exit()
 
 def launch_freecell():
-    pygame.quit()
     free_cell_game()
+    sys.exit()
+
+def launch_poker():
+    poker_instructions()
+    sys.exit()
+
+def launch_blackjack():
+    
+    blackjack_instructions()
     sys.exit()
 
 
 def main():
     buttons = [
         Button("Solitaire", 300, 150, 300, 70, launch_solitaire),
-        Button("Pyramid Solitaire", 300, 250, 300, 70, launch_pyramid),
-        Button("Freecell", 300, 350, 300, 70, launch_freecell),
-        Button("Quit", 300, 450, 300, 70, lambda: sys.exit())
+        Button("Pyramid Solitaire", 300, 225, 300, 70, launch_pyramid),
+        Button("Freecell", 300, 300, 350, 70, launch_freecell),
+        Button("Poker", 300, 375, 300, 70, launch_poker),
+        Button("Blackjack", 300, 450, 300, 70, launch_blackjack),
+        Button("Quit", 300, 525, 300, 70, lambda: sys.exit())
 
     ]
 
