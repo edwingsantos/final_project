@@ -160,9 +160,11 @@ def play_poker():
                 x_possition += 80; y_possition += 0
             else:
                 print("Null card drawn")
-                pygame.draw.rect(screen, GRAY, (x_possition, y_possition, CARD_W, CARD_H))
-                text = FONT.render("X", True, BLACK)
-                screen.blit(text, (x_possition + 10, y_possition + 40))
+                pygame.draw.rect(screen,"red",(1300,200,100,140),0,border_radius=4)
+                pygame.draw.rect(screen,"white",(1300,200,100,140),4,border_radius=4)
+                #pygame.draw.rect(screen, GRAY, (x_possition, y_possition, CARD_W, CARD_H))
+                #text = FONT.render("X", True, BLACK)
+                #screen.blit(text, (x_possition + 10, y_possition + 40))
                 x_possition += 80; y_possition += 0
             count += 1
             pygame.display.flip()
@@ -185,9 +187,11 @@ def play_poker():
         
         x = 500; y = 650
         for _ in computer_hand:
-            pygame.draw.rect(screen, GRAY, (x, y, CARD_W, CARD_H))
-            text = FONT.render("X", True, BLACK)
-            screen.blit(text, (x + 10, y + 40))
+            pygame.draw.rect(screen,"red",(x,y,100,140),0,border_radius=4)
+            pygame.draw.rect(screen,"white",(x,y,100,140),4,border_radius=4)
+            #pygame.draw.rect(screen, GRAY, (x, y, CARD_W, CARD_H))
+            #text = FONT.render("X", True, BLACK)
+            #screen.blit(text, (x + 10, y + 40))
             x += 80; y += 0
 
         draw_table(table_amount)
@@ -331,12 +335,7 @@ def play_poker():
 
     GREEN = (0, 120, 0)
     BUTTON_COLOR = (60, 60, 60)
-    WHITE = (255, 255, 255)
-    GRAY = (80, 80, 80)
     BLACK = (0, 0, 0)
-    st_font = pygame.font.SysFont("segoeuisymbol",48)
-
-    CARD_W, CARD_H = 70,100
     # This is what will be called when the user chooses to play poker.
     # get the variables needed for play
     saved_game = stuff_in_CSV(csv_path)
@@ -507,5 +506,5 @@ def poker_instructions():
         screen.blit(rules_surface,(1500,100 + i * 30))
     pygame.display.flip()
 
-play_poker()
+#play_poker()
 #poker_instructions()
