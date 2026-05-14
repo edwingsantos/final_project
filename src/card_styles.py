@@ -19,7 +19,7 @@ class Card_styles:
         self.value = card_value
         self.color = color
         self.suit = suit
-        
+
         match self.value:
             case 1:
                 self.symbol = "A"
