@@ -57,11 +57,27 @@ def moveable_cards(tableau, freecells, ace_piles, card_status):
 
     moveable = []
 
-    for pile in tableau:
+    for i,pile in enumerate(tableau):
         if pile:
             top = pile[-1]
             moveable.append(top)
             card_status[top]["Accessible"] = True
+    
+        else:
+            key = f"TableauEmpty{i}"
+
+            if key not in card_status:
+                card_status[key] = {
+                    "HitBox": (150 + (125 * i), 300, 100, 140),
+                    "Selected": False,
+                    "Accessible": True,
+                    "InAcePile": False,
+                    "Immoveable": True
+                }
+
+            card_status[key]["HitBox"] = (150 + (125 * i),300,100,140)
+
+            moveable.append(key)
 
     for i in range(4):
 
@@ -111,13 +127,13 @@ def moveable_cards(tableau, freecells, ace_piles, card_status):
                 if i == 3:
                     card_status[key]["Suit"] = "Diamonds"
 
-
+            
             moveable.append(key)
 
     return moveable, card_status
 
 #validate player decision funcs
-def val_choice(card_ID,destination_ID,tableau,freecells,acepiles,card_status):
+def val_choice(card_ID,destination_ID,tableau,freecells,acepiles,card_status,moveable):
     with open("files/cards.json","r") as file:
         deck = json.load(file)
     
@@ -128,13 +144,15 @@ def val_choice(card_ID,destination_ID,tableau,freecells,acepiles,card_status):
         destination_type = "Freecell"
     elif destination_ID[0] == "A":
         destination_type = "AcePile"
+    elif destination_ID[0] == "T":
+        destination_type = "EmptyTableau"
     else:
         destination_type = "AnotherCard"
         destination = deck[destination_ID]
     
     match destination_type:
         case "Freecell":
-            freecell_index = int(destination_ID[1:])
+            freecell_index = int(destination_ID[-1])
 
             # Check if freecell empty
             if freecells[freecell_index] is None:
@@ -144,8 +162,18 @@ def val_choice(card_ID,destination_ID,tableau,freecells,acepiles,card_status):
                     if card_ID in column:
                         column.remove(card_ID)
                         break
+                
+                # Remove from freecells
+                for i in range(4):
+                    if freecells[i] == card_ID:
+                        freecells[i] = None
 
-                # Place into freecell
+                # Remove from ace piles
+                for pile in acepiles:
+                    if card_ID in pile:
+                        pile.remove(card_ID)
+
+                            # Place into freecell
                 freecells[freecell_index] = card_ID
             
             else:
@@ -176,23 +204,50 @@ def val_choice(card_ID,destination_ID,tableau,freecells,acepiles,card_status):
                 
                     pile.append(card_ID)
                     card_status[card_ID]["InAcePile"] = True
-
-
+            
+                #if there is cards in the ace pile
+            else:
+                if card["Value"] == destination["Value"]+1:
+                    print("Value Check Pass")
+                    if card["Suit"] == destination["Suit"]:
+                        print("Suit Check pass")
+                        
+                        for col in tableau:
+                            if card_ID in col:
+                                col.remove(card_ID)
+                                break
+                        pile.append(card_ID)
+                        card_status[card_ID]["InAcePile"] = True
 
         case "AnotherCard":
             #Check if card outside Tableau
-            
+            in_tableau = False
+            in_ace = False
+
             for col in tableau:
                 for c in col:
                     if c == destination_ID:
                         in_tableau = True
                         break
             
-            for x in acepiles:
-                if destination_ID in acepiles:
-                    in_ace = True
-                    break
+            source_col = None
+            dest_col = None
 
+            for column in tableau:
+                if card_ID in column:
+                    source_col = column
+                if destination_ID in column:
+                    dest_col = column
+            
+            if card_ID in freecells:
+                source_col = freecells
+                        
+            for x,pile in enumerate(acepiles):
+                if destination_ID in pile:
+                    in_ace = True
+                    moveable.remove(destination_ID)
+                    break
+            
             if in_tableau:
                 print("In Tableau detected")
                 #Check if color is opposite, Check if number of incoming is +1 of destination
@@ -201,26 +256,48 @@ def val_choice(card_ID,destination_ID,tableau,freecells,acepiles,card_status):
                     if card["Value"] == (destination["Value"]-1):
                         print("Value Check Passed")
 
-                        #find card then put on top of destination
-                        for column in tableau:
-                            if card_ID == column[-1]:
-                                column.remove(card_ID)
-                                print("REMOVED")
-                                break
-                        print("APPENDED")
-                        tableau[column].append(card_ID)
+                        #remove initial card and append to new place
+                        source_col.remove(card_ID)
+                        dest_col.append(card_ID)
+                        moveable.remove(destination_ID)
             
             elif in_ace:
                 #make sure that suit match
                 if card["Suit"] == destination["Suit"]:
                     #make sure that card is +1 of card already there
                     if card["Value"] == (destination["Value"]+1):
-                        acepiles[x].append(destination_ID)
+                        acepiles[x].append(card_ID)
+                        moveable.remove(card_ID)
+                        source_col.remove(card_ID)
+    
+        case "EmptyTableau":
+
+            column_index = int(destination_ID[-1])
+
+            # remove card from tableau
+            for col in tableau:
+                if card_ID in col:
+                    col.remove(card_ID)
+
+            # remove from freecells
+            for i in range(4):
+                if freecells[i] == card_ID:
+                    freecells[i] = None
+
+            # remove from ace piles
+            for pile in acepiles:
+                if card_ID in pile:
+                    pile.remove(card_ID)
+
+            # place card into empty tableau column
+            tableau[column_index].append(card_ID)
     
     card_status[destination_ID]["Selected"] = False
     card_status[card_ID]["Selected"] = False
+    if len(freecells) != 4:
+        freecells.append(None)
     
-    return tableau,freecells,acepiles,card_status
+    return tableau,freecells,acepiles,card_status,moveable
 
 
 #match suit (for displaying)
@@ -246,7 +323,7 @@ def free_cell_game():
     selected = 0
     move_select = ""
     place_select = ""
-    rules = "Rules For FreeCell:\n\nGoal: Remove all cards from the tableau (big grid with cards)\n\nWays to do this:\n\nMove cards onto other stacks to free up space\n\nMove cards to freecells (limited one card per spot)\n\nMove Cards into Suit Piles (cards go from ace-king or 1-13 in value)\n\nCaveat - You can only move one card at a time,\n\n if at any time the puzzle seems impossible to complete,\n\nQuit the game and start over!\n\n Yellow highlight is the card to move,\n red highlight is the place to move it to"
+    rules = "Rules For FreeCell:\n\nGoal: Remove all cards from the tableau (big grid with cards)\nAnd put them all in the foundation piles (piles with suit logos)\n\nWays to do this:\n\nMove cards onto other stacks to free up space\nMove cards to freecells (limited one card per spot)\nMove Cards into Suit Piles (cards go from ace-king or 1-13 in value)\n\nCaveat - You can only move one card at a time,\n\n if at any time the puzzle seems impossible to complete,\n\nQuit the game and start over!\n\n Yellow highlight is the card to move,\n red highlight is the place to move it to"
     lines = rules.split("\n")
     warning_message = ""
 
@@ -264,7 +341,7 @@ def free_cell_game():
     st_font = pygame.font.SysFont("segoeuisymbol",48)
     
     #put buttons here
-    move_button = Button("Move Selected Card","white","grey",size=(300,150),position=(750,900))
+    move_button = Button("Move Selected Card","white","grey",size=(250,100),position=(1200,1000))
 
     #game loop
     while running:
@@ -272,9 +349,23 @@ def free_cell_game():
         #reset accessibility
         for card in card_status:
             card_status[card]["Accessible"] = False
-            for i in range(4):
+        
+        #make empty slots accessible again
+        for i in range(4):
+            freecell_key = f"FreeCellEmpty{i}"
+            ace_key = f"AceEmpty{i}"
+
+            if freecell_key in card_status:
                 card_status[f"FreeCellEmpty{i}"]["Accessible"] = True
+            
+            if ace_key in card_status:
                 card_status[f"AceEmpty{i}"]["Accessible"] = True
+        
+        for i in range(8):
+            tab_key = f"TableauEmpty{i}"
+
+            if tab_key in card_status.keys():
+                card_status[tab_key]["Accessible"] = True
         
         #visuals
         screen.fill("darkgreen")
@@ -287,6 +378,22 @@ def free_cell_game():
 
         #display tableau
         for i, x in enumerate(tableau):
+            if not x:
+                empty_spot = 150 + (125 * i)
+
+                pygame.draw.rect(screen,"darkgrey",(empty_spot, 300, 100, 140),border_radius=4)
+
+                key = f"TableauEmpty{i}"
+
+                if key not in card_status:
+                    card_status[key] = {
+                        "Selected": False,
+                        "Accessible": True,
+                        "Immoveable": True
+                    }
+
+                card_status[key]["HitBox"] = (empty_spot, 300, 100, 140)
+
             for a, y in enumerate(x):
                 #get info
                 card_info = deck[y]
@@ -303,6 +410,7 @@ def free_cell_game():
                         "InAcePile":False,
                         "Immoveable":False
                     }
+                card_status[y]["HitBox"] = (new_x,new_y,100,140)
 
                 #create visual object
                 new_card = Card_styles(card_info["Value"],suit_match(card_info["Suit"]),card_info["Color"])
@@ -327,15 +435,23 @@ def free_cell_game():
                 symbols = ["♠", "♣", "♥", "♦"]
                 symbol_surface = st_font.render(symbols[x],True,"darkgreen")
                 screen.blit(symbol_surface,(180+(125*x),150))
-                key = f"FreeCellEmpty{x}"
+                key = f"AceEmpty{x}"
 
                 if key not in card_status:
                     card_status[key] = {}
-
+                    card_status[key]["Selected"] = False
+                    card_status[key]["Accessible"] = True
+                    card_status[key]["Immoveable"] = True
+                    match x:
+                        case 0:
+                            card_status[key]["Suit"] = "Spades"
+                        case 1:
+                            card_status[key]["Suit"] = "Clubs"
+                        case 2:
+                            card_status[key]["Suit"] = "Hearts"
+                        case 3:
+                            card_status[key]["Suit"] = "Diamonds"
                 card_status[key]["HitBox"] = (newer_x, 125, 100, 140)
-                card_status[key]["Selected"] = False
-                card_status[key]["Accessible"] = True
-                card_status[key]["Immoveable"] = True
 
         #display free cells
         for x in range(4):
@@ -352,15 +468,15 @@ def free_cell_game():
 
                 if key not in card_status:
                     card_status[key] = {}
+                    card_status[key]["Selected"] = False
+                    card_status[key]["Accessible"] = True
+                    card_status[key]["Immoveable"] = True
 
                 card_status[key]["HitBox"] = (newer_x, 125, 100, 140)
-                card_status[key]["Selected"] = False
-                card_status[key]["Accessible"] = True
-                card_status[key]["Immoveable"] = True
         
         #Display Instructions and Control Center
         pygame.draw.rect(screen,"white",(1200,125,535,600),border_radius=8)
-        pygame.draw.rect(screen,"black",(1200,800,450,250),border_radius=8)
+        pygame.draw.rect(screen,"black",(1200,730,450,250),border_radius=8)
 
 
         for i, line in enumerate(lines):
@@ -387,12 +503,18 @@ def free_cell_game():
                 if selected != 2:
                     warning_message = "Must select start+end points"
                 else:
-                    tableau, freecells, ace_piles, card_status = val_choice(move_select,place_select,tableau,freecells,ace_piles,card_status)
-                    selected -= 2
+                    tableau, freecells, ace_piles, card_status, moveable = val_choice(move_select,place_select,tableau,freecells,ace_piles,card_status,moveable)
+                    selected = 0
+                    move_select = ""
+                    place_select = ""
+
             #mouse button clicked and it is the left button
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 #scan to see if card clicked
                 for card in moveable:
+                    #checks if unavailable
+                    if "HitBox" not in card_status[card]:
+                        continue
                     w,x,y,z = card_status[card]["HitBox"]
                     rect = pygame.Rect(w,x,y,z)
 
@@ -459,8 +581,9 @@ def free_cell_game():
             if len(x) == 0:
                 counter+=1
         
-        if counter == 8:
+        if counter == 8 and freecells == [None,None,None,None]:
             print("YOU WIN!")
+            running = False
             with open("files/freecell.csv","r",newline="",encoding="utf-8") as scores:
                 reader = list(csv.reader(scores))
                 game_num = int(reader[-1][0]) + 1
