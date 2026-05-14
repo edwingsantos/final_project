@@ -79,7 +79,7 @@ def get_card_value(value):
     if value.isdigit():
         return int(value)
 
-    return face_cardss[value]
+    return face_cardss.get(value,0)
 
 def create_deck(json_path):
 
@@ -133,13 +133,16 @@ def draw_from_stock(stock, waste):
         waste.append(card)
 
     else:
-        # Reset stock from waste
+
+        waste.reverse()
+
         while len(waste) > 0:
 
             card = waste.pop()
-            card.face_up = False
-            stock.append(card)  # Doesnt really work
 
+            card.face_up = False
+
+            stock.append(card)
 
 # SETUP BOARD (7 COLUMNS)
 #Create 7 empty columns (tableau)
@@ -186,19 +189,36 @@ def setup_board(deck):
 CARD_W, CARD_H = 70, 100
 
 # Tal vez esto cambie pero tengo que mejorar unas cuatnas cosas
-def draw_card(x, y, card):
+def draw_card(x, y, card, selected=False):
+
     if card.face_up:
+
         pygame.draw.rect(screen, WHITE, (x, y, CARD_W, CARD_H))
+
         text_color = (200, 0, 0) if card.color == "red" else BLACK
+
         text = FONT.render(str(card), True, text_color)
+
     else:
+
         pygame.draw.rect(screen, GRAY, (x, y, CARD_W, CARD_H))
+
         text = FONT.render("X", True, BLACK)
-# Encontrar porque no funciona esto de aqui
+
     screen.blit(text, (x + 10, y + 40))
 
+    # DRAW HIGHLIGHT LAST
+    if selected:
+
+        pygame.draw.rect(
+            screen,
+            (255, 215, 0),
+            (x, y, CARD_W, CARD_H),
+            4
+        )
+
 # Esto es para ver las 7 columnas de las cartas
-def draw_tableau(tableau):
+def draw_tableau(tableau, selected_card):
     start_x = 50
     start_y = 120
     spacing_x = 130
@@ -208,7 +228,34 @@ def draw_tableau(tableau):
         for row_index, card in enumerate(column):
             x = start_x + col_index * spacing_x
             y = start_y + row_index * spacing_y
-            draw_card(x, y, card)
+            draw_card(
+                x,
+                y,
+                card,
+                card == selected_card
+            )
+def get_clicked_card(tableau, pos):
+
+    start_x = 50
+    start_y = 120
+    spacing_x = 130
+    spacing_y = 25
+
+    for col_index, column in enumerate(tableau):
+
+        for row_index, card in enumerate(column):
+
+            x = start_x + col_index * spacing_x
+            y = start_y + row_index * spacing_y
+
+            rect = pygame.Rect(x, y, CARD_W, CARD_H)
+
+            if rect.collidepoint(pos):
+
+                if card.face_up:
+                    return card
+
+    return None
 
 # PLAYER INPUT
 # import lizzies func that makes sure if it is the same color or not 
@@ -271,6 +318,7 @@ def draw_stock_waste(stock, waste):
     # STOCK
     if len(stock) > 0:
         pygame.draw.rect(screen, GRAY, (50, 20, CARD_W, CARD_H))
+        pygame.draw.rect(screen, WHITE, (50, 20, CARD_W, CARD_H), 2)
     else:
         pygame.draw.rect(screen, WHITE, (50, 20, CARD_W, CARD_H), 2)
 
@@ -332,38 +380,158 @@ class Button:
     def draw(self):
         pygame.draw.rect(screen, GRAY, self.rect)
         label = FONT.render(self.text, True, WHITE)
-        screen.blit(label, (self.rect.x + 20, self.rect.y + 15))
-
+        label_rect = label.get_rect(center=self.rect.center)
+        screen.blit(label, label_rect)
     def click(self, pos):
         if self.rect.collidepoint(pos):
             self.action()
 
-def instruction():
-    pygame.quit()
-    print("Freecell not ready yet")
-    sys.exit()
-# Necesito una funcion que ya tenfa las instucciones
+def instruction_screen():
 
-# No se que botones necesito agragar pero lo voy a agregar mas como quit y eso
-def launch_pyramid(): 
+    running = True
+
+    instructions = [
+        "SOLITAIRE RULES",
+        "",
+        "Goal:",
+        "Move all cards to the foundation piles.",
+        "",
+        "Rules:",
+        "- Red and black cards alternate",
+        "- Cards go in descending order",
+        "- Kings start empty columns",
+        "- Draw cards from the stock pile",
+        "",
+        "Click anywhere to go back"
+    ]
+
+    while running:
+
+        screen.fill(GREEN)
+
+        title = FONT.render("Instructions", True, WHITE)
+        screen.blit(title, (400, 50))
+
+        for i, line in enumerate(instructions):
+
+            text = FONT.render(line, True, WHITE)
+
+            screen.blit(text, (120, 120 + i * 40))
+
+        for event in pygame.event.get():
+
+            if event.type == pygame.QUIT:
+                running = False
+                pygame.quit()
+                sys.exit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                running = False
+
+        pygame.display.flip()
+
+def quit_game():
     pygame.quit()
-    print("Freecell not ready yet")
     sys.exit()
 
-def launch_freecell():
-    pygame.quit()
-    print("Freecell not ready yet")
-    sys.exit()
 
 
 def solitaire():
-     buttons = [
-        Button("Solitaire", 300, 150, 300, 70, instruction),
-        Button("Pyramid Solitaire", 300, 250, 300, 70, launch_pyramid),
-        Button("Freecell", 300, 350, 300, 70, launch_freecell),
-        Button("Quit", 300, 450, 300, 70, lambda: sys.exit())
-    ]
-    
-    # Necestio instrucciones, donde van las cartas el deck por si no hay cartas que se puedan conbinar
-    #Necesito vasar todo mi loop de acuerdo a lo que el otro companero hizo para su solitaire y de acuerdo a lo que yo hice en main
-    
+
+    deck = shuffle_deck("files/cards.json")
+
+    tableau, stock, waste, foundations = setup_board(deck)
+
+    running = True
+    selected_card = None
+
+    while running:
+
+        screen.fill(GREEN)
+
+        # TITLE
+        title = FONT.render("Klondike Solitaire", True, WHITE)
+        screen.blit(title, (400, 20))
+
+        # DRAW STOCK + WASTE
+        draw_stock_waste(stock, waste)
+
+        # DRAW TABLEAU
+        draw_tableau(tableau, selected_card)
+
+        # STOCK HITBOX
+        stock_rect = pygame.Rect(50, 20, CARD_W, CARD_H)
+
+        # CREATE BUTTONS HERE
+        instruction_button = draw_button(
+            "Instructions",
+            750,
+            20,
+            180,
+            50
+        )
+
+        quit_button = draw_button(
+            "Quit",
+            750,
+            90,
+            180,
+            50
+        )
+
+        # EVENT LOOP
+        for event in pygame.event.get():
+
+            if event.type == pygame.QUIT:
+                running = False
+                pygame.quit()
+                sys.exit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+
+                # STOCK CLICK
+                if stock_rect.collidepoint(event.pos):
+                    draw_from_stock(stock, waste)
+
+                # INSTRUCTIONS BUTTON
+                if instruction_button.collidepoint(event.pos):
+                    instruction_screen()
+
+                # QUIT BUTTON
+                if quit_button.collidepoint(event.pos):
+                    quit_game()
+
+                # CARD CLICKING
+                clicked_card = get_clicked_card(
+                    tableau,
+                    event.pos
+                )
+
+                if clicked_card:
+
+                    if selected_card is None:
+
+                        selected_card = clicked_card
+
+                    else:
+
+                        if solitaire_valid_move(
+                            selected_card,
+                            clicked_card
+                        ):
+
+                            move_card(
+                                tableau,
+                                selected_card,
+                                clicked_card
+                            )
+                        
+                        else:
+                            print("Invalid move")
+
+                        selected_card = None
+
+        pygame.display.flip()
+
+        clock.tick(60)
+solitaire()

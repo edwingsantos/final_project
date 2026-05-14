@@ -55,19 +55,28 @@ import sys
 #     Start the program loop (root.mainloop)
 #         This keeps the window open and running
 #main()
+import pygame
+import sys
+
 pygame.init()
 
+# ---------------- SCREEN SETUP ----------------
 WIDTH, HEIGHT = 900, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Main Menu")
+pygame.display.set_caption("Card Game Collection")
 
-FONT = pygame.font.SysFont(None, 40)
-
+# ---------------- COLORS ----------------
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = (70, 70, 70)
 GREEN = (0, 120, 0)
+BLUE = (40, 40, 120)
 
+# ---------------- FONT ----------------
+FONT = pygame.font.SysFont(None, 40)
+TITLE_FONT = pygame.font.SysFont(None, 60)
+
+# ---------------- BUTTON CLASS ----------------
 class Button:
     def __init__(self, text, x, y, w, h, action):
         self.text = text
@@ -76,63 +85,112 @@ class Button:
 
     def draw(self):
         pygame.draw.rect(screen, GRAY, self.rect)
+
         label = FONT.render(self.text, True, WHITE)
-        screen.blit(label, (self.rect.x + 20, self.rect.y + 15))
+
+        label_rect = label.get_rect(center=self.rect.center)
+
+        screen.blit(label, label_rect)
 
     def click(self, pos):
         if self.rect.collidepoint(pos):
             self.action()
 
+# ---------------- QUIT FUNCTION ----------------
+def quit_program():
+    pygame.quit()
+    sys.exit()
 
+# ---------------- GAME PLACEHOLDER SCREEN ----------------
+def game_screen(game_name):
+    """
+    Temporary game screen until the real game is added
+    """
+
+    back_button = Button("Back to Menu", 320, 450, 250, 70, main)
+
+    running = True
+
+    while running:
+
+        screen.fill(BLUE)
+
+        title = TITLE_FONT.render(game_name, True, WHITE)
+        screen.blit(title, (300, 150))
+
+        message = FONT.render("Game Coming Soon!", True, WHITE)
+        screen.blit(message, (300, 250))
+
+        back_button.draw()
+
+        for event in pygame.event.get():
+
+            if event.type == pygame.QUIT:
+                quit_program()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                back_button.click(event.pos)
+
+        pygame.display.flip()
+
+# ---------------- GAME FUNCTIONS ----------------
 def launch_solitaire():
-    pygame.quit()
-    print("Freecell not ready yet")
-    sys.exit()
+    game_screen("Solitaire")
 
-
-# Need to add buttons for poker, and blackjack
 def launch_pyramid():
-    pygame.quit()
-    print("Freecell not ready yet")
-    sys.exit()
+    game_screen("Pyramid Solitaire")
 
 def launch_freecell():
-    pygame.quit()
-    print("Freecell not ready yet")
-    sys.exit()
+    game_screen("Freecell")
 
+def launch_blackjack():
+    game_screen("Blackjack")
 
+def launch_poker():
+    game_screen("Poker")
+
+# ---------------- MAIN MENU ----------------
 def main():
+
     buttons = [
-        Button("Solitaire", 300, 150, 300, 70, launch_solitaire),
-        Button("Pyramid Solitaire", 300, 250, 300, 70, launch_pyramid),
-        Button("Freecell", 300, 350, 300, 70, launch_freecell),
-        Button("Quit", 300, 450, 300, 70, lambda: sys.exit())
+
+        Button("Solitaire", 300, 120, 300, 60, launch_solitaire),
+
+        Button("Pyramid Solitaire", 300, 190, 300, 60, launch_pyramid),
+
+        Button("Freecell", 300, 260, 300, 60, launch_freecell),
+
+        Button("Blackjack", 300, 330, 300, 60, launch_blackjack),
+
+        Button("Poker", 300, 400, 300, 60, launch_poker),
+
+        Button("Quit", 300, 470, 300, 60, quit_program)
 
     ]
 
     running = True
 
     while running:
+
         screen.fill(GREEN)
 
-        title = FONT.render("Choose a Game", True, WHITE)
-        screen.blit(title, (330, 50))
+        title = TITLE_FONT.render("Choose a Game", True, WHITE)
+        screen.blit(title, (260, 40))
 
         for event in pygame.event.get():
+
             if event.type == pygame.QUIT:
-                running = False
-                pygame.quit()
-                sys.exit()
+                quit_program()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
-                for b in buttons:
-                    b.click(event.pos)
 
-        for b in buttons:
-            b.draw()
+                for button in buttons:
+                    button.click(event.pos)
+
+        for button in buttons:
+            button.draw()
 
         pygame.display.flip()
 
-
+# ---------------- START PROGRAM ----------------
 main()
